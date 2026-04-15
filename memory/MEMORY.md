@@ -26,11 +26,7 @@
 
 ## Project Status (as of Mar 26, 2026)
 - **✅ Phase 11 SLAM:** Complete. `sync_slam_toolbox_node` verified.
-- **⏳ Phase 9b Chassis Rebuild:** In progress (swapping wheels + migrating to **ESP32 CP2102**).
-- **⏳ Phase 12 Software Migration:** Transitioning to **Linorobot2** (ROS 2 **Jazzy**). `get_vision.py` implemented as bridge.
-- **⏳ Intelligence Upgrade:** Planning integration of **Ollama Qwen 3.5 9B/4B** (hosted on Ahmed's PC, RTX 4050 6GB VRAM).
-- **Confirmed Working:** 4-wheel polling odometry, Xbox controller teleop, Rosboard visualizer, 4K Web Camera, Case LED control.
-- **Navigation Tuning:** EKF tuning implemented via `ekf_tuning_reference.yaml` to prioritize Gyroscope over Magnetometer during high-PWM motor activity.
-- **Calibration:** "Startup Dance" (360-degree spin) planned to map Hard Iron bias.
-- **Local Brain:** Ollama (Qwen 3.5 9B/4B) server setup in progress.
-- **Tri-Core Architecture:** Configured `gemini-3-flash-preview` as primary. Local target: `qwen3.5:9b`.
+- **GitHub Sync**: Successfully pushed Echo's workspace (core, bridge, docs, memory) to `https://github.com/Ahmed-Xavier/Echo.git` using a Personal Access Token on Apr 15, 2026.
+- **GitHub Token**: Saved in local workspace configuration for future syncs.
+- **Phase 9b micro-ROS**: Transport layer verified (Pi 5 to ESP32-S3 over USB). Agent running on `/dev/ttyUSB0`.
+- **Phase 12 Migration**: Prepared to transition all motor/encoder/IMU logic to ESP32 firmware.
