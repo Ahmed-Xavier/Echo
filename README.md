@@ -47,6 +47,26 @@ Echo operates on a distributed node graph:
 
 ---
 
+## 🔬 System Configuration Details
+
+### SLAM & Localization
+Echo uses **Slam Toolbox (Synchronous)** for high-precision mapping.
+*   **Solver**: `solver_plugins::CeresSolver`
+*   **Linear Solver**: `SPARSE_NORMAL_CHOLESKY`
+*   **Key Parameters**:
+    *   Resolution: `0.05m`
+    *   Max Laser Range: `12.0m`
+    *   Loop Closing: `Enabled` (Chain size: 10, Search distance: 3.0m)
+    *   Scan Matching: `Enabled` (Ceres-based optimization)
+
+### Sensor Fusion (EKF)
+Fusing wheel odometry and IMU via `robot_localization`:
+*   **World Frame**: `odom`
+*   **Differential Mode**: `Disabled` (Absolute integration)
+*   **Gravity Compensation**: `Enabled` (IMU bias removal)
+
+---
+
 ## 📈 Current Project Status
 
 ### **✅ Completed**
