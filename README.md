@@ -45,6 +45,11 @@ Echo operates on a distributed node graph:
 *   **Vision**: `OpenCV`, `pupil_apriltags`, `aiortc`.
 *   **Interaction**: `pvporcupine`, `pvrecorder`, `ElevenLabs API`.
 
+### Communication Layer
+*   **Protocol**: ROS 2 Pub/Sub over DDS.
+*   **External Bridge**: `rosbridge_suite` (WebSocket) for integration with web-based dashboards and external AI agents.
+*   **Micro-Controller Transport**: `micro-ROS` (Serial) between the Pi 5 and the ESP32 (CP2102).
+
 ---
 
 ## 🔬 System Configuration Details
