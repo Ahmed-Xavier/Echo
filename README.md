@@ -17,8 +17,8 @@ Echo is a sarcastic, witty, and self-directed autonomous indoor navigation robot
 
 ### Sensors
 *   **Vision**: HIKVISION 4K USB Camera (streaming at 720p/1080p via WebRTC).
-*   **LiDAR**: YDLIDAR X4 Pro (360-degree laser scanner).
-*   **IMU**: MPU9250 9-axis (currently transitioning from raw MPU6050 logic).
+*   **LiDAR**: YDLIDAR X4 Pro (360-degree laser scanner, 12m range, 5-12Hz frequency).
+*   **IMU**: MPU9250 9-axis (I2C address `0x68`, currently transitioning from raw MPU6050 logic).
 
 ---
 
