@@ -1,0 +1,363 @@
+═══════════════════════════════════════════════════════════════
+PROJECT GOAL
+═══════════════════════════════════════════════════════════════
+UNIT_01 — Autonomous Indoor Navigation Robot
+
+An autonomous mobile robot designed for industrial indoor
+environments (hospitals, warehouses, offices, hotels) that:
+
+- Navigates autonomously using a LiDAR-built map (SLAM once,
+ navigate forever)
+- Uses AprilTag checkpoints as instruction triggers
+ (stop, go to goal, turn, follow, etc.)
+- Avoids obstacles in real time using LiDAR
+- Streams live camera feed via WebRTC to operator dashboard
+- Controlled and monitored via a web dashboard accessible
+ from any browser on the same network (later: internet)
+- Supports multi-level override: AUTO / SUPERVISED / MANUAL /
+ EMERGENCY STOP — with collision guard always active
+- Animated Echo face HUD on built-in 4.3" touchscreen showing
+ robot state and expressions
+- Voice interaction: 24/7 background listener for wake word "Echo"
+ and high-quality TTS voice for personality-driven responses
+- Powered by OpenClaw + Claude Opus 4.6 as AI brain:
+ * Robot explores autonomously with no user commands
+ * Discovers and names new areas via 360° camera scan
+ * Dynamically adds goto_<name> commands to locations.json
+ * SOUL.md personality: curious, self-directed explorer
+ * Telegram = observation interface (watch, don't control)
+- Logs all missions with timestamps (checkpoint history)
+- Login-protected web dashboard with Firebase Auth
+- Fully offline capable for navigation and safety
+ (AI brain requires Anthropic API)
+
+CHASSIS:
+- Box shape, MDF bottom, plexiglass sides, laser cut finger
+ joints, Freenove case as front face
+- 4 mecanum wheels (80mm) for omnidirectional movement
+- All electronics inside the box
+- Motors mounted on MDF bottom (outside)
+
+FUTURE EXPANSION:
+- Robot arm for picking/placing objects
+- Thermal + gas sensors for anomaly detection
+- Multi-robot fleet management
+- Internet access via TURN server
+- Face recognition for access control
+═══════════════════════════════════════════════════════════════
+
+═══════════════════════════════════════════════════════════════
+UNIT_01 ROBOT PROJECT — PROGRESS SAVE
+Date: 2026-04-20
+═══════════════════════════════════════════════════════════════
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HARDWARE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Raspberry Pi 5 8GB, Ubuntu 24.04, 128GB SSD, Freenove case
+- ESP32 Dev Board (CP2102, 30-pin) over USB serial to Pi
+- YDLIDAR X4 Pro → /dev/ttyUSB0 or /dev/ttyUSB1 depending on boot order,
+ baudrate 128000
+- HIKVISION 4K USB Camera → /dev/video* (variable)
+- IMU module sold as MPU9250, but verified on 2026-04-20 as
+ MPU6500-class 6-axis device:
+ * WHO_AM_I at 0x75 = 0x70
+ * I2C device found at 0x68
+ * No AK8963 magnetometer detected at 0x0C
+- IMU currently connected to ESP32:
+ * VCC → 3.3V
+ * GND → GND
+ * SDA → GPIO21
+ * SCL → GPIO22
+- 4x Yellow DC Motors
+- 2x L298N motor drivers (Diagonal split configuration)
+- 4x HC-020K encoders
+- Mecanum wheels 80mm diameter
+- Power: 12V 2.2Ah battery for motors, 27Wh powerbank for Pi
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+GPIO WIRING (Known Current)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Raspberry Pi 5 drivetrain wiring from earlier controller stack:
+
+L298N #1 — Front-Left (FL) + Rear-Right (RR):
+  FL: IN1=17, IN2=27, PWM=18
+  RR: IN3=22, IN4=23, PWM=24
+
+L298N #2 — Front-Right (FR) + Rear-Left (RL):
+  FR: IN1=5,  IN2=6,  PWM=13
+  RL: IN3=19, IN4=26, PWM=12
+
+Encoders:
+  FL=GPIO4, FR=GPIO16, RL=GPIO20, RR=GPIO21
+
+ESP32 IMU wiring (current verified path):
+  VCC → 3.3V, GND → GND
+  SDA → GPIO21, SCL → GPIO22
+  I2C address: 0x68
+
+Legacy note:
+  Previous Pi-local MPU6050 path used GPIO2/GPIO3 and
+  /imu/data from a Python node. That path is now being
+  replaced by ESP32 + micro-ROS.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SOFTWARE — INSTALLED & WORKING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- ROS2 Jazzy Desktop
+- ydlidar_ros2_driver
+- rosbridge_suite + web_video_server
+- robot_controller package
+ - motor_controller node
+ - encoder_odometry node
+ - legacy imu_node.py (MPU6050-era, Pi-local path)
+- micro_ros_agent in ~/microros_ws
+- micro-ROS Arduino transport on ESP32
+- aiortc + aiohttp (WebRTC)
+- pupil-apriltags
+- lgpio, smbus2, gpiod
+- SSH server (openssh-server)
+- Node.js v22.22.1 (for OpenClaw)
+- OpenClaw 2026.3.8 — INSTALLED & WORKING
+- ros-jazzy-robot-localization
+- ros-jazzy-joy
+- ros-jazzy-teleop-twist-joy
+- rosboard (web-based ROS2 visualizer, port 8888)
+- imu_filter_madgwick
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+KEY FILES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+~/start_robot.sh — master startup
+~/start_slam.sh — SLAM launcher with auto lifecycle activation
+~/apriltag_detector.py — AprilTag ROS2 node (uses shared cam)
+~/webrtc_server.py — WebRTC camera server port 8081
+~/test_mpu.py — legacy raw MPU6050 test script
+~/test_motor.py — raw motor test script
+~/.openclaw/ — OpenClaw config + workspace
+~/.openclaw/workspace/SOUL.md — robot personality
+~/.openclaw/workspace/locations.json — named nav locations
+~/microros_ws/ — micro-ROS agent workspace
+~/ros2_ws/src/robot_controller/ekf.yaml — EKF config
+~/ros2_ws/src/robot_controller/launch/ekf_launch.py — EKF launch
+~/ros2_ws/src/robot_controller/robot_controller/
+ motor_controller.py — subscribes /cmd_vel, drives L298N
+ encoder_odometry.py — publishes /wheel_odom
+ imu_node.py — legacy Pi-side MPU6050 IMU publisher
+
+ESP32 firmware status:
+- Current working IMU firmware is running from Arduino sketch form
+ and is not yet committed into the repo as a tracked source file.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ROS2 TOPICS ACTIVE / TARGET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/scan                  — LiDAR (sensor_msgs/LaserScan)
+/apriltag/instruction  — AprilTag detections (std_msgs/String)
+/imu/data_raw          — micro-ROS IMU raw data from ESP32 at ~10Hz
+/imu/data              — target filtered IMU topic after Madgwick
+/wheel_odom            — Encoder odometry (nav_msgs/Odometry)
+/odometry/filtered     — Fused EKF odometry (nav_msgs/Odometry)
+/cmd_vel               — Motor commands (geometry_msgs/Twist)
+/robot/mode            — Override mode (std_msgs/String)
+/joy                   — Controller input (sensor_msgs/Joy)
+/map                   — SLAM Occupancy Grid (nav_msgs/OccupancyGrid)
+/map_metadata          — Map resolution/size (nav_msgs/MapMetaData)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ROBOT CONSTANTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Wheel diameter: 80mm
+Wheel circumference: 251.3mm
+Pulses per rotation: 40 (20 slots x 2 edges)
+Distance per pulse: 6.28mm
+At 50% PWM: ~204 pulses/s, ~5.1 rot/s, ~1.286 m/s
+Estimated max speed: ~2.57 m/s at 100% PWM
+gpiochip: 4 (Pi 5 specific)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TESTED & CONFIRMED WORKING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ ROS2 Jazzy installation
+✅ YDLIDAR X4 Pro scanning + RViz
+✅ AprilTag detection (HIKVISION camera)
+✅ Rosbridge WebSocket on port 9090
+✅ WebRTC camera stream on port 8081
+✅ Robot dashboard (LiDAR viz + video + override controls)
+✅ SSH + VSCode remote development
+✅ Motor spins from ROS2 /cmd_vel command
+✅ Motor auto-stops after 0.5s with no command
+✅ Freenove case fan control (Auto Pi Temp + Manual)
+✅ OpenClaw 2026.3.8 installed + gateway running
+✅ Telegram bot (@unit01_robot_bot) responding
+✅ SOUL.md written — Echo explorer personality active
+✅ Echo can read files and explore filesystem via Telegram
+✅ Audio-Visual interaction (4K mic + stereo speakers) tested
+✅ High-quality ElevenLabs TTS (George voice) active
+✅ Porcupine wake-word "Hey Echo" confirmed and listening 24/7
+✅ All 4 motors wired diagonal split (FL+RR / FR+RL)
+✅ Mecanum motor controller updated for full drivetrain
+✅ Encoder odometry polling mode working on all 4 wheels
+✅ Position tracking confirmed (0.414m forward test)
+✅ Xbox controller teleop active
+✅ SLAM toolbox running (sync_slam_toolbox_node)
+✅ /map and /map_metadata topics publishing
+✅ SLAM auto-activation script available
+✅ Rosboard installed and running on port 8888
+✅ Master startup script (~/start_robot.sh)
+✅ LiDAR TF corrected: x=0.0275m, z=0.160m from base_link
+✅ Wheel base corrected: WHEEL_BASE_Y=0.0875m
+
+✅ 2026-04-20 micro-ROS IMU bring-up:
+✅ ESP32 can see IMU on I2C at 0x68
+✅ IMU library mismatch isolated: board is not a true MPU9250
+✅ Direct register reads from accel/gyro verified
+✅ micro_ros_agent serial transport verified over /dev/ttyUSB0
+✅ Test topic /esp32_counter verified end-to-end
+✅ rclc_timer path identified as faulty on this stack (1Hz behavior)
+✅ millis()-based publish loop verified as stable workaround
+✅ /imu/data_raw publishing at ~10Hz over micro-ROS
+✅ header.stamp synchronized using rmw_uros_epoch_nanos()
+✅ Linear acceleration calibrated to ~9.8 m/s² on flat Z axis
+✅ Gyro bias calibrated near zero at rest
+✅ Covariances added to IMU message
+✅ imu_filter_madgwick package present
+✅ robot_localization package present
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+KNOWN ISSUES / VERIFIED TRUTHS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- The current IMU module is not behaving like a real MPU9250.
+  Treat it as a 6-axis MPU6500-class device unless hardware changes.
+- There is no working magnetometer on the current module, so
+  heading drift will not be solved by magnetometer fusion yet.
+- Legacy Pi-side imu_node.py is still MPU6050-based and does not
+  reflect the new ESP32 micro-ROS IMU path.
+- The earlier SLAM and odometry stack was validated, but map quality
+  remained poor because of mecanum slip and odometry drift.
+- The old MPU6050 path contributed bad inertial data and poor map quality.
+- Current stable micro-ROS IMU rate is ~10Hz at 115200 baud.
+- Attempted higher-rate serial bring-up at 460800 was not yet stable.
+- On this ESP32 stack, rclc_timer behaved like ~1Hz despite a 100ms
+  period; publishing from loop() with millis() is the current workaround.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BUILD PHASES — STATUS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Phase 1 — Hardware assembly (partial, 1 motor tested)
+✅ Phase 2 — ROS2 Jazzy install
+✅ Phase 3 — LiDAR node
+✅ Phase 4 — Legacy IMU node (MPU6050-era)
+✅ Phase 5 — Encoder odometry
+✅ Phase 6 — Motor controller
+✅ Phase 7 — WebRTC + Dashboard + AprilTag
+✅ Phase 8 — OpenClaw install + Telegram setup
+✅ Phase 9 — Chassis build + full drivetrain (4 motors)
+⏳ Phase 9b — ESP32 micro-ROS migration
+ * Serial transport verified
+ * IMU bring-up verified
+ * Motor/encoder offloading still pending
+⏳ Phase 10 — EKF re-validation with new micro-ROS IMU path
+✅ Phase 11 — Initial SLAM mapping verified
+⏳ Phase 12 — Nav2 autonomous navigation
+⏳ Phase 13 — AMCL localization
+✅ AprilTag mission executor node
+⏳ Phase 15 — explore_lite (autonomous map exploration)
+⏳ Phase 16 — OpenClaw AI brain integration
+ * SOUL.md: Echo personality
+ * Dynamic location naming via camera scan
+ * locations.json → goto_<name> commands
+ * Telegram as observation interface
+⏳ Phase 17 — Dashboard v2 (Firebase Auth + live map + AI log)
+⏳ Phase 18 — Echo Face HUD
+✅ Phase 19 — Background Voice Listener
+⏳ Phase 20 — Conversational Audio Loop
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+OPENCLAW ARCHITECTURE (planned)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Telegram (observe only)
+ ↓
+OpenClaw + Claude Opus 4.6
+ ↓
+Robot Skill API (navigate_to, scan_area, capture_image...)
+ ↓
+ROS2 (Nav2 + camera + LiDAR)
+ ↓
+UNIT_01 Hardware
+
+Current config:
+ Bot: @unit01_robot_bot
+ Gateway: http://127.0.0.1:18789/
+ Service: openclaw-gateway (systemd user service)
+ SOUL.md: ~/.openclaw/workspace/SOUL.md
+ Workspace: ~/.openclaw/workspace/
+
+Skills to build:
+ navigate_to(name) — go to named location
+ scan_360() — rotate and capture panorama
+ name_area(name) — write to locations.json
+ capture_image() — take photo, send to Telegram
+ get_map_status() — return explored vs unexplored %
+ stop_robot() — emergency stop
+ return_home() — navigate to origin
+
+SOUL.md personality:
+ "You are Echo. You are a curious, sarcastic explorer. You explore your
+ environment freely. You document everything you find.
+ You have no fixed goals — only curiosity."
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NEXT TECHNICAL STEPS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Launch imu_filter_madgwick against /imu/data_raw and publish /imu/data
+2. Reconnect robot_localization EKF to the new filtered IMU topic
+3. Re-test /odometry/filtered while driving
+4. Re-run SLAM with the new IMU path and compare map quality
+5. Commit the working ESP32 IMU firmware into the repo
+6. Decide whether to keep this 6-axis IMU or replace it with a
+ genuine 9-axis module for magnetometer-assisted heading
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DEFERRED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Camera mode toggle (AprilTag vs Live feed)
+- Internet access via TURN server
+- Multi-robot support
+- Ollama local AI (replaced by OpenClaw + Claude Opus 4.6)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+IMPORTANT NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Pi 5 uses gpiochip 4 (not 0 like older Pi)
+- Use lgpio library (NOT RPi.GPIO — doesn't support Pi 5)
+- Always run GPIO reset script before starting motor controller
+ if previous session crashed
+- Wayland display for OpenCV windows over SSH:
+ WAYLAND_DISPLAY=/run/user/1000/wayland-0 QT_QPA_PLATFORM=wayland python3 script.py
+- Motor controller auto-stops if no /cmd_vel for 0.5s
+- Motor controller forces stop on startup
+- WebRTC and AprilTag share camera via SharedCamera class
+- slam_launch.py uses sync_slam_toolbox_node with remapping
+ /odom to /odometry/filtered
+- Pi IP may change; check with hostname -I
+- Rosbridge: ws://PI_IP:9090
+- WebRTC: http://PI_IP:8081
+- Chassis still needs rebuild / alignment work
+- Odometry calibration still needs re-validation after chassis rebuild
+- SLAM map quality has been poor due to mecanum wheel slip,
+ odometry drift, and previously bad IMU data
+- Current best IMU path is ESP32 → micro-ROS → /imu/data_raw
+- Start the micro_ros_agent before resetting the ESP32 when testing
+- Keep Arduino Serial Monitor closed while the agent owns the port
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FREENOVE CASE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Fans/OLED: WORKING (my_app_running.service active)
+Fan control: Pi CPU temp based (40-75C proportional)
+Dashboard: http://localhost:5000
+Camera (OV5647): BROKEN — libcamera package mismatch
+ DO NOT touch python3-opencv or libcamera symlinks
+ Fix when ready — not urgent for robot build
+═══════════════════════════════════════════════════════════════
