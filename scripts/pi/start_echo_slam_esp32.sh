@@ -6,8 +6,8 @@ ROS_SETUP="/opt/ros/${ROS_DISTRO_NAME}/setup.bash"
 ROS_WS="/home/ahmed/ros2_ws"
 MICRO_ROS_WS="/home/ahmed/microros_ws"
 
-ESP32_PORT="${ESP32_PORT:-/dev/ttyUSB1}"
-LIDAR_PORT="${LIDAR_PORT:-/dev/ttyUSB0}"
+ESP32_PORT="${ESP32_PORT:-/dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0}"
+LIDAR_PORT="${LIDAR_PORT:-/dev/serial/by-path/platform-xhci-hcd.0-usb-0:1:1.0-port0}"
 ESP32_BAUD="${ESP32_BAUD:-115200}"
 
 LOG_DIR="/tmp/echo_slam_esp32_logs"
