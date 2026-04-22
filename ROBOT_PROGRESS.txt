@@ -48,8 +48,39 @@ FUTURE EXPANSION:
 
 ═══════════════════════════════════════════════════════════════
 UNIT_01 ROBOT PROJECT — PROGRESS SAVE
-Date: 2026-04-20
+Date: 2026-04-22
 ═══════════════════════════════════════════════════════════════
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LATEST UPDATE — 2026-04-22
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Combined ESP32 micro-ROS low-level controller created and pushed.
+✅ Firmware path: firmware/esp32/echo_low_level_controller/echo_low_level_controller.ino
+✅ Node name: esp32_echo_node
+✅ Subscribes: /cmd_vel
+✅ Publishes: /imu/data_raw, /encoders/FL, /encoders/FR, /encoders/RL, /encoders/RR
+✅ Motors verified from ROS2 /cmd_vel with wheels off ground:
+   - forward worked at linear.x=0.45
+   - reverse produced negative encoder deltas
+   - strafe produced expected mecanum split signs
+   - rotation worked after tuning angular gain
+✅ Watchdog verified: motors auto-stop after ~0.5s without /cmd_vel
+✅ Encoder signs verified:
+   - forward: all positive
+   - reverse: all negative
+   - strafe left: FL-, FR+, RL+, RR-
+   - rotate CCW: FL-, FR+, RL-, RR+
+✅ Publish rates verified after non-blocking executor fix:
+   - /imu/data_raw ≈ 10Hz
+   - /encoders/FL ≈ 50Hz
+✅ Critical firmware fix: use rclc_executor_spin_some(&executor, 0)
+   because blocking spin_some and rclc_timer showed ~1Hz behavior on this stack.
+✅ Rotation tuning: float L = 0.45f so angular.z=1.0 rotates instead of buzzing.
+
+Current meaning:
+- ESP32 motor + encoder + IMU offload is bench-verified.
+- Next work is Pi-side odometry/EKF integration using the new /encoders/* and /imu/data_raw topics.
+- Do on-floor tests only after confirming chassis alignment and emergency stop access.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 HARDWARE
@@ -146,8 +177,10 @@ KEY FILES
  imu_node.py — legacy Pi-side MPU6050 IMU publisher
 
 ESP32 firmware status:
-- Current working IMU firmware is running from Arduino sketch form
- and is not yet committed into the repo as a tracked source file.
+- Combined low-level controller firmware is tracked in the repo:
+ firmware/esp32/echo_low_level_controller/echo_low_level_controller.ino
+- Handles /cmd_vel motor control, signed encoder tick publishing,
+ and /imu/data_raw publishing from one ESP32 micro-ROS node.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ROS2 TOPICS ACTIVE / TARGET
@@ -156,6 +189,10 @@ ROS2 TOPICS ACTIVE / TARGET
 /apriltag/instruction  — AprilTag detections (std_msgs/String)
 /imu/data_raw          — micro-ROS IMU raw data from ESP32 at ~10Hz
 /imu/data              — target filtered IMU topic after Madgwick
+/encoders/FL           — ESP32 signed encoder ticks at ~50Hz
+/encoders/FR           — ESP32 signed encoder ticks at ~50Hz
+/encoders/RL           — ESP32 signed encoder ticks at ~50Hz
+/encoders/RR           — ESP32 signed encoder ticks at ~50Hz
 /wheel_odom            — Encoder odometry (nav_msgs/Odometry)
 /odometry/filtered     — Fused EKF odometry (nav_msgs/Odometry)
 /cmd_vel               — Motor commands (geometry_msgs/Twist)
@@ -224,6 +261,18 @@ TESTED & CONFIRMED WORKING
 ✅ imu_filter_madgwick package present
 ✅ robot_localization package present
 
+✅ 2026-04-22 combined ESP32 controller bench tests:
+✅ Firmware committed and pushed to GitHub
+✅ /cmd_vel drives all 4 mecanum wheels through ESP32 + L298N
+✅ Motor watchdog auto-stops after 0.5s with no command
+✅ Forward command verified: all encoder counts increase
+✅ Reverse command verified: all encoder counts decrease
+✅ Strafe-left command verified: FL-, FR+, RL+, RR-
+✅ Rotate-CCW command verified: FL-, FR+, RL-, RR+
+✅ /imu/data_raw rate verified at ~10Hz
+✅ /encoders/FL rate verified at ~50Hz
+✅ rclc_executor_spin_some(&executor, 0) required for proper rates
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 KNOWN ISSUES / VERIFIED TRUTHS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -253,10 +302,11 @@ BUILD PHASES — STATUS
 ✅ Phase 7 — WebRTC + Dashboard + AprilTag
 ✅ Phase 8 — OpenClaw install + Telegram setup
 ✅ Phase 9 — Chassis build + full drivetrain (4 motors)
-⏳ Phase 9b — ESP32 micro-ROS migration
+✅ Phase 9b — ESP32 micro-ROS migration bench-verified
  * Serial transport verified
  * IMU bring-up verified
- * Motor/encoder offloading still pending
+ * Combined motor + encoder + IMU firmware verified
+ * On-floor odometry validation still pending
 ⏳ Phase 10 — EKF re-validation with new micro-ROS IMU path
 ✅ Phase 11 — Initial SLAM mapping verified
 ⏳ Phase 12 — Nav2 autonomous navigation
@@ -310,12 +360,13 @@ SOUL.md personality:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 NEXT TECHNICAL STEPS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Launch imu_filter_madgwick against /imu/data_raw and publish /imu/data
-2. Reconnect robot_localization EKF to the new filtered IMU topic
-3. Re-test /odometry/filtered while driving
-4. Re-run SLAM with the new IMU path and compare map quality
-5. Commit the working ESP32 IMU firmware into the repo
-6. Decide whether to keep this 6-axis IMU or replace it with a
+1. Update or replace encoder_odometry so it consumes ESP32 /encoders/* topics
+2. Launch imu_filter_madgwick against /imu/data_raw and publish /imu/data
+3. Reconnect robot_localization EKF to the new encoder + filtered IMU path
+4. Re-test /odometry/filtered with wheels off ground, then on floor
+5. Run 1m straight, strafe, and 360° rotation calibration tests
+6. Re-run SLAM with the new low-level controller and compare map quality
+7. Decide whether to keep this 6-axis IMU or replace it with a
  genuine 9-axis module for magnetometer-assisted heading
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
