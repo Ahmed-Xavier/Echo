@@ -31,7 +31,12 @@ cleanup() {
   pkill -f "ydlidar_ros2_driver_node" 2>/dev/null || true
   pkill -f "ydlidar_launch.py" 2>/dev/null || true
   pkill -f "static_tf_pub_laser" 2>/dev/null || true
-  pkill -f "slam_toolbox" 2>/dev/null || true
+  pkill -f "static_tf_imu" 2>/dev/null || true
+pkill -f "launch_ros" 2>/dev/null || true
+pkill -f "sync_slam_toolbox_node" 2>/dev/null || true
+pkill -f "static_transform_publisher" 2>/dev/null || true
+rm -f /dev/shm/fastrtps_* /dev/shm/fastdds_* 2>/dev/null || true
+pkill -f "slam_toolbox" 2>/dev/null || true
   pkill -f "rosboard_node" 2>/dev/null || true
   pkill -f "joy_node" 2>/dev/null || true
   pkill -f "teleop_node" 2>/dev/null || true
@@ -136,8 +141,11 @@ wait_for_topic "/wheel_odom" 10 || {
   exit 1
 }
 
+start_bg "static_tf_imu" \
+  "source '$ROS_SETUP'; source '$ROS_WS/install/setup.bash'; ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 base_link imu_link"
+
 start_bg "ekf" \
-  "source '$ROS_SETUP'; source '$ROS_WS/install/setup.bash'; ros2 run robot_localization ekf_node --ros-args --params-file '$ROS_WS/src/robot_controller/ekf.yaml' -r /imu/data:=/imu/data_raw"
+  "source '$ROS_SETUP'; source '$ROS_WS/install/setup.bash'; ros2 run robot_localization ekf_node --ros-args --params-file '$ROS_WS/src/robot_controller/ekf.yaml'"
 wait_for_topic "/odometry/filtered" 10 || {
   echo "ERROR: /odometry/filtered did not appear. Check $LOG_DIR/ekf.log"
   exit 1
