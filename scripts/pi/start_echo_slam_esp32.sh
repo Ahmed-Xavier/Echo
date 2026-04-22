@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -u
+set -o pipefail
 
 ROS_DISTRO_NAME="${ROS_DISTRO_NAME:-jazzy}"
 ROS_SETUP="/opt/ros/${ROS_DISTRO_NAME}/setup.bash"
