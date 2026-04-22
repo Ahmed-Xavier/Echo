@@ -6,8 +6,8 @@ ROS_SETUP="/opt/ros/${ROS_DISTRO_NAME}/setup.bash"
 ROS_WS="/home/ahmed/ros2_ws"
 MICRO_ROS_WS="/home/ahmed/microros_ws"
 
-ESP32_PORT="${ESP32_PORT:-/dev/ttyUSB0}"
-LIDAR_PORT="${LIDAR_PORT:-/dev/ttyUSB1}"
+ESP32_PORT="${ESP32_PORT:-/dev/ttyUSB1}"
+LIDAR_PORT="${LIDAR_PORT:-/dev/ttyUSB0}"
 ESP32_BAUD="${ESP32_BAUD:-115200}"
 
 LOG_DIR="/tmp/echo_slam_esp32_logs"
@@ -183,7 +183,7 @@ start_bg "joy_node" \
   "source '$ROS_SETUP'; source '$ROS_WS/install/setup.bash'; ros2 run joy joy_node"
 
 start_bg "teleop_twist_joy" \
-  "source '$ROS_SETUP'; source '$ROS_WS/install/setup.bash'; ros2 run teleop_twist_joy teleop_node --ros-args -p enable_button:=6 -p axis_linear.x:=1 -p axis_linear.y:=0 -p axis_angular.yaw:=3 -p scale_linear.x:=0.3 -p scale_linear.y:=0.3 -p scale_angular.yaw:=0.3"
+  "source '$ROS_SETUP'; source '$ROS_WS/install/setup.bash'; ros2 run teleop_twist_joy teleop_node --ros-args -p enable_button:=6 -p axis_linear.x:=1 -p axis_linear.y:=0 -p axis_angular.yaw:=3 -p scale_linear.x:=0.55 -p scale_linear.y:=0.55 -p scale_angular.yaw:=1.0"
 
 IP="$(hostname -I | awk '{print $1}')"
 

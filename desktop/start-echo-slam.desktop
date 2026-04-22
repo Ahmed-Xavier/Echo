@@ -2,7 +2,7 @@
 Type=Application
 Name=Start Echo SLAM
 Comment=Launch Echo ESP32 SLAM stack with rosboard and Xbox teleop
-Exec=gnome-terminal --title="Echo SLAM" -- bash -lc "/home/ahmed/start_echo_slam_esp32.sh; echo; read -p 'Press Enter to close...'"
+Exec=gnome-terminal --title="Echo SLAM" -- bash -lc "ESP32_PORT=/dev/ttyUSB1 LIDAR_PORT=/dev/ttyUSB0 /home/ahmed/start_echo_slam_esp32.sh; echo; read -p 'Press Enter to close...'"
 Icon=utilities-terminal
 Terminal=false
 Categories=Development;Robotics;
