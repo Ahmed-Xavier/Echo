@@ -437,3 +437,9 @@ Next steps:
 - Expand the map.
 - Tune motor deadband/PWM handling.
 - Build a cleaner web click-to-goal dashboard or Foxglove workflow.
+
+RViz laptop visualization note:
+- RViz2 was displayed successfully on the Windows laptop using VcXsrv over Tailscale.
+- Windows command: `& "C:\Program Files\VcXsrv\vcxsrv.exe" :0 -multiwindow -clipboard -nowgl -ac`
+- Pi command: `export DISPLAY=100.106.212.8:0.0`
+- RViz command: `rviz2 -d /opt/ros/jazzy/share/nav2_bringup/rviz/nav2_default_view.rviz`
