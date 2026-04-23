@@ -59,6 +59,12 @@ const float GYRO_Z_OFFSET = -125.16f;
 // Safety
 #define CMD_TIMEOUT_MS 500
 
+// Per-wheel trim to compensate for small hardware asymmetries.
+const float FL_TRIM = 1.50f;
+const float FR_TRIM = 1.00f;
+const float RL_TRIM = 1.00f;
+const float RR_TRIM = 1.00f;
+
 // micro-ROS
 rcl_subscription_t sub_cmdvel;
 
@@ -221,6 +227,16 @@ void cmd_vel_callback(const void *msgin) {
   fr /= max_val;
   rl /= max_val;
   rr /= max_val;
+
+  fl *= FL_TRIM;
+  fr *= FR_TRIM;
+  rl *= RL_TRIM;
+  rr *= RR_TRIM;
+
+  fl = constrain(fl, -1.0f, 1.0f);
+  fr = constrain(fr, -1.0f, 1.0f);
+  rl = constrain(rl, -1.0f, 1.0f);
+  rr = constrain(rr, -1.0f, 1.0f);
 
   bool command_active =
     fabsf(fl) > 0.01f ||
@@ -431,7 +447,7 @@ void loop() {
     stopAll();
   }
 
- RCSOFTCHECK(rclc_executor_spin_some(&executor, 0));
+  RCSOFTCHECK(rclc_executor_spin_some(&executor, 0));
 
   now = millis();
 
