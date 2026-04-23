@@ -412,3 +412,28 @@ Camera (OV5647): BROKEN — libcamera package mismatch
  DO NOT touch python3-opencv or libcamera symlinks
  Fix when ready — not urgent for robot build
 ═══════════════════════════════════════════════════════════════
+
+## 2026-04-23 - Nav2, RViz, and First Autonomous Drive
+
+Major progress:
+- Built and saved a small SLAM map locally at `/home/ahmed/maps/echo_test_map.yaml`.
+- Installed Nav2 on ROS 2 Jazzy and fixed the Fast-CDR/FastDDS mismatch.
+- Verified AMCL localization with `map -> base_link`.
+- Switched Nav2 from MPPI to Regulated Pure Pursuit because MPPI caused low-speed motor beeping.
+- Tuned navigation around Echo's motor deadband.
+- Sent a Nav2 CLI goal and Echo drove successfully with `Goal finished with status: SUCCEEDED`.
+- Opened RViz2 with Nav2 tools on the Windows laptop using VcXsrv/X11 forwarding.
+- Confirmed RViz Nav2 goals reach Echo.
+- Added `/home/ahmed/start_echo_navigation.sh` as the clean Nav2 launcher.
+
+Known limitations:
+- The current map is small and remains local to the robot.
+- Echo can still beep on turn-heavy or low-speed corrections.
+- Best goals are currently small forward goals in known free space.
+- Cable management still matters during tests.
+
+Next steps:
+- Improve odometry calibration.
+- Expand the map.
+- Tune motor deadband/PWM handling.
+- Build a cleaner web click-to-goal dashboard or Foxglove workflow.
