@@ -306,22 +306,43 @@ BUILD PHASES — STATUS
  * Serial transport verified
  * IMU bring-up verified
  * Combined motor + encoder + IMU firmware verified
- * On-floor odometry validation still pending
-⏳ Phase 10 — EKF re-validation with new micro-ROS IMU path
+ * On-floor odometry validation still needs calibration pass
+✅ Phase 10 — EKF re-validation
+ * Final decision: wheel-only EKF for SLAM/Nav2 stability
+ * Raw MPU yaw-rate removed from EKF because it caused false rotation
+ * /wheel_odom verified around 50 Hz
+ * /odometry/filtered verified around 30 Hz
 ✅ Phase 11 — Initial SLAM mapping verified
-⏳ Phase 12 — Nav2 autonomous navigation
-⏳ Phase 13 — AMCL localization
+✅ Phase 12 — Nav2 autonomous navigation
+ * Nav2 installed and running on ROS 2 Jazzy
+ * CLI NavigateToPose goal completed successfully
+ * Regulated Pure Pursuit selected over MPPI
+ * Motor deadband tuning added
+ * Clean launcher: /home/ahmed/start_echo_navigation.sh
+✅ Phase 13 — AMCL localization
+ * Saved map loaded through Nav2 map_server
+ * AMCL active
+ * map -> base_link TF verified
+ * Initial pose flow working
+ * RViz2 Nav2 goal workflow confirmed, but needs careful goal placement
 ✅ AprilTag mission executor node
 ⏳ Phase 15 — explore_lite (autonomous map exploration)
+ * Pending larger/stabler map and better odometry/motor tuning
 ⏳ Phase 16 — OpenClaw AI brain integration
  * SOUL.md: Echo personality
  * Dynamic location naming via camera scan
  * locations.json → goto_<name> commands
  * Telegram as observation interface
+ * Nav2 command loop not fully connected to AI brain yet
 ⏳ Phase 17 — Dashboard v2 (Firebase Auth + live map + AI log)
+ * ROSboard works
+ * RViz2 works on Windows laptop via VcXsrv/X11 over Tailscale
+ * Custom Firebase/live-map dashboard still pending
 ⏳ Phase 18 — Echo Face HUD
 ✅ Phase 19 — Background Voice Listener
 ⏳ Phase 20 — Conversational Audio Loop
+ * Background listener exists
+ * Full natural wake/listen/respond loop still pending
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 OPENCLAW ARCHITECTURE (planned)
