@@ -2,12 +2,12 @@
 set -euo pipefail
 
 ROS_SETUP="${ROS_SETUP:-/opt/ros/jazzy/setup.bash}"
-ROS_WS="${ROS_WS:-$HOME/ros2_ws}"
-MAP_FILE="${MAP_FILE:-$HOME/maps/echo_test_map.yaml}"
-PARAMS_FILE="${PARAMS_FILE:-$ROS_WS/src/robot_controller/nav2_params.yaml}"
+WORKSPACE_DIR="${WORKSPACE_DIR:-$HOME/.openclaw/workspace/github_echo/echo_workspace}"
+MAP_FILE="${MAP_FILE:-$WORKSPACE_DIR/src/echo_navigation/maps/echo_test_map.yaml}"
+PARAMS_FILE="${PARAMS_FILE:-$WORKSPACE_DIR/src/echo_navigation/config/nav2_params.yaml}"
 
 source "$ROS_SETUP"
-source "$ROS_WS/install/setup.bash"
+source "$WORKSPACE_DIR/install/setup.bash"
 
 if [[ ! -f "$MAP_FILE" ]]; then
   echo "ERROR: map file not found: $MAP_FILE"
@@ -19,12 +19,14 @@ if [[ ! -f "$PARAMS_FILE" ]]; then
   exit 1
 fi
 
-echo "Starting Echo Nav2"
-echo "  Map:    $MAP_FILE"
-echo "  Params: $PARAMS_FILE"
+echo "Starting Echo Nav2..."
+echo "Workspace: $WORKSPACE_DIR"
+echo "Map: $MAP_FILE"
+echo "Params: $PARAMS_FILE"
 
 ros2 launch nav2_bringup bringup_launch.py \
   map:="$MAP_FILE" \
   params_file:="$PARAMS_FILE" \
   use_sim_time:=False \
   autostart:=True
+

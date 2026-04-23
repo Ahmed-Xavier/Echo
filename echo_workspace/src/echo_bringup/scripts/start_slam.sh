@@ -1,25 +1,12 @@
-#!/bin/bash
-source ~/ros2_ws/install/setup.bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-ros2 launch robot_controller slam_launch.py &
+ROS_SETUP="${ROS_SETUP:-/opt/ros/jazzy/setup.bash}"
+ROS_WS="${ROS_WS:-$HOME/ros2_ws}"
+ECHO_WS="${ECHO_WS:-$HOME/.openclaw/workspace/github_echo/echo_workspace}"
 
-echo "Waiting for SLAM node to appear..."
-until ros2 node list 2>/dev/null | grep -q slam_toolbox; do
-    sleep 1
-done
-echo "SLAM node found! Waiting for it to be ready..."
-sleep 3
+source "$ROS_SETUP"
+source "$ROS_WS/install/setup.bash"
+source "$ECHO_WS/install/setup.bash"
 
-echo "Configuring SLAM..."
-until ros2 lifecycle set /slam_toolbox configure 2>&1 | grep -q "Transitioning successful"; do
-    echo "Retrying configure..."
-    sleep 2
-done
-
-echo "Activating SLAM..."
-until ros2 lifecycle set /slam_toolbox activate 2>&1 | grep -q "Transitioning successful"; do
-    echo "Retrying activate..."
-    sleep 2
-done
-
-echo "SLAM active!"
+ros2 launch echo_bringup slam_launch.py

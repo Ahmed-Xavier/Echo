@@ -3,8 +3,9 @@ set -o pipefail
 
 ROS_DISTRO_NAME="${ROS_DISTRO_NAME:-jazzy}"
 ROS_SETUP="/opt/ros/${ROS_DISTRO_NAME}/setup.bash"
-ROS_WS="/home/ahmed/ros2_ws"
-MICRO_ROS_WS="/home/ahmed/microros_ws"
+ROS_WS="${ROS_WS:-/home/ahmed/ros2_ws}"
+ECHO_WS="${ECHO_WS:-$HOME/.openclaw/workspace/github_echo/echo_workspace}"
+MICRO_ROS_WS="${MICRO_ROS_WS:-/home/ahmed/microros_ws}"
 
 ESP32_PORT="${ESP32_PORT:-/dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0}"
 LIDAR_PORT="${LIDAR_PORT:-/dev/serial/by-path/platform-xhci-hcd.0-usb-0:1:1.0-port0}"
@@ -17,6 +18,7 @@ PIDS=()
 
 source "$ROS_SETUP"
 source "$ROS_WS/install/setup.bash"
+source "$ECHO_WS/install/setup.bash"
 
 cleanup() {
   echo
@@ -145,7 +147,7 @@ start_bg "static_tf_imu" \
   "source '$ROS_SETUP'; source '$ROS_WS/install/setup.bash'; ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 base_link imu_link"
 
 start_bg "ekf" \
-  "source '$ROS_SETUP'; source '$ROS_WS/install/setup.bash'; ros2 run robot_localization ekf_node --ros-args --params-file '$ROS_WS/src/robot_controller/ekf.yaml'"
+    "source '$ROS_SETUP'; source '$ROS_WS/install/setup.bash'; source '$ECHO_WS/install/setup.bash'; ros2 launch echo_bringup ekf_launch.py"
 wait_for_topic "/odometry/filtered" 10 || {
   echo "ERROR: /odometry/filtered did not appear. Check $LOG_DIR/ekf.log"
   exit 1
@@ -163,7 +165,7 @@ wait_for_topic "/scan" 20 || {
 }
 
 start_bg "slam_toolbox" \
-  "source '$ROS_SETUP'; source '$ROS_WS/install/setup.bash'; ros2 launch robot_controller slam_launch.py"
+    "source '$ROS_SETUP'; source '$ROS_WS/install/setup.bash'; source '$ECHO_WS/install/setup.bash'; ros2 launch echo_bringup slam_launch.py"
 
 echo "Waiting for SLAM toolbox..."
 wait_for_node "/slam_toolbox" 20 || {

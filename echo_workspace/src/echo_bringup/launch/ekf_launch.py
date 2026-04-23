@@ -1,12 +1,16 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from ament_index_python.packages import get_package_share_directory
 import os
+
 
 def generate_launch_description():
     ekf_config = os.path.join(
-        os.path.expanduser("~"),
-        "ros2_ws/src/robot_controller/ekf.yaml"
+        get_package_share_directory("echo_navigation"),
+        "config",
+        "ekf.yaml"
     )
+
     return LaunchDescription([
         Node(
             package="robot_localization",
@@ -16,3 +20,4 @@ def generate_launch_description():
             parameters=[ekf_config]
         )
     ])
+

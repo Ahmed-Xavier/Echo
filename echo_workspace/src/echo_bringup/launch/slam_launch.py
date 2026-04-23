@@ -1,12 +1,16 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from ament_index_python.packages import get_package_share_directory
 import os
+
 
 def generate_launch_description():
     slam_config = os.path.join(
-        os.path.expanduser("~"),
-        "ros2_ws/src/robot_controller/slam_config.yaml"
+        get_package_share_directory("echo_navigation"),
+        "config",
+        "slam_config.yaml"
     )
+
     return LaunchDescription([
         Node(
             package="slam_toolbox",
@@ -17,3 +21,4 @@ def generate_launch_description():
             remappings=[("/odom", "/odometry/filtered")]
         )
     ])
+
