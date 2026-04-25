@@ -9,6 +9,9 @@
   <xacro:include filename="$(find echo_description)/urdf/sensors/depth_sensor.urdf.xacro" />
   <xacro:include filename="$(find echo_description)/urdf/controllers/omni_drive.urdf.xacro" />
 
+  <xacro:property name="base_mesh_file" value="package://echo_description/meshes/base.dae" />
+  <xacro:property name="wheel_mesh_file" value="package://echo_description/meshes/tire.dae" />
+
   <xacro:base 
     length="${base_length}" 
     width="${base_width}" 
