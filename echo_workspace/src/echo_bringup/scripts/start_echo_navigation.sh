@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROS_SETUP="${ROS_SETUP:-/opt/ros/jazzy/setup.bash}"
 WORKSPACE_DIR="${WORKSPACE_DIR:-$HOME/.openclaw/workspace/github_echo/echo_workspace}"
-MAP_FILE="${MAP_FILE:-$WORKSPACE_DIR/src/echo_navigation/maps/echo_test_map.yaml}"
+MAP_FILE="${MAP_FILE:-$WORKSPACE_DIR/src/echo_navigation/maps/echo_nav_map.yaml}"
 NAV2_PARAMS="${NAV2_PARAMS:-$WORKSPACE_DIR/src/echo_navigation/config/nav2_params.yaml}"
 
 source "$ROS_SETUP"
