@@ -24,8 +24,11 @@ class FakeCmdVelOdom(Node):
         self.x = 0.0
         self.y = 0.0
         self.yaw = 0.0
+
         self.vx = 0.0
+        self.vy = 0.0
         self.wz = 0.0
+
         self.last_cmd_time = self.get_clock().now()
         self.last_update_time = self.get_clock().now()
 
@@ -36,11 +39,14 @@ class FakeCmdVelOdom(Node):
         rate = float(self.get_parameter("publish_rate").value)
         self.timer = self.create_timer(1.0 / rate, self.update)
 
-        self.get_logger().info("Fake cmd_vel odom publishing odom -> base_footprint")
+        self.get_logger().info(
+            "Fake mecanum cmd_vel odom publishing odom -> base_footprint"
+        )
 
     def cmd_vel_callback(self, msg):
-        self.vx = msg.linear.x
-        self.wz = msg.angular.z
+        self.vx = float(msg.linear.x)
+        self.vy = float(msg.linear.y)
+        self.wz = float(msg.angular.z)
         self.last_cmd_time = self.get_clock().now()
 
     def update(self):
@@ -51,11 +57,19 @@ class FakeCmdVelOdom(Node):
         cmd_age = (now - self.last_cmd_time).nanoseconds / 1e9
         if cmd_age > self.cmd_timeout:
             self.vx = 0.0
+            self.vy = 0.0
             self.wz = 0.0
 
+        cos_yaw = math.cos(self.yaw)
+        sin_yaw = math.sin(self.yaw)
+
+        # Body-frame mecanum velocity -> odom/world-frame velocity.
+        world_vx = self.vx * cos_yaw - self.vy * sin_yaw
+        world_vy = self.vx * sin_yaw + self.vy * cos_yaw
+
+        self.x += world_vx * dt
+        self.y += world_vy * dt
         self.yaw += self.wz * dt
-        self.x += self.vx * math.cos(self.yaw) * dt
-        self.y += self.vx * math.sin(self.yaw) * dt
 
         qz = math.sin(self.yaw * 0.5)
         qw = math.cos(self.yaw * 0.5)
@@ -82,6 +96,7 @@ class FakeCmdVelOdom(Node):
         odom.pose.pose.orientation.z = qz
         odom.pose.pose.orientation.w = qw
         odom.twist.twist.linear.x = self.vx
+        odom.twist.twist.linear.y = self.vy
         odom.twist.twist.angular.z = self.wz
         self.odom_pub.publish(odom)
 
