@@ -48,8 +48,52 @@ FUTURE EXPANSION:
 
 ═══════════════════════════════════════════════════════════════
 UNIT_01 ROBOT PROJECT — PROGRESS SAVE
-Date: 2026-04-22
+Date: 2026-04-27
 ═══════════════════════════════════════════════════════════════
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LATEST UPDATE — 2026-04-27
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Clean SLAM workflow restored after removing extra Foxglove panels and fixing LiDAR orientation.
+✅ YDLIDAR scan stabilized around ~10.6 Hz after serial/driver cleanup.
+✅ LiDAR transform corrected for Echo's physical mount:
+   - base_link -> laser_frame translation x=0.0275, z=0.160
+   - 180 degree roll quaternion used by the tuned launcher
+✅ SLAM laser max range matched to the real LiDAR range at 10.0 m.
+✅ Tuned ydlidar_ros2_driver vendored into the Echo workspace and pushed to GitHub.
+✅ One-command mapping launcher added:
+   echo_workspace/src/echo_bringup/scripts/start_echo_mapping.sh
+✅ Default saved navigation map committed:
+   echo_workspace/src/echo_navigation/maps/echo_nav_map.yaml
+✅ Local_Club map saved locally:
+   /home/ahmed/maps/Local_Club.yaml
+   /home/ahmed/maps/Local_Club.pgm
+✅ Foxglove bridge workflow verified at:
+   ws://100.95.231.114:8765
+✅ Foxglove /initialpose workflow learned:
+   right-click the Publish icon, choose 2D pose estimate, then click-drag on the map.
+✅ Nav2 loaded Local_Club through map_server and AMCL localized after initial pose.
+✅ /goal_pose from Foxglove worked for a small Nav2 goal.
+✅ Navigation worked, but path tracking is not ready to judge because one motor appears broken.
+✅ /global_costmap/static_layer verified as a clean and accurate view of the saved map.
+
+Known issues found during Nav2 test:
+- One motor appears mechanically/electrically broken, so navigation behavior is not expected to be perfect yet.
+- start_echo_navigation.sh currently starts Nav2 only; it does not yet bring up LiDAR, micro-ROS, encoder odometry, EKF, and Foxglove as one stack.
+- Passing a map path as a positional argument still needs to be implemented; current workaround is MAP_FILE=/path/to/map.yaml.
+- Encoder odometry appears to start with a large accumulated odom offset after restarts.
+- Initial-pose arrow/front direction appears 90 degrees off and needs frame/model verification.
+- Duplicate/stale nodes can appear after repeated manual restarts; clean navigation bringup should kill stale processes first.
+- /route_graph warning is safe for now because no route graph file is loaded and route-graph navigation is not being used.
+
+Next work:
+1. Repair or replace the broken motor before judging Nav2 path tracking quality.
+2. Create a proper Echo navigation launch/one-command script.
+3. Start hardware/odom before Nav2 and wait for /scan, /wheel_odom, /odometry/filtered, and odom -> base_link.
+4. Make the navigation launcher accept ~/maps/Local_Club.yaml directly.
+5. Fix encoder odometry zeroing on startup.
+6. Verify base_link/front orientation before serious autonomous runs.
+
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 LATEST UPDATE — 2026-04-22
@@ -464,3 +508,28 @@ RViz laptop visualization note:
 - Windows command: `& "C:\Program Files\VcXsrv\vcxsrv.exe" :0 -multiwindow -clipboard -nowgl -ac`
 - Pi command: `export DISPLAY=100.106.212.8:0.0`
 - RViz command: `rviz2 -d /opt/ros/jazzy/share/nav2_bringup/rviz/nav2_default_view.rviz`
+
+## 2026-04-27 - Clean SLAM, Local_Club Map, and First Foxglove Nav2 Test
+
+Major progress:
+- Restored clean SLAM behavior by fixing the LiDAR orientation and removing noisy visualization/panel load.
+- Saved `Local_Club` locally at `/home/ahmed/maps/Local_Club.yaml`.
+- Verified Foxglove as the operator UI for `/map`, `/scan`, costmaps, `/initialpose`, and `/goal_pose`.
+- Learned the Foxglove publish-tool workflow: right-click the Publish icon to choose `2D pose estimate` for `/initialpose`.
+- Loaded `Local_Club` into Nav2 and confirmed `/global_costmap/static_layer` matches the saved map accurately.
+- Sent a small Nav2 goal through Foxglove using `/goal_pose` and Echo moved.
+- Navigation worked, but one motor appears broken, so path tracking quality is not ready to judge.
+
+Important discoveries:
+- `/move_base_simple/goal` is not the goal topic to use in this Foxglove/Nav2 setup; `/goal_pose` worked.
+- The route graph warning is harmless because no route graph file is loaded.
+- Nav2 goal tolerance intentionally allows Echo to stop near the target instead of exactly on the clicked pixel.
+- Current navigation startup is too manual and needs a real bringup launch.
+
+Known issues to fix next:
+- Repair or replace the broken motor before judging Nav2 path tracking quality.
+- Build a single navigation launch/script for LiDAR + micro-ROS + encoder odom + EKF + Nav2 + Foxglove.
+- Reset encoder odometry on startup so odom does not begin with huge accumulated offsets.
+- Verify whether the base frame, URDF visual, or initial-pose arrow is rotated 90 degrees relative to Echo's real front.
+- Clean up stale duplicate nodes during restarts.
+

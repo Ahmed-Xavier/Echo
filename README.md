@@ -4,20 +4,22 @@ Echo is a sarcastic, witty, and self-directed autonomous indoor navigation robot
 
 ---
 
-## Current Snapshot — 2026-04-23
+## Current Snapshot — 2026-04-27
 
-Echo now has a working ROS 2 navigation stack:
+Echo now has a much cleaner real-world mapping and early navigation workflow:
 
-*   **SLAM map created** with `slam_toolbox` and saved locally on the robot at `/home/ahmed/maps/echo_test_map.yaml`.
-*   **Wheel-only EKF path validated** for stability: `/wheel_odom` publishes around 50 Hz and `/odometry/filtered` publishes around 30 Hz.
-*   **Raw IMU yaw-rate removed from EKF** because it caused false rotation during SLAM/Nav2 testing.
-*   **Nav2 installed and running** on ROS 2 Jazzy with `map_server`, `AMCL`, planner, controller, BT navigator, and velocity smoother active.
-*   **AMCL localization verified** with `map -> base_link` TF after setting the initial pose.
-*   **First autonomous Nav2 drive succeeded** using a CLI `NavigateToPose` goal.
-*   **Regulated Pure Pursuit selected** over MPPI because it behaved better with Echo's motor deadband.
-*   **RViz2 Nav2 workflow verified** from a Windows laptop using VcXsrv/X11 over Tailscale.
+*   **One-command mapping bringup added** with `echo_workspace/src/echo_bringup/scripts/start_echo_mapping.sh`.
+*   **YDLIDAR driver vendored into the Echo workspace** so the tuned LiDAR setup is saved with the project instead of only living in `~/ros2_ws`.
+*   **LiDAR transform corrected** for Echo's physical mount; the saved tuning uses `base_link -> laser_frame` translation `x=0.0275`, `z=0.160`, with a 180 degree roll.
+*   **SLAM laser range matched to the LiDAR** at `10.0 m`, removing the old `12.0 m` mismatch warning.
+*   **Clean SLAM map saved and committed** as `echo_workspace/src/echo_navigation/maps/echo_nav_map.yaml`.
+*   **Second room map saved locally** as `/home/ahmed/maps/Local_Club.yaml` and `/home/ahmed/maps/Local_Club.pgm`.
+*   **Foxglove workflow verified** over `ws://100.95.231.114:8765` for mapping, `/initialpose`, map/costmap viewing, and Nav2 goal testing.
+*   **Nav2 successfully loaded the Local_Club map**, AMCL localized after publishing `/initialpose`, and a small Foxglove `/goal_pose` navigation test worked.
+*   **Global static costmap verified**: `/global_costmap/static_layer` gives a clean, accurate view of the saved map used by Nav2.
 
-Current practical limitation: Echo can still beep or hesitate when Nav2 sends commands below the drivetrain's real motor deadband, especially for turn-heavy or tiny correction goals. Best testing is currently small forward goals in known free map space.
+Current practical limitations:
+Navigation works, but one motor appears mechanically/electrically broken, so path tracking cannot be judged fairly yet. Echo still needs a clean one-command navigation launch that starts LiDAR, micro-ROS, encoder odometry, EKF, Nav2, and Foxglove in the right order. Encoder odometry also appears to retain a large accumulated odom offset after restarts, and the robot/front orientation used by initial-pose arrows needs a final frame/model check.
 
 ---
 
@@ -35,7 +37,7 @@ Current practical limitation: Echo can still beep or hesitate when Nav2 sends co
 
 ### Sensors
 *   **Vision**: HIKVISION 4K USB Camera streaming at 720p/1080p via WebRTC.
-*   **LiDAR**: YDLIDAR X4 Pro, 360-degree laser scanner.
+*   **LiDAR**: YDLIDAR 360-degree scanner, reported by the driver as S2PRO during tuning.
 *   **IMU**: Module sold as **MPU9250**, but bench verification on 2026-04-20 showed `WHO_AM_I = 0x70` at I2C address `0x68`, matching an **MPU6500-class 6-axis device** rather than a true 9-axis MPU9250.
 *   **IMU wiring**: `SDA=GPIO21`, `SCL=GPIO22` on the ESP32.
 *   **Magnetometer note**: No AK8963 magnetometer detected at `0x0C`.
@@ -118,11 +120,13 @@ Key decisions from testing:
 
 ### Nav2 Files
 
-*   **Repo params**: `ros2_ws/src/robot_controller/nav2_params.yaml`
-*   **Live params on Pi**: `/home/ahmed/ros2_ws/src/robot_controller/nav2_params.yaml`
-*   **Repo launcher**: `scripts/pi/start_echo_navigation.sh`
-*   **Live launcher on Pi**: `/home/ahmed/start_echo_navigation.sh`
-*   **Default map path**: `/home/ahmed/maps/echo_test_map.yaml`
+*   **Echo workspace**: `~/.openclaw/workspace/github_echo/echo_workspace`
+*   **Mapping launcher**: `echo_workspace/src/echo_bringup/scripts/start_echo_mapping.sh`
+*   **Navigation launcher scripts**: `echo_workspace/src/echo_bringup/scripts/start_echo_navigation.sh` and `start_echo_nav2.sh`
+*   **Nav2 params**: `echo_workspace/src/echo_navigation/config/nav2_params.yaml`
+*   **Committed default map**: `echo_workspace/src/echo_navigation/maps/echo_nav_map.yaml`
+*   **Local test map**: `/home/ahmed/maps/Local_Club.yaml`
+*   **Foxglove bridge**: `ws://100.95.231.114:8765`
 
 ---
 
@@ -175,12 +179,13 @@ Security note: `-ac` disables X access control, so use it only on the private Ta
 
 ## 🚀 What's Next?
 
-1.  **Run careful Nav2 sessions** with `/home/ahmed/start_echo_navigation.sh` after the base odom/LiDAR stack is running.
-2.  **Calibrate odometry** with short straight and rotation tests, then adjust wheel geometry/constants.
-3.  **Expand the map** in a controlled area with cable management solved.
-4.  **Tune drivetrain deadband/PWM mapping** so Nav2 can command smoother low-speed corrections without beeping.
-5.  **Connect Nav2 goals to the higher-level AI brain** through a safe skill/API layer.
-6.  **Build a browser click-to-goal dashboard** or evaluate Foxglove as a cleaner operator UI.
+1.  **Repair or replace the broken motor** before judging Nav2 path tracking quality.
+2.  **Build a proper one-command navigation launch** that starts hardware, odom, EKF, Nav2, and Foxglove in the correct order.
+3.  **Fix encoder odometry startup zeroing** so `odom -> base_link` starts near `0,0` instead of inheriting old accumulated counts.
+4.  **Verify robot frame orientation** so Foxglove `/initialpose` arrows represent Echo's true forward direction.
+5.  **Use `Local_Club.yaml` for focused Nav2 tuning** with small goals, safe speeds, and close supervision.
+6.  **Tune Nav2 goal tolerances and drivetrain deadband** after the hardware/frame/odom issues are clean.
+7.  **Connect Nav2 goals to the higher-level AI brain** through a safe skill/API layer.
 
 ---
 
