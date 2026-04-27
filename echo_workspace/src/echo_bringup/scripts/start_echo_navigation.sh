@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -eo pipefail
 
 ROS_SETUP="${ROS_SETUP:-/opt/ros/jazzy/setup.bash}"
 WORKSPACE_DIR="${WORKSPACE_DIR:-$HOME/.openclaw/workspace/github_echo/echo_workspace}"
