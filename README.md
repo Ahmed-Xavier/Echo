@@ -177,6 +177,16 @@ Security note: `-ac` disables X access control, so use it only on the private Ta
 
 ---
 
+## Foxglove From Browser
+
+Foxglove is now the preferred lightweight UI for mapping and quick Nav2 testing.
+
+Connect from the browser to:
+
+```text
+ws://100.95.231.114:8765
+
+
 ## 🚀 What's Next?
 
 1.  **Repair or replace the broken motor** before judging Nav2 path tracking quality.
