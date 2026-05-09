@@ -233,13 +233,8 @@ ws://100.95.231.114:8765
 
 ## 🚀 What's Next?
 
-1.  **Repair or replace the broken motor** before judging Nav2 path tracking quality.
-2.  **Build a proper one-command navigation launch** that starts hardware, odom, EKF, Nav2, and Foxglove in the correct order.
-3.  **Fix encoder odometry startup zeroing** so `odom -> base_link` starts near `0,0` instead of inheriting old accumulated counts.
-4.  **Verify robot frame orientation** so Foxglove `/initialpose` arrows represent Echo's true forward direction.
-5.  **Use `Local_Club.yaml` for focused Nav2 tuning** with small goals, safe speeds, and close supervision.
-6.  **Tune Nav2 goal tolerances and drivetrain deadband** after the hardware/frame/odom issues are clean.
-7.  **Connect Nav2 goals to the higher-level AI brain** through a safe skill/API layer.
+1.  **Verify robot frame orientation** so Foxglove `/initialpose` arrows represent Echo's true forward direction.
+2.  **Connect Nav2 goals to the higher-level AI brain** through a safe skill/API layer.
 
 ---
 
