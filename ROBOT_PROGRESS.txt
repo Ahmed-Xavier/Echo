@@ -383,13 +383,17 @@ BUILD PHASES — STATUS
  * Telegram as observation interface (Echo responds natively)
  * Action layer prepped for dynamic location naming via camera scan
  * Nav2 command loop not fully connected to AI brain yet
-⏳ Phase 17 — Autonomous Map Exploration (`explore_lite`)
- * Pending larger/stabler map and better odometry/motor tuning
+✅ Phase 17 — Autonomous Map Exploration & Waypointing
+ * Mapped Salle_Hall and Local_Club environments
+ * Implemented dynamic `locations.json` mapping
+ * Integrated AprilTag triggers directly to Nav2 Actions (Tag 1 -> go_to_goal_A)
+ * 3D RViz markers implemented for tags
 ⏳ Phase 18 — Dashboard v2 Cloud Link
  * Local dashboard works securely
  * Remote internet access via TURN server/Firebase pending
 ⏳ Phase 19 — Conversational Audio Loop
- * Background listener exists; full wake/listen/respond loop is still pending
+ * Background listener exists; full dynamic VAD voice loop implemented and verified
+ * Integration with ElevenLabs (George voice) for high-quality responses
  * Custom Firebase/live-map dashboard still pending
 ⏳ Phase 18 — Echo Face HUD
 ✅ Phase 19 — Background Voice Listener

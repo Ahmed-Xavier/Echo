@@ -189,12 +189,13 @@ Key decisions from testing:
 *   **Phase 13 (AMCL)**: Saved map loaded through Nav2, AMCL active, and `map -> base_link` TF verified.
 *   **Phase 14 (Waypoint Navigation)**: Successfully mapped `Salle_Hall` and `Local_Club`. AprilTag detection routes directly to Nav2 destinations via dynamic `locations.json` mapping.
 *   **Phase 15 (Orchestration & Dashboard)**: Admin dashboard added with Foxglove integration. Features layered runtime controls (`robot_body`, `localization`, `nav2`) executed safely via a Python `launch_server`. Protected by a custom `login.html` layer enforcing role-based access.
+*   **Phase 19 (Voice Interaction)**: Integrated dynamic Voice Activity Detection (VAD) for fluid conversations. High-quality speech synthesis via ElevenLabs API (George voice).
 *   **Hardware Stabilization**: Motor and encoder issues resolved. ESP32 Low-Level Controller (micro-ROS) is fully tuned and driving smoothly.
 *   **System Services**: Core components (`echo-dashboard`, `echo-launch-server`, `echo-rosbridge`) configured as reliable `systemd` user services starting automatically on boot.
 
 ### **⏳ Still In Progress**
-*   **OpenClaw AI Brain Integration**: Tie the established Nav2 goals to the high-level OpenClaw Telegram AI so Echo can execute complex multi-step reasoning goals.
-*   **Conversational Audio Loop**: Full wake/listen/respond audio processing loop.
+*   **OpenClaw AI Brain Integration**: Tie the established Nav2 goals to the high-level OpenClaw Telegram AI so Echo can execute complex multi-step reasoning goals autonomously.
+*   **Cloud Orchestration**: Transition from local dashboard to Firebase/TURN server cloud link for remote global control.
 
 ---
 
