@@ -1,0 +1,107 @@
+[INFO] [1778344120.997367918] [openclaw_chat_bridge]: OpenClaw chat bridge online: /openclaw/chat/request -> /openclaw/chat/response
+[INFO] [1778344209.873381713] [openclaw_chat_bridge]: Dashboard chat request for Echo: hey
+[INFO] [1778346144.263020475] [openclaw_chat_bridge]: Dashboard chat request for Echo: how r u doing?
+[INFO] [1778346203.348398823] [openclaw_chat_bridge]: Dashboard chat request for Echo: we talking, can u tell me what topics r active now? what's plugged in the pi now?
+[INFO] [1778346570.560049436] [openclaw_chat_bridge]: OpenClaw chat bridge online: /openclaw/chat/request -> /openclaw/chat/response
+[INFO] [1778348831.891786399] [openclaw_chat_bridge]: OpenClaw chat bridge online: /openclaw/chat/request -> /openclaw/chat/response
+Traceback (most recent call last):
+  File "/home/ahmed/echo_runtime/openclaw_chat/openclaw_chat_bridge.py", line 69, in main
+    rclpy.spin(node)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/__init__.py", line 247, in spin
+    executor.spin_once()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 923, in spin_once
+    self._spin_once_impl(timeout_sec)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 904, in _spin_once_impl
+    handler, entity, node = self.wait_for_ready_callbacks(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 874, in wait_for_ready_callbacks
+    return next(self._cb_iter)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 782, in _wait_for_ready_callbacks
+    raise ExternalShutdownException()
+rclpy.executors.ExternalShutdownException
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ahmed/echo_runtime/openclaw_chat/openclaw_chat_bridge.py", line 76, in <module>
+    main()
+  File "/home/ahmed/echo_runtime/openclaw_chat/openclaw_chat_bridge.py", line 72, in main
+    rclpy.shutdown()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/__init__.py", line 134, in shutdown
+    _shutdown(context=context)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/utilities.py", line 82, in shutdown
+    context.shutdown()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/context.py", line 129, in shutdown
+    self.__context.shutdown()
+rclpy._rclpy_pybind11.RCLError: failed to shutdown: rcl_shutdown already called on the given context, at ./src/rcl/init.c:333
+[INFO] [1778349155.697322825] [openclaw_chat_bridge]: OpenClaw chat bridge online: /openclaw/chat/request -> /openclaw/chat/response
+[INFO] [1778354497.719551158] [openclaw_chat_bridge]: OpenClaw chat bridge online: /openclaw/chat/request -> /openclaw/chat/response
+[INFO] [1778355781.883276066] [openclaw_chat_bridge]: OpenClaw chat bridge online: /openclaw/chat/request -> /openclaw/chat/response
+Traceback (most recent call last):
+  File "/home/ahmed/echo_runtime/openclaw_chat/openclaw_chat_bridge.py", line 69, in main
+    rclpy.spin(node)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/__init__.py", line 247, in spin
+    executor.spin_once()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 923, in spin_once
+    self._spin_once_impl(timeout_sec)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 904, in _spin_once_impl
+    handler, entity, node = self.wait_for_ready_callbacks(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 874, in wait_for_ready_callbacks
+    return next(self._cb_iter)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 782, in _wait_for_ready_callbacks
+    raise ExternalShutdownException()
+rclpy.executors.ExternalShutdownException
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ahmed/echo_runtime/openclaw_chat/openclaw_chat_bridge.py", line 76, in <module>
+    main()
+  File "/home/ahmed/echo_runtime/openclaw_chat/openclaw_chat_bridge.py", line 72, in main
+    rclpy.shutdown()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/__init__.py", line 134, in shutdown
+    _shutdown(context=context)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/utilities.py", line 82, in shutdown
+    context.shutdown()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/context.py", line 129, in shutdown
+    self.__context.shutdown()
+rclpy._rclpy_pybind11.RCLError: failed to shutdown: rcl_shutdown already called on the given context, at ./src/rcl/init.c:333
+[INFO] [1778356009.745528226] [openclaw_chat_bridge]: OpenClaw chat bridge online: /openclaw/chat/request -> /openclaw/chat/response
+[INFO] [1778356968.850948065] [openclaw_chat_bridge]: OpenClaw chat bridge online: /openclaw/chat/request -> /openclaw/chat/response
+[INFO] [1778357459.055266362] [openclaw_chat_bridge]: OpenClaw chat bridge online: /openclaw/chat/request -> /openclaw/chat/response
+Traceback (most recent call last):
+  File "/home/ahmed/echo_runtime/openclaw_chat/openclaw_chat_bridge.py", line 69, in main
+    rclpy.spin(node)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/__init__.py", line 247, in spin
+    executor.spin_once()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 923, in spin_once
+    self._spin_once_impl(timeout_sec)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 904, in _spin_once_impl
+    handler, entity, node = self.wait_for_ready_callbacks(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 874, in wait_for_ready_callbacks
+    return next(self._cb_iter)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 782, in _wait_for_ready_callbacks
+    raise ExternalShutdownException()
+rclpy.executors.ExternalShutdownException
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ahmed/echo_runtime/openclaw_chat/openclaw_chat_bridge.py", line 76, in <module>
+    main()
+  File "/home/ahmed/echo_runtime/openclaw_chat/openclaw_chat_bridge.py", line 72, in main
+    rclpy.shutdown()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/__init__.py", line 134, in shutdown
+    _shutdown(context=context)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/utilities.py", line 82, in shutdown
+    context.shutdown()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/context.py", line 129, in shutdown
+    self.__context.shutdown()
+rclpy._rclpy_pybind11.RCLError: failed to shutdown: rcl_shutdown already called on the given context, at ./src/rcl/init.c:333
+[INFO] [1778359713.025348103] [openclaw_chat_bridge]: OpenClaw chat bridge online: /openclaw/chat/request -> /openclaw/chat/response
+[INFO] [1778361037.820193697] [openclaw_chat_bridge]: OpenClaw chat bridge online: /openclaw/chat/request -> /openclaw/chat/response

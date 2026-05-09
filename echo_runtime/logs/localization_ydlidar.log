@@ -1,0 +1,21 @@
+[INFO] [launch]: All log files can be found below /home/ahmed/.ros/log/2026-05-04-19-02-44-696869-ahmed-desktop-40278
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [ydlidar_ros2_driver_node-1]: process started with pid [40336]
+[INFO] [static_transform_publisher-2]: process started with pid [40337]
+[static_transform_publisher-2] [WARN] [1777917765.573783691] []: Old-style arguments are deprecated; see --help for new-style arguments
+[ydlidar_ros2_driver_node-1] [0m[INFO] [1777917765.649364042] [ydlidar_ros2_driver_node]: [YDLIDAR INFO] Current ROS Driver Version: 1.0.1
+[ydlidar_ros2_driver_node-1] [0m
+[static_transform_publisher-2] [INFO] [1777917765.649067151] [static_tf_pub_laser]: Spinning until stopped - publishing transform
+[static_transform_publisher-2] translation: ('0.027500', '0.000000', '0.160000')
+[static_transform_publisher-2] rotation: ('1.000000', '0.000000', '0.000000', '0.000000')
+[static_transform_publisher-2] from 'base_link' to 'laser_frame'
+[ydlidar_ros2_driver_node-1] [2026-05-04 19:02:45][info] SDK initializing
+[ydlidar_ros2_driver_node-1] [2026-05-04 19:02:45][info] SDK has been initialized
+[ydlidar_ros2_driver_node-1] [2026-05-04 19:02:45][info] SDK Version: 1.2.19
+[ydlidar_ros2_driver_node-1] [0;31m[2026-05-04 19:02:45][error] Error, cannot bind to the specified [serial port:/dev/ttyUSB0] and [baudrate:128000]
+[ydlidar_ros2_driver_node-1] [0m[0;31m[2026-05-04 19:02:45][error] Error initializing YDLIDAR check Comms.
+[ydlidar_ros2_driver_node-1] [31m[ERROR] [1777917765.651941084] [ydlidar_ros2_driver_node]: Unknown error
+[ydlidar_ros2_driver_node-1] [0m
+[ydlidar_ros2_driver_node-1] [0m[INFO] [1777917765.683625025] [ydlidar_ros2_driver_node]: [YDLIDAR INFO] Now YDLIDAR is stopping .......[0m
+[INFO] [ydlidar_ros2_driver_node-1]: process has finished cleanly [pid 40336]
+[ydlidar_ros2_driver_node-1] [0m

@@ -1,0 +1,11 @@
+[INFO] [launch]: All log files can be found below /home/ahmed/.ros/log/2026-05-07-19-31-12-264511-ahmed-desktop-10546
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [sync_slam_toolbox_node-1]: process started with pid [10554]
+[sync_slam_toolbox_node-1] [37;1m2026-05-07 19:31:12.506 [31;1m[[37;1mRTPS_TRANSPORT_SHM[31;1m Error] [37mFailed init_port fastrtps_port7002: open_and_lock_file failed[34;1m -> Function [36mopen_port_internal[m
+[sync_slam_toolbox_node-1] [INFO] [1778178672.581725386] [slam_toolbox]: Node using stack size 40000000
+[sync_slam_toolbox_node-1] [INFO] [1778178680.159597289] [slam_toolbox]: Configuring
+[sync_slam_toolbox_node-1] [INFO] [1778178680.219671497] [slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+[sync_slam_toolbox_node-1] [INFO] [1778178680.224843546] [slam_toolbox]: CeresSolver: Using SCHUR_JACOBI preconditioner.
+[sync_slam_toolbox_node-1] [INFO] [1778178685.942810886] [slam_toolbox]: Activating
+[sync_slam_toolbox_node-1] Info: clipped range threshold to be within minimum and maximum range!
+[sync_slam_toolbox_node-1] Registering sensor: [Custom Described Lidar]

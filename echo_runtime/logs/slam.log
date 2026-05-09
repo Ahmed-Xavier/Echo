@@ -1,0 +1,54 @@
+[INFO] [launch]: All log files can be found below /home/ahmed/.ros/log/2026-05-04-00-17-57-496286-ahmed-desktop-122141
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [sync_slam_toolbox_node-1]: process started with pid [122151]
+[sync_slam_toolbox_node-1] [INFO] [1777850278.330039243] [slam_toolbox]: Node using stack size 40000000
+[sync_slam_toolbox_node-1] [INFO] [1777850283.071827459] [slam_toolbox]: Configuring
+[sync_slam_toolbox_node-1] [INFO] [1777850283.119716370] [slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+[sync_slam_toolbox_node-1] [INFO] [1777850283.122166751] [slam_toolbox]: CeresSolver: Using SCHUR_JACOBI preconditioner.
+[sync_slam_toolbox_node-1] [INFO] [1777850287.182555814] [slam_toolbox]: Activating
+[sync_slam_toolbox_node-1] Info: clipped range threshold to be within minimum and maximum range!
+[sync_slam_toolbox_node-1] Registering sensor: [Custom Described Lidar]
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720
+[sync_slam_toolbox_node-1] LaserRangeScan contains 470 range readings, expected 720

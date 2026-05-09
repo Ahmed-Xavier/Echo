@@ -1,0 +1,4 @@
+[INFO] [launch]: All log files can be found below /home/ahmed/.ros/log/2026-05-07-19-30-58-774162-ahmed-desktop-10390
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [ekf_node-1]: process started with pid [10399]
+[ekf_node-1] [37;1m2026-05-07 19:30:58.966 [31;1m[[37;1mRTPS_TRANSPORT_SHM[31;1m Error] [37mFailed init_port fastrtps_port7002: open_and_lock_file failed[34;1m -> Function [36mopen_port_internal[m

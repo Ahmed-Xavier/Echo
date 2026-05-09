@@ -1,0 +1,27 @@
+
+[2026-05-02T14:02:45] START save_map
+[save_map] saving latest map to /home/ahmed/echo_runtime/maps/echo_current_map
+[INFO] [1777726967.015881235] [map_saver]: 
+	map_saver lifecycle node launched. 
+	Waiting on external lifecycle transitions to activate
+	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[INFO] [1777726967.016271665] [map_saver]: Creating
+[INFO] [1777726967.016498150] [map_saver]: Configuring
+[INFO] [1777726967.024813122] [map_saver]: Saving map from 'map' topic to '/home/ahmed/echo_runtime/maps/echo_current_map' file
+[WARN] [1777726967.024864178] [map_saver]: Free threshold unspecified. Setting it to default value: 0.250000
+[WARN] [1777726967.024880363] [map_saver]: Occupied threshold unspecified. Setting it to default value: 0.650000
+[WARN] [1777726967.326646725] [map_io]: Image format unspecified. Setting it to: pgm
+[INFO] [1777726967.326716966] [map_io]: Received a 209 X 224 map @ 0.05 m/pix
+[INFO] [1777726967.347886670] [map_io]: Writing map occupancy data to /home/ahmed/echo_runtime/maps/echo_current_map.pgm
+[INFO] [1777726967.350183235] [map_io]: Writing map metadata to /home/ahmed/echo_runtime/maps/echo_current_map.yaml
+[INFO] [1777726967.350386627] [map_io]: Map saved
+[INFO] [1777726967.350537017] [map_saver]: Map saved successfully
+[INFO] [1777726967.355870712] [map_saver]: Destroying
+[save_map] copying timestamped snapshot to /home/ahmed/echo_runtime/maps/echo_map_20260502_140246
+[save_map] saved:
+[save_map] /home/ahmed/echo_runtime/maps/echo_current_map.pgm
+[save_map] /home/ahmed/echo_runtime/maps/echo_current_map.yaml
+[save_map] /home/ahmed/echo_runtime/maps/echo_map_20260502_140246.pgm
+[save_map] /home/ahmed/echo_runtime/maps/echo_map_20260502_140246.yaml
+
+[2026-05-02T14:02:47] EXIT save_map code=0

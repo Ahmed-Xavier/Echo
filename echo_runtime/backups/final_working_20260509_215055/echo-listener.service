@@ -1,0 +1,16 @@
+[Unit]
+Description=Echo Standalone Voice Listener
+After=default.target sound.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/ahmed/echo_runtime/app
+ExecStart=/usr/bin/python3 /home/ahmed/echo_runtime/app/echo_voice.py
+Restart=always
+RestartSec=3
+StandardOutput=append:/tmp/echo-listener.log
+StandardError=append:/tmp/echo-listener.log
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=default.target

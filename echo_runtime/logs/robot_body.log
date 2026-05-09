@@ -1,0 +1,173 @@
+
+[2026-05-02T22:21:54] START robot_body
+
+[2026-05-02T22:21:55] EXIT robot_body code=-15
+
+[2026-05-02T22:34:34] START robot_body
+
+[2026-05-02T22:34:35] EXIT robot_body code=-15
+
+[2026-05-02T22:36:06] START robot_body
+
+[2026-05-02T22:36:07] EXIT robot_body code=-15
+
+[2026-05-02T22:39:46] START robot_body
+Press ESP32 RST and retry Robot Body
+
+[2026-05-02T22:40:33] EXIT robot_body code=1
+
+[2026-05-02T23:03:28] START robot_body
+Traceback (most recent call last):
+  File "/opt/ros/jazzy/bin/ros2", line 33, in <module>
+    sys.exit(load_entry_point('ros2cli==0.32.8', 'console_scripts', 'ros2')())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/ros2cli/cli.py", line 91, in main
+    rc = extension.main(parser=parser, args=args)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/ros2node/command/node.py", line 37, in main
+    return extension.main(args=args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/ros2node/verb/info.py", line 65, in main
+    print('  Publishers:')
+BrokenPipeError: [Errno 32] Broken pipe
+Exception ignored in: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='utf-8'>
+BrokenPipeError: [Errno 32] Broken pipe
+
+[2026-05-02T23:04:22] EXIT robot_body code=1
+
+[2026-05-02T23:06:57] START robot_body
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+Press ESP32 RST and retry Robot Body
+
+[2026-05-02T23:07:43] EXIT robot_body code=1
+
+[2026-05-02T23:12:43] START robot_body
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+Press ESP32 RST and retry Robot Body
+
+[2026-05-02T23:13:28] EXIT robot_body code=1
+
+[2026-05-02T23:16:26] START robot_body
+Press ESP32 RST and retry Robot Body
+
+[2026-05-02T23:17:12] EXIT robot_body code=1
+
+[2026-05-02T23:20:17] START robot_body
+[robot_body] starting micro_ros_agent on /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 @ 115200
+[robot_body] agent pid=154843
+[robot_body] if ESP32 topics do not appear, press ESP32 RST and retry Robot Body
+
+[2026-05-03T17:06:26] START robot_body
+[robot_body] starting micro_ros_agent on /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 @ 115200
+[robot_body] agent pid=10337
+[robot_body] if ESP32 topics do not appear, press ESP32 RST and retry Robot Body
+
+[2026-05-03T17:34:46] EXIT robot_body code=143
+
+[2026-05-03T17:34:48] START robot_body
+[robot_body] starting micro_ros_agent on /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 @ 115200
+[robot_body] agent pid=13825
+[robot_body] if ESP32 topics do not appear, press ESP32 RST and retry Robot Body
+
+[2026-05-04T00:19:26] EXIT robot_body code=143
+
+[2026-05-04T00:20:43] START robot_body
+[robot_body] starting micro_ros_agent on /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 @ 115200
+[robot_body] agent pid=122778
+[robot_body] if ESP32 topics do not appear, press ESP32 RST and retry Robot Body
+
+[2026-05-04T01:17:24] EXIT robot_body code=143
+
+[2026-05-04T01:17:26] START robot_body
+[robot_body] starting micro_ros_agent on /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 @ 115200
+[robot_body] agent pid=132141
+[robot_body] if ESP32 topics do not appear, press ESP32 RST and retry Robot Body
+
+[2026-05-04T01:19:46] START robot_body
+[robot_body] starting micro_ros_agent on /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 @ 115200
+[robot_body] agent pid=132898
+[robot_body] if ESP32 topics do not appear, press ESP32 RST and retry Robot Body
+
+[2026-05-04T01:24:49] EXIT robot_body code=143
+
+[2026-05-04T01:24:50] START robot_body
+[robot_body] starting micro_ros_agent on /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 @ 115200
+[robot_body] agent pid=135944
+[robot_body] if ESP32 topics do not appear, press ESP32 RST and retry Robot Body
+
+[2026-05-04T01:25:11] EXIT robot_body code=143
+
+[2026-05-04T01:25:12] START robot_body
+[robot_body] starting micro_ros_agent on /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 @ 115200
+[robot_body] agent pid=136245
+[robot_body] if ESP32 topics do not appear, press ESP32 RST and retry Robot Body
+
+[2026-05-04T01:40:04] START robot_body
+[robot_body] starting micro_ros_agent on /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 @ 115200
+[robot_body] agent pid=140331
+[robot_body] if ESP32 topics do not appear, press ESP32 RST and retry Robot Body
+
+[2026-05-04T18:46:47] START robot_body
+[robot_body] starting micro_ros_agent on /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 @ 115200
+[robot_body] agent pid=37281
+[robot_body] if ESP32 topics do not appear, press ESP32 RST and retry Robot Body
+
+[2026-05-04T19:02:41] START robot_body
+[robot_body] starting micro_ros_agent on /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 @ 115200
+[robot_body] agent pid=40235
+[robot_body] if ESP32 topics do not appear, press ESP32 RST and retry Robot Body
+
+[2026-05-04T19:04:59] EXIT robot_body code=143
+
+[2026-05-05T13:20:59] START robot_body
+[robot_body] starting micro_ros_agent on /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 @ 115200
+[robot_body] agent pid=38147
+[robot_body] if ESP32 topics do not appear, press ESP32 RST and retry Robot Body
+
+[2026-05-05T15:04:51] START robot_body
+[robot_body] starting micro_ros_agent on /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 @ 115200
+[robot_body] agent pid=3988
+[robot_body] if ESP32 topics do not appear, press ESP32 RST and retry Robot Body
+
+[2026-05-05T15:50:28] EXIT robot_body code=143

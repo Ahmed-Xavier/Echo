@@ -1,0 +1,10 @@
+{
+  "current_spot": {
+    "frame": "map",
+    "source_frame": "base_link",
+    "x": 0.3484,
+    "y": 2.0668,
+    "yaw": 2.0378,
+    "yaw_deg": 116.76
+  }
+}

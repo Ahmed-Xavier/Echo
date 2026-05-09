@@ -1,0 +1,298 @@
+
+[2026-05-02T12:50:00] START mapping
+[mapping] Echo mapping stack starting
+[mapping] ESP32: /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0
+[mapping] LiDAR params: /home/ahmed/.openclaw/workspace/github_echo/echo_workspace/src/ydlidar_ros2_driver/params/ydlidar.yaml
+[mapping] starting micro_ros_agent
+[mapping] micro_ros_agent pid=19209 log=/home/ahmed/echo_runtime/logs/micro_ros_agent.log
+[mapping] waiting for node /esp32_echo_node
+[mapping] found node /esp32_echo_node
+[mapping] waiting for /imu/data_raw
+[mapping] found /imu/data_raw
+[mapping] starting ydlidar
+[mapping] ydlidar pid=19258 log=/home/ahmed/echo_runtime/logs/ydlidar.log
+[mapping] waiting for /scan
+[mapping] found /scan
+[mapping] starting esp32_encoder_odometry
+[mapping] esp32_encoder_odometry pid=19290 log=/home/ahmed/echo_runtime/logs/esp32_encoder_odometry.log
+[mapping] waiting for /wheel_odom
+[mapping] found /wheel_odom
+[mapping] starting ekf
+[mapping] ekf pid=19367 log=/home/ahmed/echo_runtime/logs/ekf.log
+[mapping] waiting for /odometry/filtered
+[mapping] found /odometry/filtered
+[mapping] starting slam
+[mapping] slam pid=19408 log=/home/ahmed/echo_runtime/logs/slam.log
+[mapping] waiting for node /slam_toolbox
+[mapping] found node /slam_toolbox
+[mapping] configuring slam_toolbox
+Transitioning successful
+[mapping] activating slam_toolbox
+Transitioning successful
+[mapping] waiting for /map
+[mapping] found /map
+[mapping] mapping stack online
+[mapping] topics: /scan /wheel_odom /odometry/filtered /map
+[mapping] fixed frame for Foxglove: map
+[mapping] stopping mapping stack
+[mapping] stopping mapping stack
+
+[2026-05-02T12:51:40] EXIT mapping code=143
+
+[2026-05-02T12:59:02] START mapping
+[mapping] Echo mapping stack starting
+[mapping] ESP32: /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0
+[mapping] LiDAR params: /home/ahmed/.openclaw/workspace/github_echo/echo_workspace/src/ydlidar_ros2_driver/params/ydlidar.yaml
+[mapping] starting micro_ros_agent
+[mapping] micro_ros_agent pid=20850 log=/home/ahmed/echo_runtime/logs/micro_ros_agent.log
+[mapping] waiting for node /esp32_echo_node
+[mapping] found node /esp32_echo_node
+[mapping] waiting for /imu/data_raw
+[mapping] found /imu/data_raw
+[mapping] starting ydlidar
+[mapping] ydlidar pid=20912 log=/home/ahmed/echo_runtime/logs/ydlidar.log
+[mapping] waiting for /scan
+[mapping] found /scan
+[mapping] starting esp32_encoder_odometry
+[mapping] esp32_encoder_odometry pid=20935 log=/home/ahmed/echo_runtime/logs/esp32_encoder_odometry.log
+[mapping] waiting for /wheel_odom
+[mapping] found /wheel_odom
+[mapping] starting ekf
+[mapping] ekf pid=21011 log=/home/ahmed/echo_runtime/logs/ekf.log
+[mapping] waiting for /odometry/filtered
+[mapping] found /odometry/filtered
+[mapping] starting slam
+[mapping] slam pid=21051 log=/home/ahmed/echo_runtime/logs/slam.log
+[mapping] waiting for node /slam_toolbox
+[mapping] found node /slam_toolbox
+[mapping] configuring slam_toolbox
+Transitioning successful
+[mapping] activating slam_toolbox
+Transitioning successful
+[mapping] waiting for /map
+[mapping] found /map
+[mapping] mapping stack online
+[mapping] topics: /scan /wheel_odom /odometry/filtered /map
+[mapping] fixed frame for Foxglove: map
+[mapping] stopping mapping stack
+Terminated
+[mapping] stopping mapping stack
+Terminated
+[mapping] stopping mapping stack
+environment: line 1: pop_var_context: head of shell_variables not a function context
+[mapping] stopping mapping stack
+
+[2026-05-02T14:16:02] EXIT mapping code=143
+
+[2026-05-04T00:14:44] START mapping
+[mapping] Echo mapping stack starting
+[mapping] ESP32: /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0
+[mapping] LiDAR params: /home/ahmed/.openclaw/workspace/github_echo/echo_workspace/src/ydlidar_ros2_driver/params/ydlidar.yaml
+[mapping] starting micro_ros_agent
+[mapping] micro_ros_agent pid=120837 log=/home/ahmed/echo_runtime/logs/micro_ros_agent.log
+[mapping] waiting for node /esp32_echo_node
+[mapping] found node /esp32_echo_node
+[mapping] waiting for /imu/data_raw
+[mapping] found /imu/data_raw
+[mapping] starting ydlidar
+[mapping] ydlidar pid=120872 log=/home/ahmed/echo_runtime/logs/ydlidar.log
+[mapping] waiting for /scan
+[mapping] found /scan
+[mapping] starting esp32_encoder_odometry
+[mapping] esp32_encoder_odometry pid=120898 log=/home/ahmed/echo_runtime/logs/esp32_encoder_odometry.log
+[mapping] waiting for /wheel_odom
+[mapping] found /wheel_odom
+[mapping] starting ekf
+[mapping] ekf pid=120955 log=/home/ahmed/echo_runtime/logs/ekf.log
+[mapping] waiting for /odometry/filtered
+[mapping] found /odometry/filtered
+[mapping] starting slam
+[mapping] slam pid=120985 log=/home/ahmed/echo_runtime/logs/slam.log
+[mapping] waiting for node /slam_toolbox
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+[mapping] found node /slam_toolbox
+[mapping] configuring slam_toolbox
+Transitioning successful
+[mapping] activating slam_toolbox
+Transitioning successful
+[mapping] waiting for /map
+[mapping] found /map
+[mapping] mapping stack online
+[mapping] topics: /scan /wheel_odom /odometry/filtered /map
+[mapping] fixed frame for Foxglove: map
+[mapping] stopping mapping stack
+[mapping] stopping mapping stack
+
+[2026-05-04T00:17:38] EXIT mapping code=143
+
+[2026-05-04T00:17:49] START mapping
+[mapping] Echo mapping stack starting
+[mapping] ESP32: /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0
+[mapping] LiDAR params: /home/ahmed/.openclaw/workspace/github_echo/echo_workspace/src/ydlidar_ros2_driver/params/ydlidar.yaml
+[mapping] starting micro_ros_agent
+[mapping] micro_ros_agent pid=121988 log=/home/ahmed/echo_runtime/logs/micro_ros_agent.log
+[mapping] waiting for node /esp32_echo_node
+[mapping] found node /esp32_echo_node
+[mapping] waiting for /imu/data_raw
+[mapping] found /imu/data_raw
+[mapping] starting ydlidar
+[mapping] ydlidar pid=122020 log=/home/ahmed/echo_runtime/logs/ydlidar.log
+[mapping] waiting for /scan
+[mapping] found /scan
+[mapping] starting esp32_encoder_odometry
+[mapping] esp32_encoder_odometry pid=122035 log=/home/ahmed/echo_runtime/logs/esp32_encoder_odometry.log
+[mapping] waiting for /wheel_odom
+[mapping] found /wheel_odom
+[mapping] starting ekf
+[mapping] ekf pid=122103 log=/home/ahmed/echo_runtime/logs/ekf.log
+[mapping] waiting for /odometry/filtered
+[mapping] found /odometry/filtered
+[mapping] starting slam
+[mapping] slam pid=122141 log=/home/ahmed/echo_runtime/logs/slam.log
+[mapping] waiting for node /slam_toolbox
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+WARNING: Be aware that there are nodes in the graph that share an exact name, which can have unintended side effects.
+[mapping] found node /slam_toolbox
+[mapping] configuring slam_toolbox
+Transitioning successful
+[mapping] activating slam_toolbox
+Transitioning successful
+[mapping] waiting for /map
+[mapping] found /map
+[mapping] mapping stack online
+[mapping] topics: /scan /wheel_odom /odometry/filtered /map
+[mapping] fixed frame for Foxglove: map
+[mapping] stopping mapping stack
+[mapping] stopping mapping stack
+
+[2026-05-04T00:19:05] EXIT mapping code=143
+
+[2026-05-04T00:21:03] START mapping
+[mapping] Echo mapping stack starting
+[mapping] ESP32: /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0
+[mapping] LiDAR params: /home/ahmed/.openclaw/workspace/github_echo/echo_workspace/src/ydlidar_ros2_driver/params/ydlidar.yaml
+[mapping] starting micro_ros_agent
+[mapping] micro_ros_agent pid=122961 log=/home/ahmed/echo_runtime/logs/micro_ros_agent.log
+[mapping] waiting for node /esp32_echo_node
+[mapping] ERROR: timed out waiting for node /esp32_echo_node
+[mapping] stopping mapping stack
+
+[2026-05-04T00:21:50] EXIT mapping code=1
+
+[2026-05-05T15:22:20] START mapping
+[mapping] SLAM-only runtime action
+[mapping] Requires robot_body and localization to already be running
+[mapping] Starting echo_bringup mapping_launch.py
+[INFO] [launch]: All log files can be found below /home/ahmed/.ros/log/2026-05-05-15-22-22-271832-ahmed-desktop-11681
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [bash-1]: process started with pid [11712]
+[INFO] [bash-2]: process started with pid [11713]
+[bash-1] [mapping] Waiting for /scan...
+[bash-2] [mapping] Waiting for /slam_toolbox...
+[bash-2] [mapping] Configuring and activating /slam_toolbox...
+[bash-2] Unknown transition requested, available ones are:
+[bash-2] - deactivate [4]
+[bash-2] - shutdown [7]
+[bash-1] [mapping] /scan is publishing.
+[bash-1] [mapping] Waiting for /odometry/filtered...
+[bash-2] Unknown transition requested, available ones are:
+[bash-2] - deactivate [4]
+[bash-2] - shutdown [7]
+[INFO] [bash-2]: process has finished cleanly [pid 11713]
+[bash-1] [mapping] /odometry/filtered is publishing.
+[bash-1] [mapping] Starting SLAM only. robot_body and localization must already be running.
+[bash-1] [INFO] [launch]: All log files can be found below /home/ahmed/.ros/log/2026-05-05-15-22-35-412858-ahmed-desktop-11712
+[bash-1] [INFO] [launch]: Default logging verbosity is set to INFO
+[bash-1] [INFO] [sync_slam_toolbox_node-1]: process started with pid [12019]
+[bash-1] [sync_slam_toolbox_node-1] [INFO] [1777990955.653799542] [slam_toolbox]: Node using stack size 40000000
+[bash-1] [sync_slam_toolbox_node-1] [INFO] [1777992628.666008974] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[bash-1] [INFO] [sync_slam_toolbox_node-1]: process has finished cleanly [pid 12019]
+[INFO] [bash-1]: process has finished cleanly [pid 11712]
+
+[2026-05-05T15:50:29] EXIT mapping code=0
+
+[2026-05-07T19:28:11] START mapping
+[mapping] stopping navigation before mapping...
+[mapping] starting real mapping launch...
+[INFO] [launch]: All log files can be found below /home/ahmed/.ros/log/2026-05-07-19-28-13-747923-ahmed-desktop-9399
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [bash-1]: process started with pid [9452]
+[bash-1] [mapping] Killing stale mapping/localization processes...
+[bash-1] [mapping] stopping full mapping stack...
+[bash-1] [mapping] stopping full mapping stack...
+[bash-1] [mapping] stopping full mapping stack...
+[bash-1] [mapping] stopping full mapping stack...
+[bash-1] [mapping] stopping full mapping stack...
+[bash-1] [mapping] stopping full mapping stack...
+[bash-1] [mapping] Starting micro_ros_agent on /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 @ 115200
+[bash-1] [mapping] Waiting for /esp32_echo_node. Press ESP32 RST/EN now if needed.
+[bash-1] [mapping] Waiting for /esp32_echo_node...
+[bash-1] [mapping] /esp32_echo_node is alive.
+[bash-1] [mapping] Starting encoder odometry...
+[bash-1] [mapping] Waiting for /wheel_odom...
+[bash-1] [mapping] /wheel_odom is publishing.
+[bash-1] [mapping] Starting EKF...
+[bash-1] [mapping] Waiting for /odometry/filtered...
+[bash-1] [mapping] /odometry/filtered is publishing.
+[bash-1] [mapping] Starting LiDAR...
+[bash-1] [mapping] Waiting for /scan...
+[bash-1] [mapping] /scan is publishing.
+[bash-1] [mapping] Starting SLAM Toolbox...
+[bash-1] [mapping] Waiting for /slam_toolbox...
+[bash-1] [mapping] /slam_toolbox is alive.
+[bash-1] [mapping] Configuring and activating /slam_toolbox...
+[bash-1] [37;1m2026-05-07 19:29:08.389 [31;1m[[37;1mRTPS_TRANSPORT_SHM[31;1m Error] [37mFailed init_port fastrtps_port7002: open_and_lock_file failed[34;1m -> Function [36mopen_port_internal[m
+[bash-1] Transitioning successful
+[bash-1] [37;1m2026-05-07 19:29:13.532 [31;1m[[37;1mRTPS_TRANSPORT_SHM[31;1m Error] [37mFailed init_port fastrtps_port7002: open_and_lock_file failed[34;1m -> Function [36mopen_port_internal[m
+[bash-1] Transitioning successful
+[bash-1] [mapping] Waiting for /map...
+[bash-1] [mapping] /map is publishing.
+[bash-1] [mapping] FULL MAPPING STACK READY.
+[bash-1] [mapping] Topics: /scan /wheel_odom /odometry/filtered /map
+[bash-1] [mapping] Logs are in /home/ahmed/echo_runtime/logs/mapping_*.log
+
+[2026-05-07T19:29:46] EXIT mapping code=-15
+
+[2026-05-07T19:30:38] START mapping
+[mapping] stopping navigation before mapping...
+[mapping] starting real mapping launch...
+[INFO] [launch]: All log files can be found below /home/ahmed/.ros/log/2026-05-07-19-30-39-891600-ahmed-desktop-10125
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [bash-1]: process started with pid [10190]
+[bash-1] [mapping] Killing stale mapping/localization processes...
+[bash-1] [mapping] stopping full mapping stack...
+[bash-1] [mapping] stopping full mapping stack...
+[bash-1] [mapping] stopping full mapping stack...
+[bash-1] [mapping] stopping full mapping stack...
+[bash-1] [mapping] stopping full mapping stack...
+[bash-1] [mapping] stopping full mapping stack...
+[bash-1] [mapping] Starting micro_ros_agent on /dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 @ 115200
+[bash-1] [mapping] Waiting for /esp32_echo_node. Press ESP32 RST/EN now if needed.
+[bash-1] [mapping] Waiting for /esp32_echo_node...
+[bash-1] [mapping] /esp32_echo_node is alive.
+[bash-1] [mapping] Starting encoder odometry...
+[bash-1] [mapping] Waiting for /wheel_odom...
+[bash-1] [mapping] /wheel_odom is publishing.
+[bash-1] [mapping] Starting EKF...
+[bash-1] [mapping] Waiting for /odometry/filtered...
+[bash-1] [mapping] /odometry/filtered is publishing.
+[bash-1] [mapping] Starting LiDAR...
+[bash-1] [mapping] Waiting for /scan...
+[bash-1] [mapping] /scan is publishing.
+[bash-1] [mapping] Starting SLAM Toolbox...
+[bash-1] [mapping] Waiting for /slam_toolbox...
+[bash-1] [mapping] /slam_toolbox is alive.
+[bash-1] [mapping] Configuring and activating /slam_toolbox...
+[bash-1] [37;1m2026-05-07 19:31:18.408 [31;1m[[37;1mRTPS_TRANSPORT_SHM[31;1m Error] [37mFailed init_port fastrtps_port7002: open_and_lock_file failed[34;1m -> Function [36mopen_port_internal[m
+[bash-1] Transitioning successful
+[bash-1] [37;1m2026-05-07 19:31:22.941 [31;1m[[37;1mRTPS_TRANSPORT_SHM[31;1m Error] [37mFailed init_port fastrtps_port7002: open_and_lock_file failed[34;1m -> Function [36mopen_port_internal[m
+[bash-1] Transitioning successful
+[bash-1] [mapping] Waiting for /map...
+[bash-1] [mapping] /map is publishing.
+[bash-1] [mapping] FULL MAPPING STACK READY.
+[bash-1] [mapping] Topics: /scan /wheel_odom /odometry/filtered /map
+[bash-1] [mapping] Logs are in /home/ahmed/echo_runtime/logs/mapping_*.log
+
+[2026-05-07T19:42:34] EXIT mapping code=-15

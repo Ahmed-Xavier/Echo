@@ -1,0 +1,83 @@
+[INFO] [launch]: All log files can be found below /home/ahmed/.ros/log/2026-05-02-14-21-56-356837-ahmed-desktop-40432
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [ydlidar_ros2_driver_node-1]: process started with pid [40449]
+[INFO] [static_transform_publisher-2]: process started with pid [40450]
+[static_transform_publisher-2] [WARN] [1777728116.728411865] []: Old-style arguments are deprecated; see --help for new-style arguments
+[ydlidar_ros2_driver_node-1] [0m[INFO] [1777728116.765545449] [ydlidar_ros2_driver_node]: [YDLIDAR INFO] Current ROS Driver Version: 1.0.1
+[ydlidar_ros2_driver_node-1] [0m
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:56][info] SDK initializing
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:56][info] SDK has been initialized
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:56][info] SDK Version: 1.2.19
+[static_transform_publisher-2] [INFO] [1777728116.773953471] [static_tf_pub_laser]: Spinning until stopped - publishing transform
+[static_transform_publisher-2] translation: ('0.027500', '0.000000', '0.160000')
+[static_transform_publisher-2] rotation: ('1.000000', '0.000000', '0.000000', '0.000000')
+[static_transform_publisher-2] from 'base_link' to 'laser_frame'
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:56][info] Connect elapsed time 12 ms
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:56][info] Lidar successfully connected [/dev/ttyUSB0:128000]
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:56][info] Lidar running correctly! The health status good
+[ydlidar_ros2_driver_node-1] [0;31m[2026-05-02 14:21:56][error] Fail to get baseplate device information!
+[ydlidar_ros2_driver_node-1] [0m[2026-05-02 14:21:56][info] Check status, Elapsed time 0 ms
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:56][info] Lidar init success, Elapsed time [14]ms
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:57][info] [YDLIDAR] Create thread 0x7A7CE040
+[ydlidar_ros2_driver_node-1] [0;31m[2026-05-02 14:21:57][error] Check Sum 0x4A5A != 0x58AE
+[ydlidar_ros2_driver_node-1] [0m[2026-05-02 14:21:57][info] Successed to start scan mode, Elapsed time 1061 ms
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:57][info] Module device info
+[ydlidar_ros2_driver_node-1] Firmware version: 3.1
+[ydlidar_ros2_driver_node-1] Hardware version: 3
+[ydlidar_ros2_driver_node-1] Model: S2PRO
+[ydlidar_ros2_driver_node-1] Serial: 2021050600021120
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:58][info] Scan Frequency: 10.00Hz
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:58][info] Fixed Size: 720
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:58][info] Sample Rate: 5.00K
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:58][info] Scan Frequency: 10.00Hz
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:58][info] Fixed Size: 720
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:58][info] Sample Rate: 5.00K
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:58][info] Scan Frequency: 10.00Hz
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:58][info] Fixed Size: 720
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:58][info] Sample Rate: 5.00K
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:58][info] Single Fixed Size: 470
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:58][info] Sample Rate: 5.00K
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:58][info] Successed to check the lidar, Elapsed time 370 ms
+[ydlidar_ros2_driver_node-1] [2026-05-02 14:21:58][info] Now lidar is scanning...
+[ydlidar_ros2_driver_node-1] [0;33m[2026-05-02 14:55:02][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 14:55:02][warn] [YDLIDAR]: Real point count 472 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 14:55:02][warn] [YDLIDAR]: Real point count 472 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 14:55:02][warn] [YDLIDAR]: Real point count 473 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 14:55:05][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 15:21:30][warn] [YDLIDAR]: Real point count 472 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 15:39:30][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 15:45:30][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 15:46:32][warn] [YDLIDAR]: Real point count 472 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 15:51:36][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 15:51:42][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 15:52:03][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 15:52:20][warn] [YDLIDAR]: Real point count 472 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 15:52:20][warn] [YDLIDAR]: Real point count 473 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 15:52:20][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 15:52:33][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 15:52:33][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 15:52:33][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 15:59:57][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:01:26][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:20:04][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:20:04][warn] [YDLIDAR]: Real point count 473 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:20:30][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:25:37][warn] [YDLIDAR]: Real point count 472 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:25:37][warn] [YDLIDAR]: Real point count 473 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:25:37][warn] [YDLIDAR]: Real point count 472 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:25:41][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:25:41][warn] [YDLIDAR]: Real point count 472 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:29:11][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:29:11][warn] [YDLIDAR]: Real point count 474 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:29:11][warn] [YDLIDAR]: Real point count 475 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:29:11][warn] [YDLIDAR]: Real point count 472 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:29:13][warn] [YDLIDAR]: Real point count 473 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:29:13][warn] [YDLIDAR]: Real point count 473 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:29:13][warn] [YDLIDAR]: Real point count 472 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[0;33m[2026-05-02 16:29:13][warn] [YDLIDAR]: Real point count 471 > fixed point count 470
+[ydlidar_ros2_driver_node-1] [0m[INFO] [1777736175.790165995] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
+[ydlidar_ros2_driver_node-1] [0m[INFO] [1777736175.814609720] [ydlidar_ros2_driver_node]: [YDLIDAR INFO] Now YDLIDAR is stopping .......[0m
+[ydlidar_ros2_driver_node-1] [0m[2026-05-02 16:36:15][info] Now lidar scanning has stopped!
+[static_transform_publisher-2] [INFO] [1777736176.009331360] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [static_transform_publisher-2]: process has finished cleanly [pid 40450]
+[INFO] [ydlidar_ros2_driver_node-1]: process has finished cleanly [pid 40449]

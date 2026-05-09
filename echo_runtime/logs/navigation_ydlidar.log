@@ -1,0 +1,33 @@
+[INFO] [launch]: All log files can be found below /home/ahmed/.ros/log/2026-05-02-21-17-19-805765-ahmed-desktop-133270
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [ydlidar_ros2_driver_node-1]: process started with pid [133294]
+[INFO] [static_transform_publisher-2]: process started with pid [133295]
+[static_transform_publisher-2] [WARN] [1777753040.237106355] []: Old-style arguments are deprecated; see --help for new-style arguments
+[ydlidar_ros2_driver_node-1] [0m[INFO] [1777753040.267699227] [ydlidar_ros2_driver_node]: [YDLIDAR INFO] Current ROS Driver Version: 1.0.1
+[ydlidar_ros2_driver_node-1] [0m
+[ydlidar_ros2_driver_node-1] [2026-05-02 21:17:20][info] SDK initializing
+[ydlidar_ros2_driver_node-1] [2026-05-02 21:17:20][info] SDK has been initialized
+[ydlidar_ros2_driver_node-1] [2026-05-02 21:17:20][info] SDK Version: 1.2.19
+[ydlidar_ros2_driver_node-1] [2026-05-02 21:17:20][info] Connect elapsed time 0 ms
+[ydlidar_ros2_driver_node-1] [2026-05-02 21:17:20][info] Lidar successfully connected [/dev/ttyUSB0:128000]
+[ydlidar_ros2_driver_node-1] [2026-05-02 21:17:20][info] Lidar running correctly! The health status good
+[ydlidar_ros2_driver_node-1] [0;31m[2026-05-02 21:17:20][error] Fail to get baseplate device information!
+[ydlidar_ros2_driver_node-1] [0m[2026-05-02 21:17:20][info] Check status, Elapsed time 0 ms
+[ydlidar_ros2_driver_node-1] [2026-05-02 21:17:20][info] Lidar init success, Elapsed time [1]ms
+[static_transform_publisher-2] [INFO] [1777753040.271726306] [static_tf_pub_laser]: Spinning until stopped - publishing transform
+[static_transform_publisher-2] translation: ('0.027500', '0.000000', '0.160000')
+[static_transform_publisher-2] rotation: ('1.000000', '0.000000', '0.000000', '0.000000')
+[static_transform_publisher-2] from 'base_link' to 'laser_frame'
+[ydlidar_ros2_driver_node-1] [2026-05-02 21:17:20][info] [YDLIDAR] Create thread 0x767CE040
+[ydlidar_ros2_driver_node-1] [2026-05-02 21:17:21][info] Successed to start scan mode, Elapsed time 1061 ms
+[ydlidar_ros2_driver_node-1] [0;31m[2026-05-02 21:17:21][error] Timeout count: 1
+[ydlidar_ros2_driver_node-1] [0m[0;31m[2026-05-02 21:17:22][error] Timeout count: 2
+[ydlidar_ros2_driver_node-1] [0m[0;31m[2026-05-02 21:17:23][error] Timeout count: 3
+[ydlidar_ros2_driver_node-1] [0m[0;31m[2026-05-02 21:17:26][error] Timeout count: 1
+[ydlidar_ros2_driver_node-1] [0m[0;31m[2026-05-02 21:17:27][error] Timeout count: 2
+[ydlidar_ros2_driver_node-1] [0m[0;31m[2026-05-02 21:17:28][error] Timeout count: 3
+[ydlidar_ros2_driver_node-1] [0m[0;31m[2026-05-02 21:17:30][error] Timeout count: 1
+[ydlidar_ros2_driver_node-1] [0m[0;31m[2026-05-02 21:17:31][error] Failed to turn on the Lidar, because the lidar is [Device Failed].
+[ydlidar_ros2_driver_node-1] [0m[INFO] [1777753051.514964429] [ydlidar_ros2_driver_node]: [YDLIDAR INFO] Now YDLIDAR is stopping .......[0m
+[INFO] [ydlidar_ros2_driver_node-1]: process has finished cleanly [pid 133294]
+[ydlidar_ros2_driver_node-1] [0m

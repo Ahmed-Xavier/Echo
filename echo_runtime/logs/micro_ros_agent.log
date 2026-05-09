@@ -1,0 +1,16 @@
+[35m[1777850464.437991][m info     | [34mTermiosAgentLinux.cpp[m | [37minit                    [m | [32mrunning...[m             | fd: 10
+[35m[1777850464.438418][m info     | [34mRoot.cpp          [m | [37mset_verbose_level       [m | [32mlogger setup[m           | verbose_level: 4
+[35m[1777850735.259090][m error    | [34mInputMessage.cpp  [m | [37mlog_error               [m | [31mdeserialization error[m  | buffer: 
+0000: 00
+[35m[1777850745.485975][m error    | [34mInputMessage.cpp  [m | [37mlog_error               [m | [31mdeserialization error[m  | buffer: 
+0000: 00
+[35m[1777850766.169040][m error    | [34mInputMessage.cpp  [m | [37mlog_error               [m | [31mdeserialization error[m  | buffer: 
+0000: 00
+[35m[1777850926.010795][m error    | [34mInputMessage.cpp  [m | [37mlog_error               [m | [31mdeserialization error[m  | buffer: 
+0000: 00
+[35m[1777850976.792067][m error    | [34mInputMessage.cpp  [m | [37mlog_error               [m | [31mdeserialization error[m  | buffer: 
+0000: 00
+[35m[1777850998.226523][m error    | [34mInputMessage.cpp  [m | [37mlog_error               [m | [31mdeserialization error[m  | buffer: 
+0000: 00
+[35m[1777851823.550305][m error    | [34mInputMessage.cpp  [m | [37mlog_error               [m | [31mdeserialization error[m  | buffer: 
+0000: 00

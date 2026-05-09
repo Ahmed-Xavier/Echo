@@ -1,0 +1,20 @@
+[Unit]
+Description=Echo Animated Face
+After=graphical-session.target
+Wants=graphical-session.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/ahmed/echo_runtime/app
+ExecStart=/usr/bin/python3 /home/ahmed/echo_runtime/app/echo_face.py
+Restart=always
+RestartSec=2
+Environment=PYTHONUNBUFFERED=1
+Environment=DISPLAY=:0
+Environment=WAYLAND_DISPLAY=wayland-0
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+StandardOutput=append:/tmp/echo-face.log
+StandardError=append:/tmp/echo-face.log
+
+[Install]
+WantedBy=default.target

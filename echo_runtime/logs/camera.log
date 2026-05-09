@@ -1,0 +1,277 @@
+
+[2026-05-02T03:27:34] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-02T03:28:14] EXIT camera code=143
+
+[2026-05-02T03:42:30] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-02T04:02:47] EXIT camera code=143
+
+[2026-05-02T04:02:52] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-02T04:11:20] EXIT camera code=143
+
+[2026-05-02T04:12:50] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-02T04:13:01] EXIT camera code=143
+
+[2026-05-02T04:13:12] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-02T04:13:20] EXIT camera code=143
+
+[2026-05-02T04:13:27] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-02T04:31:00] EXIT camera code=143
+
+[2026-05-02T13:04:50] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-02T13:05:04] EXIT camera code=143
+
+[2026-05-02T13:29:00] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-02T13:29:19] EXIT camera code=143
+
+[2026-05-02T13:47:57] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-02T14:03:56] EXIT camera code=143
+
+[2026-05-02T16:40:00] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-02T16:40:19] EXIT camera code=143
+
+[2026-05-02T18:23:19] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-02T18:25:26] EXIT camera code=143
+
+[2026-05-02T20:12:54] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-02T20:13:16] EXIT camera code=143
+
+[2026-05-02T21:52:44] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-02T21:53:59] EXIT camera code=143
+
+[2026-05-02T22:41:35] START camera
+keep existing camera here
+
+[2026-05-02T22:41:35] EXIT camera code=1
+
+[2026-05-02T22:49:49] START camera
+keep existing camera here
+
+[2026-05-02T22:49:49] EXIT camera code=1
+
+[2026-05-02T22:49:53] START camera
+keep existing camera here
+
+[2026-05-02T22:49:53] EXIT camera code=1
+
+[2026-05-03T16:27:33] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-03T16:32:54] EXIT camera code=143
+
+[2026-05-03T20:41:54] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-03T20:42:13] EXIT camera code=143
+
+[2026-05-03T21:01:19] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-03T21:03:37] EXIT camera code=143
+
+[2026-05-03T21:37:31] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-03T21:38:25] EXIT camera code=143
+
+[2026-05-05T13:16:18] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-05T13:18:11] EXIT camera code=143
+
+[2026-05-05T13:18:40] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-05T13:18:46] EXIT camera code=143
+
+[2026-05-05T13:18:48] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-05T13:19:30] EXIT camera code=143
+
+[2026-05-05T14:25:00] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-05T14:25:11] EXIT camera code=143
+
+[2026-05-05T15:22:13] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-05T15:22:19] EXIT camera code=143
+
+[2026-05-07T19:00:01] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+
+[2026-05-07T20:11:32] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+
+[2026-05-09T14:48:05] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-09T14:49:12] EXIT camera code=143
+
+[2026-05-09T14:56:19] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-09T14:57:30] EXIT camera code=143
+
+[2026-05-09T15:00:21] START camera
+[camera] starting camera publisher on index 8
+[camera] starting apriltag detector
+[camera] pipeline online
+[camera] dashboard topic: /apriltag/annotated_image/compressed
+[camera] stopping camera pipeline
+[camera] stopping camera pipeline
+
+[2026-05-09T15:00:53] EXIT camera code=143

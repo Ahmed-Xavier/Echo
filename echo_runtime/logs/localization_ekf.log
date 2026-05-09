@@ -1,0 +1,4 @@
+[INFO] [launch]: All log files can be found below /home/ahmed/.ros/log/2026-05-04-19-02-44-688278-ahmed-desktop-40280
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [ekf_node-1]: process started with pid [40303]
+[ekf_node-1] [INFO] [1777917900.383291122] [rclcpp]: signal_handler(SIGINT/SIGTERM)

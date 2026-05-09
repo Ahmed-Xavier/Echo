@@ -1,0 +1,35 @@
+[INFO] [1778335226.330029114] [apriltag_detector]: AprilTag detector subscribed to /echo/camera/image_raw
+[INFO] [1778335226.330938939] [apriltag_detector]: Publishing instructions on /apriltag/instruction
+[INFO] [1778335226.331778251] [apriltag_detector]: Publishing annotated image on /apriltag/annotated_image/compressed
+[INFO] [1778335226.332564734] [apriltag_detector]: Publishing 3D markers on /apriltag/markers
+Traceback (most recent call last):
+  File "/home/ahmed/.openclaw/workspace/github_echo/echo_workspace/src/echo_perception/scripts/apriltag_detector.py", line 240, in main
+    rclpy.spin(node)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/__init__.py", line 247, in spin
+    executor.spin_once()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 923, in spin_once
+    self._spin_once_impl(timeout_sec)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 904, in _spin_once_impl
+    handler, entity, node = self.wait_for_ready_callbacks(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 874, in wait_for_ready_callbacks
+    return next(self._cb_iter)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 782, in _wait_for_ready_callbacks
+    raise ExternalShutdownException()
+rclpy.executors.ExternalShutdownException
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ahmed/.openclaw/workspace/github_echo/echo_workspace/src/echo_perception/scripts/apriltag_detector.py", line 249, in <module>
+    main()
+  File "/home/ahmed/.openclaw/workspace/github_echo/echo_workspace/src/echo_perception/scripts/apriltag_detector.py", line 245, in main
+    rclpy.shutdown()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/__init__.py", line 134, in shutdown
+    _shutdown(context=context)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/utilities.py", line 82, in shutdown
+    context.shutdown()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/context.py", line 129, in shutdown
+    self.__context.shutdown()
+rclpy._rclpy_pybind11.RCLError: failed to shutdown: rcl_shutdown already called on the given context, at ./src/rcl/init.c:333

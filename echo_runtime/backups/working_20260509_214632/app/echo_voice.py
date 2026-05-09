@@ -1,0 +1,485 @@
+#!/usr/bin/env python3
+import os
+import re
+import struct
+import subprocess
+import time
+import wave
+from pathlib import Path
+
+import pvporcupine
+import requests
+import speech_recognition as sr
+from pvrecorder import PvRecorder
+
+
+ENV_PATH = Path("/home/ahmed/echo_runtime/voice/voice.env")
+FACE_STATE_FILE = Path("/tmp/echo_face_state")
+QUERY_WAV = Path("/tmp/echo_voice_query.wav")
+REPLY_MP3 = Path("/tmp/echo_voice_reply.mp3")
+REPLY_WAV = Path("/tmp/echo_voice_reply.wav")
+PIPER_BIN = Path("/home/ahmed/echo_runtime/bmo_face_source/piper/piper")
+BMO_MODEL = Path("/home/ahmed/echo_runtime/bmo_face_source/voices/bmo.onnx")
+BMO_CONFIG = Path("/home/ahmed/echo_runtime/bmo_face_source/voices/bmo.onnx.json")
+ACK_SOUND = Path("/usr/share/sounds/alsa/Front_Center.wav")
+ANSI_RE = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
+
+
+def load_env_file(path):
+    if not path.exists():
+        return
+    for line in path.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+
+
+load_env_file(ENV_PATH)
+
+PICOVOICE_ACCESS_KEY = os.getenv("PICOVOICE_ACCESS_KEY", "")
+KEYWORD_PATH = os.getenv("ECHO_KEYWORD_PATH", "/home/ahmed/.openclaw/workspace/echo_wake_word.ppn")
+ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "")
+ELEVENLABS_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "JBFqnCBsd6RMkjVDRZzb")
+OPENCLAW_AGENT = os.getenv("OPENCLAW_AGENT", "main")
+OPENCLAW_THINKING = os.getenv("OPENCLAW_THINKING", "low")
+TELEGRAM_ID = os.getenv("TELEGRAM_ID", "")
+DEVICE_INDEX = int(os.getenv("ECHO_AUDIO_DEVICE_INDEX", "-1"))
+
+COMMAND_SECONDS = float(os.getenv("ECHO_COMMAND_SECONDS", "6"))
+SESSION_IDLE_ERRORS = int(os.getenv("ECHO_SESSION_IDLE_ERRORS", "2"))
+SESSION_MAX_TURNS = int(os.getenv("ECHO_SESSION_MAX_TURNS", "20"))
+MAX_SPOKEN_CHARS = int(os.getenv("ECHO_MAX_SPOKEN_CHARS", "1200"))
+
+VOICE_ONLY_PREFIX = (
+    "You are speaking through Echo the robot voice system. "
+    "Do not send Telegram messages. Do not use Telegram as the answer channel. "
+    "Return your final answer as plain terminal text only, because this text will be spoken aloud. "
+    "Keep the answer concise. User said: "
+)
+
+SLEEP_PHRASES = (
+    "go to sleep",
+    "stop listening",
+    "stop the conversation",
+    "that's all",
+    "that is all",
+    "goodbye",
+    "bye echo",
+    "sleep echo",
+)
+
+
+def face_state(state):
+    try:
+        FACE_STATE_FILE.write_text(str(state).strip().lower())
+    except Exception as exc:
+        print(f"[voice] face state error: {exc}", flush=True)
+
+
+def log(message):
+    print(message, flush=True)
+
+
+def require_config():
+    missing = []
+    if not PICOVOICE_ACCESS_KEY:
+        missing.append("PICOVOICE_ACCESS_KEY")
+    if not ELEVENLABS_API_KEY:
+        missing.append("ELEVENLABS_API_KEY")
+    if not Path(KEYWORD_PATH).exists():
+        missing.append(f"ECHO_KEYWORD_PATH missing file: {KEYWORD_PATH}")
+    if missing:
+        raise RuntimeError("Missing voice config: " + ", ".join(missing))
+
+
+def play_file(path):
+    if not Path(path).exists():
+        return
+    try:
+        subprocess.run(
+            ["ffplay", "-nodisp", "-autoexit", "-vn", "-loglevel", "quiet", str(path)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=15,
+            env=dict(os.environ, PULSE_SERVER="unix:/run/user/1000/pulse/native")
+        )
+    except Exception as exc:
+        log(f"[voice] playback skipped: {exc}")
+
+
+def say_with_bmo(text):
+    log(f"[voice] BMO paths: piper={PIPER_BIN.exists()} model={BMO_MODEL.exists()} config={BMO_CONFIG.exists()}")
+    if not (PIPER_BIN.exists() and BMO_MODEL.exists() and BMO_CONFIG.exists()):
+        log("[voice] BMO Piper files missing")
+        return False
+
+    try:
+        subprocess.run(
+            [
+                str(PIPER_BIN),
+                "--model", str(BMO_MODEL),
+                "--config", str(BMO_CONFIG),
+                "--output_file", str(REPLY_WAV),
+            ],
+            input=text,
+            text=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            timeout=60,
+        )
+
+        # Use Pulse/PipeWire playback. This is what worked on your Pi.
+        subprocess.run(
+            ["paplay", str(REPLY_WAV)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=60,
+            env=dict(os.environ, PULSE_SERVER="unix:/run/user/1000/pulse/native"),
+        )
+
+        log("[voice] BMO Piper TTS succeeded")
+        return True
+    except subprocess.CalledProcessError as exc:
+        log(f"[voice] BMO Piper command failed: {exc}")
+        return False
+    except Exception as exc:
+        log(f"[voice] BMO Piper TTS failed: {exc}")
+        return False
+
+
+def say(text):
+    face_state("speaking")
+    text = (text or "").strip() or "Done."
+
+    if len(text) > MAX_SPOKEN_CHARS:
+        text = text[:MAX_SPOKEN_CHARS].rsplit(" ", 1)[0] + "..."
+
+    log(f"Echo: {text}")
+
+    if say_with_bmo(text):
+        return
+
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVENLABS_VOICE_ID}"
+    headers = {
+        "xi-api-key": ELEVENLABS_API_KEY,
+        "Content-Type": "application/json",
+    }
+    data = {
+        "text": text,
+        "model_id": "eleven_multilingual_v2",
+    }
+
+    try:
+        resp = requests.post(url, json=data, headers=headers, timeout=60)
+        if resp.status_code != 200:
+            log(f"[voice] ElevenLabs error {resp.status_code}: {resp.text[:300]}")
+            return
+        REPLY_MP3.write_bytes(resp.content)
+        play_file(REPLY_MP3)
+    except Exception as exc:
+        log(f"[voice] TTS error: {exc}")
+
+
+def record_command(seconds=COMMAND_SECONDS):
+    face_state("listening")
+    """
+    Record the spoken question using PvRecorder on the same mic as wake word.
+    This avoids PyAudio/speech_recognition.Microphone and does not touch speakers.
+    """
+    log(f"[voice] recording question with PvRecorder for {seconds:.1f}s...")
+
+    frames = []
+    recorder = PvRecorder(device_index=DEVICE_INDEX, frame_length=512)
+
+    try:
+        recorder.start()
+        deadline = time.time() + seconds
+        while time.time() < deadline:
+            frames.append(recorder.read())
+    finally:
+        try:
+            recorder.stop()
+        except Exception:
+            pass
+        recorder.delete()
+
+    samples = [sample for frame in frames for sample in frame]
+
+    if not samples:
+        log("[voice] no samples captured")
+        raise sr.UnknownValueError()
+
+    peak = max(abs(x) for x in samples)
+    log(f"[voice] captured samples={len(samples)} peak={peak}")
+
+    with wave.open(str(QUERY_WAV), "wb") as wav:
+        wav.setparams((1, 2, 16000, 0, "NONE", "NONE"))
+        wav.writeframes(struct.pack("h" * len(samples), *samples))
+
+    log(f"[voice] wrote command audio: {QUERY_WAV}")
+    return QUERY_WAV
+
+
+
+def transcribe(path):
+    recognizer = sr.Recognizer()
+    with sr.AudioFile(str(path)) as source:
+        audio_data = recognizer.record(source)
+    return recognizer.recognize_google(audio_data).strip()
+
+
+def notify_telegram(query):
+    if not TELEGRAM_ID:
+        return
+    try:
+        subprocess.run(
+            [
+                "openclaw",
+                "message",
+                "send",
+                "--target",
+                f"telegram:{TELEGRAM_ID}",
+                "--message",
+                f'Heard: "{query}"',
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=20,
+        )
+    except Exception as exc:
+        log(f"[voice] telegram log skipped: {exc}")
+
+
+def clean_openclaw_output(output):
+    output = ANSI_RE.sub("", output or "").strip()
+    raw_lines = [line.rstrip() for line in output.splitlines()]
+
+    cleaned = []
+    skip_plugin_detail = False
+
+    for line in raw_lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+
+        # Remove OpenClaw config/plugin warnings from spoken output.
+        if stripped.startswith("Config warnings:"):
+            skip_plugin_detail = True
+            continue
+
+        if "@openclaw/voice-call" in stripped:
+            skip_plugin_detail = False
+            continue
+
+        if skip_plugin_detail and stripped.startswith("- plugins.entries."):
+            skip_plugin_detail = False
+            continue
+
+        # Remove trailing CLI cursor/marker junk.
+        if stripped == "_":
+            continue
+
+        cleaned.append(stripped)
+
+    return "\n".join(cleaned).strip()
+
+
+def ask_openclaw(query):
+    face_state("thinking")
+    log(f"User: {query}")
+
+    voice_message = VOICE_ONLY_PREFIX + query
+
+    try:
+        result = subprocess.run(
+            [
+                "openclaw",
+                "agent",
+                "--agent",
+                OPENCLAW_AGENT,
+                "--message",
+                voice_message,
+                "--thinking",
+                OPENCLAW_THINKING,
+            ],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            timeout=90,
+        )
+    except subprocess.TimeoutExpired:
+        return "I am still thinking too slowly. OpenClaw timed out."
+    except Exception as exc:
+        log(f"[voice] OpenClaw error: {exc}")
+        return "I had trouble reaching OpenClaw."
+
+    response = clean_openclaw_output(result.stdout)
+
+    log(f"[voice] OpenClaw raw response: {response[:1000] if response else '<empty>'}")
+
+    if result.returncode != 0:
+        log(f"[voice] OpenClaw exited with code {result.returncode}: {response}")
+        return "OpenClaw had an error while answering."
+
+    if not response:
+        return "I answered in Telegram, but I did not receive text to speak. The main agent is still routed to Telegram."
+
+    # Remove common CLI noise if it appears.
+    bad_prefixes = (
+        "Running agent",
+        "Thinking",
+        "Done",
+    )
+    lines = []
+    for line in response.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if any(stripped.startswith(prefix) for prefix in bad_prefixes):
+            continue
+        lines.append(stripped)
+
+    spoken = "\n".join(lines).strip() or response
+    spoken = spoken.strip().strip("_").strip()
+    return spoken
+
+
+def should_sleep(query):
+    q = (query or "").lower().strip()
+    return any(phrase in q for phrase in SLEEP_PHRASES)
+
+
+def conversation_session():
+    face_state("listening")
+    say("I'm listening.")
+
+    idle_errors = 0
+
+    for turn in range(SESSION_MAX_TURNS):
+        log(f"[voice] session turn {turn + 1}/{SESSION_MAX_TURNS}")
+
+        try:
+            audio_path = record_command(COMMAND_SECONDS)
+            query = transcribe(audio_path)
+        except sr.UnknownValueError:
+            idle_errors += 1
+            log(f"[voice] could not understand speech; idle error {idle_errors}/{SESSION_IDLE_ERRORS}")
+
+            if idle_errors >= SESSION_IDLE_ERRORS:
+                say("I didn't hear a question, so I'll go back to sleep.")
+                face_state("idle")
+                return
+
+            say("I didn't catch that. Say it again.")
+            continue
+
+        except sr.RequestError as exc:
+            log(f"[voice] STT request error: {exc}")
+            say("I'm having trouble with speech recognition.")
+            return
+
+        except Exception as exc:
+            log(f"[voice] question capture error: {exc}")
+            say("I had trouble hearing the question.")
+            return
+
+        idle_errors = 0
+
+        if should_sleep(query):
+            say("Okay, going back to sleep.")
+            face_state("idle")
+            return
+
+        response = ask_openclaw(query)
+        say(response)
+
+    say("Session limit reached. I'll go back to sleep.")
+    face_state("idle")
+
+
+def safe_stop(recorder):
+    try:
+        recorder.stop()
+    except Exception:
+        pass
+
+
+def main():
+    require_config()
+
+    porcupine = pvporcupine.create(
+        access_key=PICOVOICE_ACCESS_KEY,
+        keyword_paths=[KEYWORD_PATH],
+    )
+
+    log("[voice] Echo voice conversation online.")
+    log(f"[voice] keyword: {KEYWORD_PATH}")
+    log(f"[voice] audio device index: {DEVICE_INDEX}")
+    log(f"[voice] command seconds: {COMMAND_SECONDS}")
+
+    wake_recorder = None
+
+    def make_wake_recorder():
+        return PvRecorder(
+            device_index=DEVICE_INDEX,
+            frame_length=porcupine.frame_length,
+        )
+
+    try:
+        while True:
+            try:
+                if wake_recorder is None:
+                    wake_recorder = make_wake_recorder()
+
+                wake_recorder.start()
+                face_state("idle")
+                log("[voice] listening for wake word...")
+
+                while True:
+                    try:
+                        pcm = wake_recorder.read()
+                    except Exception as exc:
+                        log(f"[voice] wake recorder read error, recreating mic: {exc}")
+                        safe_stop(wake_recorder)
+                        try:
+                            wake_recorder.delete()
+                        except Exception:
+                            pass
+                        wake_recorder = None
+                        time.sleep(2)
+                        break
+
+                    if porcupine.process(pcm) >= 0:
+                        log("[voice] wake word detected.")
+                        safe_stop(wake_recorder)
+                        time.sleep(0.25)
+                        conversation_session()
+                        break
+
+                safe_stop(wake_recorder)
+
+            except Exception as exc:
+                log(f"[voice] wake loop error, retrying: {exc}")
+                if wake_recorder is not None:
+                    safe_stop(wake_recorder)
+                    try:
+                        wake_recorder.delete()
+                    except Exception:
+                        pass
+                    wake_recorder = None
+                time.sleep(2)
+
+    finally:
+        if wake_recorder is not None:
+            safe_stop(wake_recorder)
+            try:
+                wake_recorder.delete()
+            except Exception:
+                pass
+        porcupine.delete()
+
+
+if __name__ == "__main__":
+    main()

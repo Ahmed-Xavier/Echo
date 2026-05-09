@@ -1,0 +1,16 @@
+digraph EchoROSGraph {
+  rankdir=LR;
+  graph [fontsize=20, labelloc=t, label="Echo ROS 2 Graph"];
+  node [fontname="Arial", fontsize=10];
+  edge [fontname="Arial", fontsize=9];
+  "node:/_ros2cli_daemon_0_44b2e90cfa9545b68219ca93433c88c0" [label="/_ros2cli_daemon_0_44b2e90cfa9545b68219ca93433c88c0", shape=box, style=rounded];
+  "node:/echo_camera_publisher" [label="/echo_camera_publisher", shape=box, style=rounded];
+  "node:/joint_state_publisher" [label="/joint_state_publisher", shape=box, style=rounded];
+  "node:/rosapi" [label="/rosapi", shape=box, style=rounded];
+  "topic:/echo/camera/image/compressed" [label="/echo/camera/image/compressed\\nsensor_msgs/msg/CompressedImage", shape=ellipse];
+  "node:/echo_camera_publisher" -> "topic:/echo/camera/image/compressed";
+  "topic:/echo/camera/image_raw" [label="/echo/camera/image_raw\\nsensor_msgs/msg/Image", shape=ellipse];
+  "node:/echo_camera_publisher" -> "topic:/echo/camera/image_raw";
+  "topic:/joint_states" [label="/joint_states\\nsensor_msgs/msg/JointState", shape=ellipse];
+  "node:/joint_state_publisher" -> "topic:/joint_states";
+}

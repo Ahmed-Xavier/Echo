@@ -1,0 +1,16 @@
+[Unit]
+Description=Keep Echo Screen Awake
+After=graphical-session.target
+Wants=graphical-session.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/bin/sleep 10
+ExecStart=/home/ahmed/echo_runtime/app/echo_keep_screen_awake.sh
+RemainAfterExit=yes
+Environment=DISPLAY=:0
+Environment=WAYLAND_DISPLAY=wayland-0
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+
+[Install]
+WantedBy=default.target

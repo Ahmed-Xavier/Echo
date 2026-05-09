@@ -1,0 +1,84 @@
+{
+  "actions": {
+    "robot_body": {
+      "label": "Robot Body",
+      "enabled": true,
+      "exclusive_group": "robot_body",
+      "command": [
+        "bash",
+        "-lc",
+        "set -e\nsource ~/echo_runtime/bin/echo_env.sh\nLOG_DIR=~/echo_runtime/logs\nmkdir -p \"$LOG_DIR\"\nESP32_PORT=\"/dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0\"\nESP32_BAUD=\"115200\"\n\npkill -x micro_ros_agent 2>/dev/null || true\nsleep 1\n\necho \"[robot_body] starting micro_ros_agent on $ESP32_PORT @ $ESP32_BAUD\"\nros2 run micro_ros_agent micro_ros_agent serial --dev \"$ESP32_PORT\" -b \"$ESP32_BAUD\" -v4 > \"$LOG_DIR/robot_body_micro_ros_agent.log\" 2>&1 &\nAGENT_PID=$!\n\necho \"[robot_body] agent pid=$AGENT_PID\"\necho \"[robot_body] if ESP32 topics do not appear, press ESP32 RST and retry Robot Body\"\n\ntrap 'kill \"$AGENT_PID\" 2>/dev/null || true; wait \"$AGENT_PID\" 2>/dev/null || true' EXIT INT TERM\nwait \"$AGENT_PID\"\n"
+      ]
+    },
+    "localization": {
+      "label": "Localization",
+      "enabled": true,
+      "exclusive_group": "localization",
+      "command": [
+        "bash",
+        "-lc",
+        "set -e\nsource ~/echo_runtime/bin/echo_env.sh\nLOG_DIR=~/echo_runtime/logs; mkdir -p \"$LOG_DIR\"\nYDLIDAR_SRC=\"$HOME/.openclaw/workspace/github_echo/echo_workspace/src/ydlidar_ros2_driver\"; YDLIDAR_PARAMS=\"$YDLIDAR_SRC/params/ydlidar.yaml\"\nbash -lc \"ros2 launch '$YDLIDAR_SRC/launch/ydlidar_launch.py' params_file:='$YDLIDAR_PARAMS'\" > \"$LOG_DIR/localization_ydlidar.log\" 2>&1 & P1=$!\nbash -lc \"ros2 run robot_controller esp32_encoder_odometry\" > \"$LOG_DIR/localization_odom.log\" 2>&1 & P2=$!\nbash -lc \"ros2 launch echo_bringup ekf_launch.py\" > \"$LOG_DIR/localization_ekf.log\" 2>&1 & P3=$!\ntrap 'kill \"$P1\" \"$P2\" \"$P3\" 2>/dev/null || true; wait \"$P1\" \"$P2\" \"$P3\" 2>/dev/null || true' EXIT INT TERM\nfor t in /scan /wheel_odom /odometry/filtered; do end=$((SECONDS+30)); f=0; while [ \"$SECONDS\" -lt \"$end\" ]; do ros2 topic list 2>/dev/null | grep -qx \"$t\" && f=1 && break; sleep 1; done; [ \"$f\" -eq 1 ] || exit 1; done\nwait"
+      ]
+    },
+    "navigation": {
+      "label": "Navigation",
+      "enabled": true,
+      "exclusive_group": "robot_stack",
+      "command": [
+        "bash",
+        "-lc",
+        "set -e\nsource ~/echo_runtime/bin/echo_env.sh\ncd ~/.openclaw/workspace/github_echo/echo_workspace\n\nLOG_DIR=~/echo_runtime/logs\nmkdir -p \"$LOG_DIR\"\n\necho \"[navigation] stopping mapping/navigation leftovers before navigation...\"\n\npkill -f \"[m]apping_launch.py\" 2>/dev/null || true\npkill -f \"[s]lam_toolbox\" 2>/dev/null || true\n\n\npkill -f \"[a]utonomous_navigation_launch.py\" 2>/dev/null || true\npkill -f \"[n]av2_bringup.*bringup_launch.py\" 2>/dev/null || true\npkill -f \"[c]omponent_container.*nav2_container\" 2>/dev/null || true\npkill -f \"[c]omponent_container_isolated.*nav2_container\" 2>/dev/null || true\npkill -f \"[a]priltag_action_router.py\" 2>/dev/null || true\n\n\npkill -f \"[m]icro_ros_agent.*serial\" 2>/dev/null || true\npkill -f \"[e]sp32_encoder_odometry\" 2>/dev/null || true\npkill -f \"[e]kf_node\" 2>/dev/null || true\npkill -f \"[y]dlidar_ros2_driver_node\" 2>/dev/null || true\npkill -f \"[s]tatic_transform_publisher.*laser_frame\" 2>/dev/null || true\npkill -f \"[j]oint_state_publisher\" 2>/dev/null || true\npkill -f \"[r]obot_state_publisher\" 2>/dev/null || true\n\n\necho \"[navigation] starting real autonomous navigation launch...\"\nexec ros2 launch echo_bringup autonomous_navigation_launch.py\n"
+      ]
+    },
+    "mapping": {
+      "label": "Mapping",
+      "enabled": true,
+      "exclusive_group": "robot_stack",
+      "command": [
+        "bash",
+        "-lc",
+        "set -e\nsource ~/echo_runtime/bin/echo_env.sh\ncd ~/.openclaw/workspace/github_echo/echo_workspace\n\nLOG_DIR=~/echo_runtime/logs\nmkdir -p \"$LOG_DIR\"\n\necho \"[mapping] stopping navigation before mapping...\"\n\npkill -f \"[a]utonomous_navigation_launch.py\" 2>/dev/null || true\npkill -f \"[n]av2_bringup.*bringup_launch.py\" 2>/dev/null || true\npkill -f \"[c]omponent_container.*nav2_container\" 2>/dev/null || true\npkill -f \"[c]omponent_container_isolated.*nav2_container\" 2>/dev/null || true\npkill -f \"[a]priltag_action_router.py\" 2>/dev/null || true\n\n\necho \"[mapping] starting real mapping launch...\"\nexec ros2 launch echo_bringup mapping_launch.py start_foxglove:=false\n"
+      ]
+    },
+    "camera": {
+      "label": "Camera",
+      "enabled": true,
+      "exclusive_group": "camera",
+      "command": [
+        "bash",
+        "-lc",
+        "set -e\nsource ~/echo_runtime/bin/echo_env.sh\n\nLOG_DIR=~/echo_runtime/logs\nmkdir -p \"$LOG_DIR\"\n\necho \"[camera] starting camera publisher on index 8\"\npython3 $HOME/.openclaw/workspace/github_echo/echo_workspace/src/echo_perception/scripts/camera_publisher.py \\\n  --ros-args \\\n  -p camera_index:=8 \\\n  -p width:=640 \\\n  -p height:=480 \\\n  -p fps:=15.0 \\\n  > \"$LOG_DIR/camera_publisher.log\" 2>&1 &\nCAMERA_PID=$!\n\nsleep 3\n\necho \"[camera] starting apriltag detector\"\npython3 $HOME/.openclaw/workspace/github_echo/echo_workspace/src/echo_perception/scripts/apriltag_detector.py \\\n  > \"$LOG_DIR/apriltag_detector.log\" 2>&1 &\nAPRILTAG_PID=$!\n\ncleanup() {\n  echo \"[camera] stopping camera pipeline\"\n  kill \"$CAMERA_PID\" \"$APRILTAG_PID\" 2>/dev/null || true\n  wait \"$CAMERA_PID\" \"$APRILTAG_PID\" 2>/dev/null || true\n}\ntrap cleanup EXIT INT TERM\n\necho \"[camera] pipeline online\"\necho \"[camera] dashboard topic: /apriltag/annotated_image/compressed\"\n\nwait"
+      ]
+    },
+    "foxglove": {
+      "label": "Foxglove Bridge",
+      "enabled": true,
+      "exclusive_group": "debug_bridge",
+      "command": [
+        "bash",
+        "-lc",
+        "source ~/echo_runtime/bin/echo_env.sh && ros2 launch foxglove_bridge foxglove_bridge_launch.xml port:=8765"
+      ]
+    },
+    "stop_stack": {
+      "label": "Stop Echo Stack",
+      "enabled": true,
+      "exclusive_group": null,
+      "command": [
+        "bash",
+        "-lc",
+        "source ~/echo_runtime/bin/echo_env.sh\necho \"[stop_stack] stopping Echo robot stack...\"\n\npkill -f \"[a]utonomous_navigation_launch.py\" 2>/dev/null || true\npkill -f \"[n]av2_bringup.*bringup_launch.py\" 2>/dev/null || true\npkill -f \"[c]omponent_container.*nav2_container\" 2>/dev/null || true\npkill -f \"[c]omponent_container_isolated.*nav2_container\" 2>/dev/null || true\npkill -f \"[a]priltag_action_router.py\" 2>/dev/null || true\n\n\npkill -f \"[m]apping_launch.py\" 2>/dev/null || true\npkill -f \"[s]lam_toolbox\" 2>/dev/null || true\n\n\npkill -f \"[m]icro_ros_agent.*serial\" 2>/dev/null || true\npkill -f \"[e]sp32_encoder_odometry\" 2>/dev/null || true\npkill -f \"[e]kf_node\" 2>/dev/null || true\npkill -f \"[y]dlidar_ros2_driver_node\" 2>/dev/null || true\npkill -f \"[s]tatic_transform_publisher.*laser_frame\" 2>/dev/null || true\npkill -f \"[j]oint_state_publisher\" 2>/dev/null || true\npkill -f \"[r]obot_state_publisher\" 2>/dev/null || true\n\necho done\n"
+      ]
+    },
+    "save_map": {
+      "label": "Save Map",
+      "enabled": true,
+      "exclusive_group": null,
+      "command": [
+        "bash",
+        "-lc",
+        "set -e\nsource ~/echo_runtime/bin/echo_env.sh\nMAP_DIR=~/echo_runtime/maps; mkdir -p \"$MAP_DIR\"\nros2 run nav2_map_server map_saver_cli -f \"$MAP_DIR/echo_current_map\""
+      ]
+    }
+  }
+}
