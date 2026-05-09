@@ -1,0 +1,19 @@
+places:
+  door:
+    frame_id: map
+    x: -0.5224124052
+    y: 2.5367374480
+    yaw: -1.061
+
+
+  next_to_us:
+    frame_id: map
+    x: -0.3747944347
+    y: 0.3987605843
+    yaw: -0.995
+
+  middle:
+    frame_id: map
+    x: 1.2644976771
+    y: -0.8052688973
+    yaw: -1.072

@@ -1,0 +1,15 @@
+[Unit]
+Description=Echo ROSBridge WebSocket Server
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=%h/echo_runtime/bin/start_rosbridge.sh
+Restart=always
+RestartSec=2
+WorkingDirectory=%h
+Environment=PYTHONUNBUFFERED=1
+Environment=ROSBRIDGE_PORT=9090
+
+[Install]
+WantedBy=default.target

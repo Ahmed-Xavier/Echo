@@ -1,0 +1,203 @@
+import os
+
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
+from launch.conditions import IfCondition
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
+
+
+def wait_for_msg_command(topic):
+    safe_name = topic.replace("/", "_")
+    return (
+        f"echo '[autonomous_navigation] Waiting for {topic} messages...' && "
+        f"until timeout 5s ros2 topic echo --once {topic} "
+        f">/tmp/echo_wait{safe_name}.log 2>&1; do sleep 1; done && "
+        f"echo '[autonomous_navigation] {topic} is publishing.'"
+    )
+
+
+def generate_launch_description():
+    echo_bringup_share = get_package_share_directory("echo_bringup")
+    ydlidar_share = get_package_share_directory("ydlidar_ros2_driver")
+
+    esp32_port = LaunchConfiguration("esp32_port")
+    micro_ros_baud = LaunchConfiguration("micro_ros_baud")
+    camera_index = LaunchConfiguration("camera_index")
+
+    start_hardware = LaunchConfiguration("start_hardware")
+    start_lidar = LaunchConfiguration("start_lidar")
+    start_nav2 = LaunchConfiguration("start_nav2")
+    start_dashboard = LaunchConfiguration("start_dashboard")
+    start_camera = LaunchConfiguration("start_camera")
+    start_apriltag = LaunchConfiguration("start_apriltag")
+    start_robot_description = LaunchConfiguration("start_robot_description")
+
+    map_file = os.path.expanduser("~/echo_runtime/maps/Salle_Hall.yaml")
+    params_file = os.path.expanduser(
+        "~/.openclaw/workspace/github_echo/echo_workspace/src/echo_navigation/config/nav2_params.yaml"
+    )
+
+    micro_ros_agent = Node(
+        package="micro_ros_agent",
+        executable="micro_ros_agent",
+        name="micro_ros_agent",
+        output="screen",
+        arguments=["serial", "--dev", esp32_port, "-b", micro_ros_baud],
+        condition=IfCondition(start_hardware),
+    )
+
+    motor_controller = Node(
+        package="robot_controller",
+        executable="motor_controller",
+        name="motor_controller",
+        output="screen",
+        condition=IfCondition(start_hardware),
+    )
+
+    encoder_odometry = ExecuteProcess(
+        cmd=[
+            "bash",
+            "-c",
+            (
+                wait_for_msg_command("/encoders/FL")
+                + " && "
+                + wait_for_msg_command("/encoders/FR")
+                + " && "
+                + wait_for_msg_command("/encoders/RL")
+                + " && "
+                + wait_for_msg_command("/encoders/RR")
+                + " && echo '[autonomous_navigation] Starting ESP32 encoder odometry...' && "
+                + "ros2 run robot_controller esp32_encoder_odometry"
+            ),
+        ],
+        output="screen",
+        condition=IfCondition(start_hardware),
+    )
+
+    ekf = ExecuteProcess(
+        cmd=[
+            "bash",
+            "-c",
+            (
+                wait_for_msg_command("/wheel_odom")
+                + " && "
+                + wait_for_msg_command("/imu/data_raw")
+                + " && echo '[autonomous_navigation] Starting EKF...' && "
+                + "ros2 launch echo_bringup ekf_launch.py"
+            ),
+        ],
+        output="screen",
+        condition=IfCondition(start_hardware),
+    )
+
+    ydlidar_params = os.path.expanduser(
+        "~/.openclaw/workspace/github_echo/echo_workspace/src/ydlidar_ros2_driver/params/ydlidar.yaml"
+    )
+
+    ydlidar = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(ydlidar_share, "launch", "ydlidar_launch.py")
+        ),
+        launch_arguments={"params_file": ydlidar_params}.items(),
+        condition=IfCondition(start_lidar),
+    )
+
+    nav2 = ExecuteProcess(
+        cmd=[
+            "bash",
+            "-c",
+            (
+                wait_for_msg_command("/scan")
+                + " && "
+                + wait_for_msg_command("/odometry/filtered")
+                + " && echo '[autonomous_navigation] Waiting for odom -> base_link TF...' && "
+                + "until timeout 3s ros2 run tf2_ros tf2_echo odom base_link 2>&1 | "
+                + "grep -q 'Translation:'; do sleep 1; done && "
+                + "echo '[autonomous_navigation] odom -> base_link TF is available.' && "
+                + "echo '[autonomous_navigation] Starting Nav2...' && "
+                + f"ros2 launch nav2_bringup bringup_launch.py "
+                + f"map:={map_file} "
+                + f"params_file:={params_file} "
+                + "use_sim_time:=false "
+                + "autostart:=true"
+            ),
+        ],
+        output="screen",
+        condition=IfCondition(start_nav2),
+    )
+
+    rosbridge = ExecuteProcess(
+        cmd=["ros2", "launch", "rosbridge_server", "rosbridge_websocket_launch.xml"],
+        output="screen",
+        condition=IfCondition(start_dashboard),
+    )
+
+    foxglove = ExecuteProcess(
+        cmd=["ros2", "launch", "foxglove_bridge", "foxglove_bridge_launch.xml"],
+        output="screen",
+        condition=IfCondition(start_dashboard),
+    )
+
+    camera = Node(
+        package="echo_perception",
+        executable="camera_publisher.py",
+        name="echo_camera_publisher",
+        output="screen",
+        parameters=[{"camera_index": camera_index}],
+        condition=IfCondition(start_camera),
+    )
+
+    apriltag = ExecuteProcess(
+        cmd=[
+            "bash",
+            "-c",
+            (
+                wait_for_msg_command("/echo/camera/image/compressed")
+                + " && echo '[autonomous_navigation] Starting AprilTag detector...' && "
+                + "ros2 run echo_perception apriltag_detector.py"
+            ),
+        ],
+        output="screen",
+        condition=IfCondition(start_apriltag),
+    )
+
+    robot_description = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(echo_bringup_share, "launch", "robot_description_launch.py")
+        ),
+        condition=IfCondition(start_robot_description),
+    )
+
+
+    return LaunchDescription([
+        DeclareLaunchArgument(
+            "esp32_port",
+            default_value="/dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0",
+        ),
+        DeclareLaunchArgument("micro_ros_baud", default_value="115200"),
+        DeclareLaunchArgument("camera_index", default_value="8"),
+
+        DeclareLaunchArgument("start_hardware", default_value="true"),
+        DeclareLaunchArgument("start_lidar", default_value="true"),
+        DeclareLaunchArgument("start_nav2", default_value="true"),
+        DeclareLaunchArgument("start_dashboard", default_value="true"),
+        DeclareLaunchArgument("start_camera", default_value="true"),
+        DeclareLaunchArgument("start_apriltag", default_value="true"),
+        DeclareLaunchArgument("start_robot_description", default_value="true"),
+
+
+        micro_ros_agent,
+        motor_controller,
+        encoder_odometry,
+        ekf,
+        ydlidar,
+        robot_description,
+        nav2,
+        rosbridge,
+        foxglove,
+        camera,
+        apriltag,
+    ])

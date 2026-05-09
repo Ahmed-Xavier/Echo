@@ -1,0 +1,14 @@
+[Unit]
+Description=Echo Launch Control Server
+After=default.target echo-rosbridge.service
+
+[Service]
+Type=simple
+ExecStart=%h/echo_runtime/launch_server/launch_server.py
+Restart=always
+RestartSec=2
+WorkingDirectory=%h/echo_runtime/launch_server
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=default.target

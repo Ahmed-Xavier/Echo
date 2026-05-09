@@ -1,0 +1,84 @@
+{
+  "actions": {
+    "robot_body": {
+      "label": "Robot Body",
+      "enabled": true,
+      "exclusive_group": "robot_body",
+      "command": [
+        "bash",
+        "-lc",
+        "set -e\nsource ~/echo_runtime/bin/echo_env.sh\nLOG_DIR=~/echo_runtime/logs\nmkdir -p \"$LOG_DIR\"\nESP32_PORT=\"/dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0\"\nESP32_BAUD=\"115200\"\n\npkill -x micro_ros_agent 2>/dev/null || true\nsleep 1\n\necho \"[robot_body] starting micro_ros_agent on $ESP32_PORT @ $ESP32_BAUD\"\nros2 run micro_ros_agent micro_ros_agent serial --dev \"$ESP32_PORT\" -b \"$ESP32_BAUD\" -v4 > \"$LOG_DIR/robot_body_micro_ros_agent.log\" 2>&1 &\nAGENT_PID=$!\n\necho \"[robot_body] agent pid=$AGENT_PID\"\necho \"[robot_body] if ESP32 topics do not appear, press ESP32 RST and retry Robot Body\"\n\ntrap 'kill \"$AGENT_PID\" 2>/dev/null || true; wait \"$AGENT_PID\" 2>/dev/null || true' EXIT INT TERM\nwait \"$AGENT_PID\"\n"
+      ]
+    },
+    "localization": {
+      "label": "Localization",
+      "enabled": true,
+      "exclusive_group": "localization",
+      "command": [
+        "bash",
+        "-lc",
+        "set -e\nsource ~/echo_runtime/bin/echo_env.sh\nLOG_DIR=~/echo_runtime/logs; mkdir -p \"$LOG_DIR\"\nYDLIDAR_SRC=\"$HOME/.openclaw/workspace/github_echo/echo_workspace/src/ydlidar_ros2_driver\"; YDLIDAR_PARAMS=\"$YDLIDAR_SRC/params/ydlidar.yaml\"\nbash -lc \"ros2 launch '$YDLIDAR_SRC/launch/ydlidar_launch.py' params_file:='$YDLIDAR_PARAMS'\" > \"$LOG_DIR/localization_ydlidar.log\" 2>&1 & P1=$!\nbash -lc \"ros2 run robot_controller esp32_encoder_odometry\" > \"$LOG_DIR/localization_odom.log\" 2>&1 & P2=$!\nbash -lc \"ros2 launch echo_bringup ekf_launch.py\" > \"$LOG_DIR/localization_ekf.log\" 2>&1 & P3=$!\ntrap 'kill \"$P1\" \"$P2\" \"$P3\" 2>/dev/null || true; wait \"$P1\" \"$P2\" \"$P3\" 2>/dev/null || true' EXIT INT TERM\nfor t in /scan /wheel_odom /odometry/filtered; do end=$((SECONDS+30)); f=0; while [ \"$SECONDS\" -lt \"$end\" ]; do ros2 topic list | grep -qx \"$t\" && f=1 && break; sleep 1; done; [ \"$f\" -eq 1 ] || exit 1; done\nwait"
+      ]
+    },
+    "navigation": {
+      "label": "Navigation",
+      "enabled": true,
+      "exclusive_group": "navigation",
+      "command": [
+        "bash",
+        "-lc",
+        "set -e\nsource ~/echo_runtime/bin/echo_env.sh\nLOG_DIR=~/echo_runtime/logs; mkdir -p \"$LOG_DIR\"\nMAP_FILE=\"$HOME/echo_runtime/maps/echo_current_map.yaml\"; NAV2_PARAMS=\"$HOME/echo_runtime/nav2_runtime_params.yaml\"\n[ -f \"$MAP_FILE\" ] && [ -f \"$NAV2_PARAMS\" ]\nbash -lc \"ros2 launch nav2_bringup bringup_launch.py map:='$MAP_FILE' params_file:='$NAV2_PARAMS' use_sim_time:=false autostart:=true\" > \"$LOG_DIR/navigation_nav2.log\" 2>&1 & P1=$!\ntrap 'kill \"$P1\" 2>/dev/null || true; wait \"$P1\" 2>/dev/null || true; pkill -f \"nav2_bringup.*bringup_launch.py\" 2>/dev/null || true; pkill -f \"component_container.*nav2_container\" 2>/dev/null || true' EXIT INT TERM\nfor n in /bt_navigator /controller_server /planner_server; do end=$((SECONDS+45)); f=0; while [ \"$SECONDS\" -lt \"$end\" ]; do ros2 node list | grep -qx \"$n\" && f=1 && break; sleep 1; done; [ \"$f\" -eq 1 ] || exit 1; done\nfor t in /map /amcl_pose; do end=$((SECONDS+30)); f=0; while [ \"$SECONDS\" -lt \"$end\" ]; do ros2 topic list | grep -qx \"$t\" && f=1 && break; sleep 1; done; [ \"$f\" -eq 1 ] || exit 1; done\nwait"
+      ]
+    },
+    "mapping": {
+      "label": "Mapping",
+      "enabled": true,
+      "exclusive_group": "robot_stack",
+      "command": [
+        "bash",
+        "-lc",
+        "set -e\nsource ~/echo_runtime/bin/echo_env.sh\n\nLOG_DIR=~/echo_runtime/logs\nmkdir -p \"$LOG_DIR\"\n\nESP32_PORT=\"/dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0\"\nESP32_BAUD=\"115200\"\nYDLIDAR_SRC=\"$HOME/.openclaw/workspace/github_echo/echo_workspace/src/ydlidar_ros2_driver\"\nYDLIDAR_PARAMS=\"$YDLIDAR_SRC/params/ydlidar.yaml\"\n\nPIDS=\"\"\n\nstart_bg() {\n  NAME=\"$1\"\n  CMD=\"$2\"\n  LOG=\"$LOG_DIR/$NAME.log\"\n\n  echo \"[mapping] starting $NAME\"\n  bash -lc \"$CMD\" > \"$LOG\" 2>&1 &\n  PID=$!\n  PIDS=\"$PIDS $PID\"\n  echo \"[mapping] $NAME pid=$PID log=$LOG\"\n}\n\ncleanup() {\n  echo \"[mapping] stopping mapping stack\"\n  for PID in $PIDS; do\n    kill \"$PID\" 2>/dev/null || true\n  done\n  sleep 2\n  for PID in $PIDS; do\n    kill -9 \"$PID\" 2>/dev/null || true\n  done\n  wait $PIDS 2>/dev/null || true\n}\ntrap cleanup EXIT INT TERM\n\nwait_for_topic() {\n  TOPIC=\"$1\"\n  TIMEOUT=\"${2:-30}\"\n  echo \"[mapping] waiting for $TOPIC\"\n  end=$((SECONDS + TIMEOUT))\n  while [ \"$SECONDS\" -lt \"$end\" ]; do\n    if ros2 topic list | grep -x \"$TOPIC\" >/dev/null; then\n      echo \"[mapping] found $TOPIC\"\n      return 0\n    fi\n    sleep 1\n  done\n  echo \"[mapping] ERROR: timed out waiting for $TOPIC\"\n  return 1\n}\n\nwait_for_node() {\n  NODE=\"$1\"\n  TIMEOUT=\"${2:-30}\"\n  echo \"[mapping] waiting for node $NODE\"\n  end=$((SECONDS + TIMEOUT))\n  while [ \"$SECONDS\" -lt \"$end\" ]; do\n    if ros2 node list | grep -x \"$NODE\" >/dev/null; then\n      echo \"[mapping] found node $NODE\"\n      return 0\n    fi\n    sleep 1\n  done\n  echo \"[mapping] ERROR: timed out waiting for node $NODE\"\n  return 1\n}\n\necho \"[mapping] Echo mapping stack starting\"\necho \"[mapping] ESP32: $ESP32_PORT\"\necho \"[mapping] LiDAR params: $YDLIDAR_PARAMS\"\n\nstart_bg micro_ros_agent \"ros2 run micro_ros_agent micro_ros_agent serial --dev '$ESP32_PORT' -b '$ESP32_BAUD' -v4\"\nwait_for_node /esp32_echo_node 45\nwait_for_topic /imu/data_raw 20\n\nstart_bg ydlidar \"ros2 launch '$YDLIDAR_SRC/launch/ydlidar_launch.py' params_file:='$YDLIDAR_PARAMS'\"\nwait_for_topic /scan 30\n\nstart_bg esp32_encoder_odometry \"ros2 run robot_controller esp32_encoder_odometry\"\nwait_for_topic /wheel_odom 20\n\nstart_bg ekf \"ros2 launch echo_bringup ekf_launch.py\"\nwait_for_topic /odometry/filtered 20\n\nstart_bg slam \"ros2 launch echo_bringup slam_launch.py\"\nwait_for_node /slam_toolbox 30\n\necho \"[mapping] configuring slam_toolbox\"\nros2 lifecycle set /slam_toolbox configure || true\nsleep 2\n\necho \"[mapping] activating slam_toolbox\"\nros2 lifecycle set /slam_toolbox activate || true\nsleep 4\n\nwait_for_topic /map 30\n\necho \"[mapping] mapping stack online\"\necho \"[mapping] topics: /scan /wheel_odom /odometry/filtered /map\"\necho \"[mapping] fixed frame for Foxglove: map\"\n\nwait"
+      ]
+    },
+    "camera": {
+      "label": "Camera",
+      "enabled": true,
+      "exclusive_group": "camera",
+      "command": [
+        "bash",
+        "-lc",
+        "set -e\nsource ~/echo_runtime/bin/echo_env.sh\n\nLOG_DIR=~/echo_runtime/logs\nmkdir -p \"$LOG_DIR\"\n\necho \"[camera] starting camera publisher on index 8\"\npython3 $HOME/.openclaw/workspace/github_echo/echo_workspace/src/echo_perception/scripts/camera_publisher.py \\\n  --ros-args \\\n  -p camera_index:=8 \\\n  -p width:=640 \\\n  -p height:=480 \\\n  -p fps:=15.0 \\\n  > \"$LOG_DIR/camera_publisher.log\" 2>&1 &\nCAMERA_PID=$!\n\nsleep 3\n\necho \"[camera] starting apriltag detector\"\npython3 $HOME/.openclaw/workspace/github_echo/echo_workspace/src/echo_perception/scripts/apriltag_detector.py \\\n  > \"$LOG_DIR/apriltag_detector.log\" 2>&1 &\nAPRILTAG_PID=$!\n\ncleanup() {\n  echo \"[camera] stopping camera pipeline\"\n  kill \"$CAMERA_PID\" \"$APRILTAG_PID\" 2>/dev/null || true\n  wait \"$CAMERA_PID\" \"$APRILTAG_PID\" 2>/dev/null || true\n}\ntrap cleanup EXIT INT TERM\n\necho \"[camera] pipeline online\"\necho \"[camera] dashboard topic: /apriltag/annotated_image/compressed\"\n\nwait"
+      ]
+    },
+    "foxglove": {
+      "label": "Foxglove Bridge",
+      "enabled": true,
+      "exclusive_group": "debug_bridge",
+      "command": [
+        "bash",
+        "-lc",
+        "source ~/echo_runtime/bin/echo_env.sh && ros2 launch foxglove_bridge foxglove_bridge_launch.xml port:=8765"
+      ]
+    },
+    "stop_stack": {
+      "label": "Stop Echo Stack",
+      "enabled": true,
+      "exclusive_group": null,
+      "command": [
+        "bash",
+        "-lc",
+        "source ~/echo_runtime/bin/echo_env.sh\npkill -f \"nav2_bringup.*bringup_launch.py\" 2>/dev/null || true\npkill -f \"component_container.*nav2_container\" 2>/dev/null || true\npkill -f \"ekf_node\" 2>/dev/null || true\npkill -f \"esp32_encoder_odometry\" 2>/dev/null || true\npkill -f \"ydlidar_ros2_driver_node\" 2>/dev/null || true\npkill -f \"slam_toolbox\" 2>/dev/null || true\npkill -f \"micro_ros_agent.*serial\" 2>/dev/null || true\necho done"
+      ]
+    },
+    "save_map": {
+      "label": "Save Map",
+      "enabled": true,
+      "exclusive_group": null,
+      "command": [
+        "bash",
+        "-lc",
+        "set -e\nsource ~/echo_runtime/bin/echo_env.sh\nMAP_DIR=~/echo_runtime/maps; mkdir -p \"$MAP_DIR\"\nros2 run nav2_map_server map_saver_cli -f \"$MAP_DIR/echo_current_map\""
+      ]
+    }
+  }
+}

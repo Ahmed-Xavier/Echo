@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Echo Runtime Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.min.js"></script>
+  <style>
+    :root {
+      --bg: #fff8ea;
+      --card: rgba(255, 253, 247, .86);
+      --ink: #263126;
+      --muted: #6d766c;
+      --line: #e4dccb;
+      --green: #4f8f61;
+      --blue: #4c91b9;
+      --red: #c84642;
+      --amber: #c96f43;
+      --shadow: 0 18px 42px rgba(77, 61, 35, .13);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(255, 215, 145, .45), transparent 28rem),
+        radial-gradient(circle at 85% 15%, rgba(179, 220, 238, .55), transparent 26rem),
+        linear-gradient(135deg, #fff7e5, #edf7ef);
+    }
+    .app { width: min(1180px, calc(100vw - 28px)); margin: 0 auto; padding: 18px 0 28px; }
+    header, .card {
+      border: 1px solid rgba(255,255,255,.76);
+      border-radius: 24px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+      padding: 16px;
+    }
+    h1 { margin: 0; font-size: clamp(1.4rem, 3vw, 2.1rem); line-height: 1; letter-spacing: -.04em; }
+    .subtitle { margin-top: 6px; color: var(--muted); font-weight: 650; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 13px;
+      border: 1px solid var(--line); border-radius: 999px; background: #fff; font-weight: 850; white-space: nowrap;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 5px rgba(200,70,66,.12); }
+    .dot.on { background: var(--green); box-shadow: 0 0 0 5px rgba(79,143,97,.13); }
+    .grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 14px; }
+    .card { padding: 16px; }
+    h2 { margin: 0 0 12px; color: var(--muted); font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; }
+    label { display: block; margin: 10px 0 5px; color: var(--muted); font-size: .75rem; font-weight: 850; text-transform: uppercase; letter-spacing: .08em; }
+    input {
+      width: 100%; height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 14px;
+      background: #fff; color: var(--ink); font: inherit; outline: none;
+    }
+    input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(76,145,185,.14); }
+    .buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+    button {
+      min-height: 42px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px;
+      background: #fff; color: var(--ink); font: inherit; font-weight: 850; cursor: pointer;
+    }
+    button.primary { color: #fff; background: linear-gradient(135deg, var(--green), #2f6e43); border-color: transparent; }
+    button.warn { color: #fff; background: linear-gradient(135deg, var(--amber), #9d4f2d); border-color: transparent; }
+    button.stop { color: #fff; background: linear-gradient(135deg, var(--red), #a92825); border-color: transparent; }
+    button:disabled { opacity: .42; cursor: not-allowed; }
+    .actions { display: grid; gap: 10px; }
+    .action {
+      display: grid; grid-template-columns: 1fr auto auto auto; gap: 8px; align-items: center;
+      padding: 12px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,255,255,.65);
+    }
+    .action b { display: block; }
+    .action small { display: block; margin-top: 3px; color: var(--muted); font-weight: 700; }
+    .disabled { opacity: .55; }
+    pre {
+      margin: 0; min-height: 280px; max-height: 520px; overflow: auto; padding: 12px;
+      border: 1px solid var(--line); border-radius: 18px; background: #141814; color: #eaf6e7;
+      font-size: .82rem; line-height: 1.45; white-space: pre-wrap;
+    }
+    .status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+    .metric { padding: 10px; border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.62); }
+    .metric b { display: block; }
+    .metric span { display: block; margin-top: 3px; color: var(--muted); font-size: .72rem; font-weight: 800; text-transform: uppercase; }
+    .camera-preview {
+      width: 100%; min-height: 260px; margin-top: 12px; display: grid; place-items: center;
+      border: 1px solid var(--line); border-radius: 20px; background: #111; overflow: hidden; color: #fff8ea; text-align: center;
+    }
+    .camera-preview img { display: block; width: 100%; height: auto; max-height: 420px; object-fit: contain; }
+    code { color: inherit; }
+    @media (max-width: 880px) {
+      header, .grid { grid-template-columns: 1fr; }
+      .action { grid-template-columns: 1fr; }
+      .status-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <h1>Echo Runtime Dashboard</h1>
+        <div class="subtitle">Pi + camera mode. Robot-body actions stay disabled until hardware is available.</div>
+      </div>
+      <div class="pill"><span class="dot" id="api-dot"></span><span id="api-state">API offline</span></div>
+    </header>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Connections</h2>
+        <label for="api-url">Launch API</label>
+        <input id="api-url" value="http://127.0.0.1:5050">
+        <label for="ros-url">ROS Bridge</label>
+        <input id="ros-url" value="ws://127.0.0.1:9090">
+        <label for="camera-topic">Annotated camera topic</label>
+        <input id="camera-topic" value="/apriltag/annotated_image/compressed">
+        <div class="buttons">
+          <button class="primary" id="connect-api">Connect API</button>
+          <button id="connect-ros">Connect ROS</button>
+          <button id="refresh">Refresh</button>
+        </div>
+        <div class="status-grid">
+          <div class="metric"><b id="ros-state">Offline</b><span>ROS bridge</span></div>
+          <div class="metric"><b id="running-count">0</b><span>Running actions</span></div>
+          <div class="metric"><b id="camera-state">Idle</b><span>Annotated feed</span></div>
+        </div>
+        <div class="camera-preview" id="camera-preview">
+          <div>Start Camera, then connect ROS to preview<br><code>/apriltag/annotated_image/compressed</code></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Launch Panel</h2>
+        <div class="actions" id="actions"></div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:14px">
+      <h2>Console</h2>
+      <pre id="console">Waiting for API...</pre>
+    </section>
+  </main>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    let apiStatus = null;
+    let ros = null;
+    let rosConnected = false;
+    let cameraSub = null;
+
+    function log(message) {
+      const box = $("console");
+      const time = new Date().toLocaleTimeString("en-GB");
+      box.textContent += `\n[${time}] ${message}`;
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function setApiOnline(online) {
+      $("api-dot").classList.toggle("on", online);
+      $("api-state").textContent = online ? "API online" : "API offline";
+    }
+
+    function apiBase() {
+      return $("api-url").value.replace(/\/+$/, "");
+    }
+
+    async function api(path, options = {}) {
+      const res = await fetch(apiBase() + path, {
+        headers: { "Content-Type": "application/json" },
+        ...options,
+      });
+      return await res.json();
+    }
+
+    async function refreshStatus() {
+      try {
+        apiStatus = await api("/status");
+        setApiOnline(Boolean(apiStatus.ok));
+        renderActions();
+        $("running-count").textContent = String((apiStatus.running || []).length);
+        log(`status: running=[${(apiStatus.running || []).join(", ")}]`);
+      } catch (err) {
+        setApiOnline(false);
+        log("API error: " + err.message);
+      }
+    }
+
+    async function loadLogs(action) {
+      try {
+        const data = await api(`/logs?action=${encodeURIComponent(action)}&lines=40`);
+        if (data.lines) log(`--- ${action} logs ---\n` + data.lines.join("\n"));
+        else if (data.message) log(`${action}: ${data.message}`);
+      } catch (err) {
+        log(`log error for ${action}: ${err.message}`);
+      }
+    }
+
+    async function launchAction(action) {
+      const data = await api("/launch", { method: "POST", body: JSON.stringify({ action }) });
+      log(`launch ${action}: ${data.message || data.error || JSON.stringify(data)}`);
+      await new Promise(r => setTimeout(r, 1000));
+      await refreshStatus();
+      await loadLogs(action);
+    }
+
+    async function stopAction(action) {
+      const data = await api("/stop", { method: "POST", body: JSON.stringify({ action }) });
+      log(`stop ${action}: ${data.message || data.error || JSON.stringify(data)}`);
+      await new Promise(r => setTimeout(r, 1000));
+      await refreshStatus();
+      await loadLogs(action);
+    }
+
+    function renderActions() {
+      const root = $("actions");
+      root.innerHTML = "";
+      const actions = (apiStatus && apiStatus.actions) || {};
+      const running = new Set((apiStatus && apiStatus.running) || []);
+
+      Object.entries(actions).forEach(([name, spec]) => {
+        const row = document.createElement("div");
+        const enabled = Boolean(spec.enabled);
+        const isRunning = running.has(name);
+        row.className = `action ${enabled ? "" : "disabled"}`;
+
+        const info = document.createElement("div");
+        info.innerHTML = `<b>${spec.label || name}</b><small>${enabled ? (isRunning ? "running" : "ready") : "disabled"} · ${spec.exclusive_group || "no group"}</small>`;
+
+        const start = document.createElement("button");
+        start.textContent = "Start";
+        start.className = name === "camera" ? "primary" : "warn";
+        start.disabled = !enabled || isRunning;
+        start.onclick = () => launchAction(name);
+
+        const stop = document.createElement("button");
+        stop.textContent = "Stop";
+        stop.className = "stop";
+        stop.disabled = !enabled || !isRunning;
+        stop.onclick = () => stopAction(name);
+
+        const logs = document.createElement("button");
+        logs.textContent = "Logs";
+        logs.disabled = !enabled;
+        logs.onclick = () => loadLogs(name);
+
+        row.append(info, start, stop, logs);
+        root.appendChild(row);
+      });
+    }
+
+    function connectRos() {
+      if (rosConnected && ros) {
+        disconnectRos();
+        return;
+      }
+
+      if (typeof ROSLIB === "undefined") {
+        log("ROSLIB is not available. Check internet/CDN or vendor roslib locally.");
+        return;
+      }
+
+      ros = new ROSLIB.Ros({ url: $("ros-url").value.trim() });
+
+      ros.on("connection", () => {
+        rosConnected = true;
+        $("ros-state").textContent = "Online";
+        $("connect-ros").textContent = "Disconnect ROS";
+        log("ROS connected");
+        subscribeCamera();
+      });
+
+      ros.on("error", err => log("ROS error: " + (err && err.message ? err.message : String(err))));
+
+      ros.on("close", () => {
+        rosConnected = false;
+        $("ros-state").textContent = "Offline";
+        $("connect-ros").textContent = "Connect ROS";
+        log("ROS disconnected");
+      });
+    }
+
+    function disconnectRos() {
+      if (cameraSub) {
+        try { cameraSub.unsubscribe(); } catch {}
+        cameraSub = null;
+      }
+      if (ros) {
+        try { ros.close(); } catch {}
+      }
+      ros = null;
+      rosConnected = false;
+      $("ros-state").textContent = "Offline";
+      $("connect-ros").textContent = "Connect ROS";
+    }
+
+    function subscribeCamera() {
+      if (!rosConnected || !ros) return;
+      if (cameraSub) {
+        try { cameraSub.unsubscribe(); } catch {}
+      }
+
+      const topicName = $("camera-topic").value.trim() || "/apriltag/annotated_image/compressed";
+      cameraSub = new ROSLIB.Topic({
+        ros,
+        name: topicName,
+        messageType: "sensor_msgs/CompressedImage",
+        throttle_rate: 120,
+        queue_length: 1,
+      });
+
+      const preview = $("camera-preview");
+      preview.innerHTML = "";
+      const img = document.createElement("img");
+      img.alt = "Annotated camera";
+      preview.appendChild(img);
+
+      let gotFrame = false;
+      cameraSub.subscribe(msg => {
+        gotFrame = true;
+        $("camera-state").textContent = "Live";
+        img.src = "data:image/jpeg;base64," + msg.data;
+      });
+
+      setTimeout(() => {
+        if (!gotFrame) {
+          $("camera-state").textContent = "Waiting";
+          preview.innerHTML = `<div>No annotated frames yet<br><code>${topicName}</code></div>`;
+        }
+      }, 2500);
+
+      log("Subscribed to camera topic: " + topicName);
+    }
+
+    $("connect-api").onclick = refreshStatus;
+    $("refresh").onclick = refreshStatus;
+    $("connect-ros").onclick = connectRos;
+
+    refreshStatus();
+    setInterval(refreshStatus, 5000);
+  </script>
+</body>
+</html>

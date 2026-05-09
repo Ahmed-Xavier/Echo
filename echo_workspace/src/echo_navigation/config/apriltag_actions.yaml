@@ -1,0 +1,19 @@
+tags:
+  0:
+    type: go_to
+    target: door
+
+  1:
+    type: go_to
+    target: next_to_us
+
+  2:
+    type: go_to
+    target: middle
+
+  3:
+    type: follow
+    linear_speed: 0.48
+
+  4:
+    type: stop

@@ -1,0 +1,3186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Echo Fleet Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,750&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.min.js"></script>
+  <script src="auth.js"></script>
+  <style>
+    :root {
+      --paper: #fff8ea;
+      --paper-strong: #fffdf7;
+      --ink: #263126;
+      --muted: #6d766c;
+      --line: #e4dccb;
+      --line-strong: #d1c4ad;
+      --leaf: #4f8f61;
+      --leaf-dark: #2f6e43;
+      --sky: #4c91b9;
+      --sky-soft: #dbeefa;
+      --clay: #c96f43;
+      --clay-soft: #ffe1cc;
+      --rose: #c84642;
+      --rose-soft: #ffe2df;
+      --sand: #f3e5c8;
+      --shadow: 0 24px 60px rgba(77, 61, 35, 0.15);
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --topbar: 78px;
+      --left: clamp(244px, 23vw, 316px);
+      --right: clamp(250px, 24vw, 326px);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(255, 210, 140, 0.46), transparent 32rem),
+        radial-gradient(circle at 82% 16%, rgba(179, 220, 238, 0.66), transparent 28rem),
+        linear-gradient(135deg, #fff7e5 0%, #f8efd9 38%, #edf7ef 100%);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 100vw;
+      min-height: 100vh;
+      padding: 18px;
+      display: grid;
+      grid-template-rows: var(--topbar) auto auto;
+      gap: 16px;
+      overflow-x: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: nowrap;
+      gap: 18px;
+      padding: 14px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.76);
+      border-radius: 28px;
+      background: rgba(255, 253, 247, 0.78);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 0 0 auto;
+      min-width: 270px;
+    }
+
+    .brand-mark {
+      width: 50px;
+      height: 50px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      background:
+        linear-gradient(150deg, rgba(255, 255, 255, 0.24), transparent 42%),
+        linear-gradient(135deg, var(--leaf), var(--sky));
+      box-shadow: 0 16px 34px rgba(79, 143, 97, 0.3);
+    }
+
+    .brand-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.45rem;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-subtitle {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .connection {
+      flex: 1;
+      min-width: 520px;
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) minmax(220px, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      max-width: 920px;
+    }
+
+    .field {
+      position: relative;
+      min-width: 0;
+    }
+
+    .field span {
+      position: absolute;
+      top: 6px;
+      left: 13px;
+      color: var(--muted);
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .field input {
+      width: 100%;
+      height: 48px;
+      padding: 20px 12px 6px;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      outline: 0;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .field input:focus {
+      border-color: var(--sky);
+      box-shadow: 0 0 0 4px rgba(76, 145, 185, 0.14);
+    }
+
+    .btn {
+      min-height: 46px;
+      padding: 0 16px;
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--sand);
+      border: 1px solid rgba(209, 196, 173, 0.82);
+      cursor: pointer;
+      font-weight: 800;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(77, 61, 35, 0.13);
+    }
+
+    .btn.primary {
+      color: #fff;
+      background: linear-gradient(135deg, var(--leaf), var(--leaf-dark));
+      border-color: transparent;
+    }
+
+    .btn.ghost {
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.54);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 46px;
+      padding: 0 15px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      font-size: 0.82rem;
+      font-weight: 900;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+
+    .status-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 999px;
+      background: var(--rose);
+      box-shadow: 0 0 0 5px rgba(200, 70, 66, 0.11);
+    }
+
+    .status-dot.on {
+      background: var(--leaf);
+      box-shadow: 0 0 0 5px rgba(79, 143, 97, 0.12);
+    }
+
+    .shell {
+      min-height: 620px;
+      height: calc(100vh - var(--topbar) - 70px);
+      display: grid;
+      grid-template-columns: minmax(230px, var(--left)) minmax(0, 1fr) minmax(230px, var(--right));
+      gap: 16px;
+      overflow: hidden;
+    }
+
+    .rail,
+    .center,
+    .inspector {
+      min-height: 0;
+      min-width: 0;
+    }
+
+    .rail,
+    .inspector {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 4px;
+      overscroll-behavior: contain;
+    }
+
+    .surface {
+      border: 1px solid rgba(255, 255, 255, 0.74);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 253, 247, 0.76);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .section {
+      min-width: 0;
+      min-height: 0;
+      padding: 16px;
+    }
+
+    .section-title {
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .profile {
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 20px;
+      color: #fff;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--clay), #e3a04f);
+    }
+
+    .profile h2 {
+      margin: 0;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.08rem;
+      line-height: 1;
+    }
+
+    .profile p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      color: var(--muted);
+      background: #fff;
+      border: 1px solid var(--line);
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .icon-btn svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .title-actions {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
+    #copy-debug,
+    #clear-debug {
+      width: auto;
+      min-width: 62px;
+      padding: 0 10px;
+    }
+
+    .fleet {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #fleet-list {
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 4px;
+      overscroll-behavior: contain;
+    }
+
+    .fleet-card {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      text-align: left;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.62);
+      cursor: pointer;
+    }
+
+    .fleet-card.active {
+      border-color: rgba(79, 143, 97, 0.58);
+      background: linear-gradient(135deg, rgba(229, 246, 230, 0.95), rgba(255, 255, 255, 0.76));
+      box-shadow: 0 14px 28px rgba(79, 143, 97, 0.14);
+    }
+
+    .fleet-card.offline {
+      opacity: 0.56;
+    }
+
+    .fleet-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .fleet-name {
+      font-weight: 900;
+      font-size: 1rem;
+    }
+
+    .fleet-role {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .tiny-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: var(--leaf-dark);
+      background: #eaf6e7;
+      font-size: 0.68rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .tiny-pill.warn {
+      color: #945026;
+      background: var(--clay-soft);
+    }
+
+    .tiny-pill.off {
+      color: var(--muted);
+      background: #eee7d8;
+    }
+
+    .mini-stats {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .mini-stat {
+      padding: 8px;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid rgba(228, 220, 203, 0.72);
+    }
+
+    .mini-stat b {
+      display: block;
+      font-size: 0.86rem;
+    }
+
+    .mini-stat span {
+      display: block;
+      margin-top: 1px;
+      color: var(--muted);
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .chat {
+      flex: 0 0 260px;
+      display: flex;
+      flex-direction: column;
+      min-height: 220px;
+      overflow: hidden;
+    }
+
+    .chat-feed {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      padding-right: 4px;
+    }
+
+    .bubble {
+      max-width: 92%;
+      padding: 10px 12px;
+      border-radius: 17px;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 0.82rem;
+      line-height: 1.34;
+    }
+
+    .bubble.agent {
+      border-bottom-left-radius: 6px;
+    }
+
+    .bubble.me {
+      align-self: flex-end;
+      color: #fff;
+      background: var(--sky);
+      border-color: transparent;
+      border-bottom-right-radius: 6px;
+    }
+
+    .chat-compose {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .chat-compose input {
+      min-width: 0;
+      height: 42px;
+      padding: 0 13px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      outline: 0;
+    }
+
+    .center {
+      position: relative;
+      display: grid;
+      min-height: 0;
+    }
+
+    .stage {
+      position: relative;
+      min-height: 0;
+      overflow: hidden;
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255, 255, 255, 0.78);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.64), rgba(255, 248, 234, 0.56)),
+        radial-gradient(circle at 50% 18%, rgba(179, 220, 238, 0.25), transparent 28rem);
+      box-shadow: var(--shadow);
+    }
+
+    .stage-head {
+      position: absolute;
+      z-index: 6;
+      top: 18px;
+      left: 18px;
+      right: 18px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      pointer-events: none;
+    }
+
+    .mission-copy {
+      pointer-events: auto;
+      max-width: min(520px, 70%);
+      padding: 14px 16px;
+      border-radius: 22px;
+      background: rgba(255, 253, 247, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      box-shadow: 0 15px 34px rgba(77, 61, 35, 0.1);
+      backdrop-filter: blur(16px);
+    }
+
+    .mission-copy h1 {
+      margin: 0;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(1.45rem, 3vw, 2.4rem);
+      letter-spacing: -0.04em;
+      line-height: 0.95;
+    }
+
+    .mission-copy p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 650;
+    }
+
+    .stage-tools {
+      pointer-events: auto;
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .tool-chip {
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(255, 253, 247, 0.84);
+      border: 1px solid rgba(228, 220, 203, 0.9);
+      color: var(--ink);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .map-wrap {
+      position: absolute;
+      inset: 0;
+      transition: inset 0.35s ease, border-radius 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    #map-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background:
+        linear-gradient(rgba(52, 82, 61, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(52, 82, 61, 0.05) 1px, transparent 1px),
+        #f6efd9;
+      background-size: 42px 42px;
+      cursor: crosshair;
+    }
+
+    .video-stage {
+      position: absolute;
+      inset: 0;
+      display: none;
+      background: #121414;
+    }
+
+    #remote-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #111;
+    }
+
+    .video-empty {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #fff8ea;
+      background:
+        radial-gradient(circle at center, rgba(76, 145, 185, 0.26), transparent 18rem),
+        #111715;
+      text-align: center;
+      padding: 32px;
+    }
+
+    .video-empty.hidden {
+      display: none;
+    }
+
+    .video-empty h2 {
+      margin: 0;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 2rem;
+    }
+
+    .video-empty p {
+      max-width: 430px;
+      margin: 10px auto 0;
+      color: rgba(255, 248, 234, 0.72);
+      line-height: 1.45;
+    }
+
+    .bottom-dock {
+      position: absolute;
+      z-index: 8;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      width: min(780px, calc(100% - 36px));
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.78);
+      background: rgba(255, 253, 247, 0.82);
+      box-shadow: 0 22px 50px rgba(77, 61, 35, 0.16);
+      backdrop-filter: blur(18px);
+    }
+
+    .override-btn {
+      min-width: 170px;
+      height: 54px;
+      border-radius: 999px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--clay), #df9c4f);
+      cursor: pointer;
+      font-weight: 950;
+      letter-spacing: -0.01em;
+    }
+
+    .stop-btn {
+      display: none;
+      min-width: 116px;
+      height: 54px;
+      border-radius: 999px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--rose), #a92825);
+      cursor: pointer;
+      font-weight: 950;
+    }
+
+    .exit-override-btn {
+      display: none;
+      min-width: 126px;
+      height: 54px;
+      border-radius: 999px;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid var(--line-strong);
+      cursor: pointer;
+      font-weight: 950;
+    }
+
+    .dock-readout {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .speed-set {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 13px;
+      height: 54px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .speed-set b {
+      color: var(--leaf-dark);
+      font-size: 1.2rem;
+    }
+
+    .key-help {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    body.override-mode .video-stage {
+      display: block;
+    }
+
+    body.override-mode .map-wrap {
+      inset: auto auto 96px 24px;
+      width: 255px;
+      height: 178px;
+      z-index: 7;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 4px solid rgba(255, 253, 247, 0.9);
+      box-shadow: 0 22px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    body.override-mode .stop-btn {
+      display: inline-block;
+    }
+
+    body.override-mode .exit-override-btn {
+      display: inline-block;
+    }
+
+    body.manual-mode .override-btn {
+      background: linear-gradient(135deg, var(--leaf), var(--leaf-dark));
+    }
+
+    .inspector .surface {
+      overflow: hidden;
+    }
+
+    .alerts {
+      flex: 0 0 230px;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .nodes {
+      flex: 0 0 250px;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+
+    .runtime {
+      flex: 0 0 250px;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .runtime-list {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 4px;
+      overscroll-behavior: contain;
+    }
+
+    .runtime-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto auto;
+      gap: 7px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.58);
+      border: 1px solid var(--line);
+    }
+
+    .runtime-name {
+      min-width: 0;
+    }
+
+    .runtime-name b {
+      display: block;
+      font-size: 0.82rem;
+      line-height: 1.1;
+    }
+
+    .runtime-name small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 800;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .runtime-btn {
+      min-width: 48px;
+      min-height: 32px;
+      padding: 0 9px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 0.7rem;
+      font-weight: 950;
+    }
+
+    .runtime-btn.start {
+      color: #fff;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--leaf), var(--leaf-dark));
+    }
+
+    .runtime-btn.stop {
+      color: #fff;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--rose), #a92825);
+    }
+
+    .runtime-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .runtime-api {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 9px 10px;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 850;
+    }
+
+    .debug {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .event-list,
+    .node-list,
+    .debug-list {
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      padding-right: 4px;
+      overscroll-behavior: contain;
+    }
+
+    .debug-list {
+      min-height: 220px;
+      max-height: 360px;
+      user-select: text;
+    }
+
+    .node-list {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .event-list {
+      flex: 1 1 auto;
+    }
+
+    .event {
+      padding: 10px 11px;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid var(--line);
+    }
+
+    .event.critical {
+      background: var(--rose-soft);
+      border-color: rgba(200, 70, 66, 0.22);
+    }
+
+    .event.warn {
+      background: var(--clay-soft);
+      border-color: rgba(201, 111, 67, 0.22);
+    }
+
+    .event-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-weight: 900;
+      font-size: 0.82rem;
+    }
+
+    .event-body {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      line-height: 1.35;
+    }
+
+    .node-row,
+    .debug-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 9px;
+      align-items: center;
+      padding: 9px 10px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.58);
+      border: 1px solid var(--line);
+      font-size: 0.78rem;
+      font-weight: 800;
+      min-width: 0;
+    }
+
+    .node-row span,
+    .debug-row span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .health {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--leaf);
+      box-shadow: 0 0 0 4px rgba(79, 143, 97, 0.12);
+    }
+
+    .health.warn {
+      background: var(--clay);
+      box-shadow: 0 0 0 4px rgba(201, 111, 67, 0.14);
+    }
+
+    .health.off {
+      background: var(--muted);
+      box-shadow: 0 0 0 4px rgba(109, 118, 108, 0.12);
+    }
+
+    .logbox {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      padding-right: 4px;
+    }
+
+    .logline {
+      display: grid;
+      grid-template-columns: 66px 1fr;
+      gap: 8px;
+      padding: 8px 9px;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.52);
+      border: 1px solid rgba(228, 220, 203, 0.7);
+      font-size: 0.72rem;
+      line-height: 1.28;
+    }
+
+    .logtime {
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    .logmsg.info {
+      color: var(--sky);
+      font-weight: 900;
+    }
+
+    .logmsg.warn {
+      color: var(--clay);
+      font-weight: 900;
+    }
+
+    .logmsg.err {
+      color: var(--rose);
+      font-weight: 900;
+    }
+
+    .logmsg.tag {
+      color: var(--leaf-dark);
+      font-weight: 900;
+    }
+
+    .dashboard-terminal {
+      grid-column: 1 / -1;
+      min-height: 430px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .dashboard-terminal .debug-list {
+      min-height: 0;
+      max-height: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 9px;
+      overflow: visible;
+      padding-right: 0;
+      margin-bottom: 12px;
+      user-select: text;
+    }
+
+    .dashboard-terminal .logbox {
+      min-height: 300px;
+      max-height: 520px;
+      overflow: auto;
+      padding: 12px;
+      border-radius: 18px;
+      background: #101713;
+      border: 1px solid rgba(38, 49, 38, 0.28);
+      color: #dff1dc;
+      font-family: Consolas, "Courier New", monospace;
+    }
+
+    .dashboard-terminal .logline {
+      background: transparent;
+      border-color: rgba(255, 255, 255, 0.08);
+      color: #dff1dc;
+    }
+
+    .dashboard-terminal .logtime {
+      color: #98b69b;
+    }
+
+    .dashboard-terminal .logmsg.info {
+      color: #8ed1ff;
+    }
+
+    .dashboard-terminal .logmsg.warn {
+      color: #ffd38a;
+    }
+
+    .dashboard-terminal .logmsg.err {
+      color: #ff9b96;
+    }
+
+    .dashboard-terminal .logmsg.tag {
+      color: #98f0a8;
+    }
+
+    .empty-state {
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        width: 100%;
+      }
+    }
+
+    .place-marker-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 9;
+      pointer-events: none;
+    }
+
+    .place-marker {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 34px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(79, 143, 97, 0.42);
+      background: rgba(255, 253, 247, 0.92);
+      color: var(--leaf-dark);
+      box-shadow: 0 12px 28px rgba(77, 61, 35, 0.18);
+      backdrop-filter: blur(12px);
+      font-size: 0.72rem;
+      font-weight: 950;
+      cursor: pointer;
+      pointer-events: auto;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .place-marker::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--leaf);
+      box-shadow: 0 0 0 5px rgba(79, 143, 97, 0.13);
+    }
+
+    .place-marker:hover {
+      transform: translate(-50%, -100%) scale(1.04);
+      box-shadow: 0 18px 36px rgba(77, 61, 35, 0.22);
+    }
+
+    .place-marker .place-yaw {
+      color: var(--muted);
+      font-size: 0.65rem;
+      font-weight: 900;
+    }
+
+    body.user-mode .place-marker {
+      cursor: not-allowed;
+      opacity: 0.62;
+      filter: grayscale(0.25);
+    }
+
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">E</div>
+        <div>
+          <div class="brand-title">Echo Fleet Desk</div>
+          <div class="brand-subtitle"><a href="user.html" style="color:inherit;text-decoration:none;font-weight:900;">User</a> · <a href="#" onclick="EchoAuth.logout();return false;" style="color:inherit;text-decoration:none;font-weight:900;">Logout</a></div>
+          <div class="brand-subtitle">Map, camera, OpenClaw, and a safe manual override.</div>
+        </div>
+      </div>
+
+      <div class="connection">
+        <label class="field">
+          <span>ROS bridge</span>
+          <input id="ros-url" value="ws://100.95.231.114:9090" placeholder="ws://PI_IP:9090">
+        </label>
+        <label class="field">
+          <span>Camera topic</span>
+          <input id="webrtc-url" value="/apriltag/annotated_image/compressed" placeholder="/apriltag/annotated_image/compressed">
+        </label>
+        <button class="btn primary" id="connect-btn">Connect</button>
+      </div>
+
+      <div class="status-pill">
+        <span class="status-dot" id="conn-dot"></span>
+        <span id="conn-text">Offline</span>
+      </div>
+    </header>
+
+    <main class="shell">
+      <aside class="rail">
+        <section class="surface section">
+          <div class="profile">
+            <div class="avatar">AX</div>
+            <div>
+              <h2>Ahmed</h2>
+              <p>Operator workspace</p>
+            </div>
+            <button class="icon-btn" title="Settings">...</button>
+          </div>
+        </section>
+
+        <section class="surface section fleet">
+          <h3 class="section-title">
+            Robot Fleet
+            <span id="fleet-count">1 live</span>
+          </h3>
+          <div id="fleet-list"></div>
+        </section>
+
+        <section class="surface section chat">
+          <h3 class="section-title">
+            OpenClaw Chat
+            <span id="chat-robot">Echo</span>
+          </h3>
+          <div class="chat-feed" id="chat-feed">
+            <div class="bubble agent">I am listening for the selected robot. Ask for checks, movement summaries, or debugging notes.</div>
+          </div>
+          <form class="chat-compose" id="chat-form">
+            <input id="chat-input" placeholder="Ask OpenClaw about Echo...">
+            <button class="btn primary" type="submit">Send</button>
+          </form>
+        </section>
+      </aside>
+
+      <section class="center">
+        <div class="stage">
+          <div class="video-stage">
+            <img id="remote-video" alt="Echo AprilTag camera feed">
+            <div class="video-empty" id="video-empty">
+              <div>
+              <h2 id="video-empty-title">Video feed is warming up</h2>
+              <p id="video-empty-body">Override mode uses Echo's AprilTag annotated compressed image stream. If the screen stays here, start the camera publisher and AprilTag detector on the Pi.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="map-wrap" id="map-wrap">
+            <canvas id="map-canvas"></canvas>
+          </div>
+
+          <div class="stage-head">
+            <div class="mission-copy">
+              <h1 id="stage-title">Where is Echo going?</h1>
+              <p id="stage-subtitle">Select Echo from the fleet or from the map. AprilTags become checkpoints as they are seen.</p>
+            </div>
+            <div class="stage-tools">
+              <div class="tool-chip">Map <span id="map-state">waiting</span></div>
+         <label class="tool-chip" for="map-source-select">Map Source
+            <select id="map-source-select" style="margin-left:8px;background:transparent;color:inherit;border:none;outline:none;">
+              <option value="/map">/map</option>
+              <option value="/global_costmap/costmap">/global_costmap/costmap</option>
+              <option value="/local_costmap/costmap">/local_costmap/costmap</option>
+           </select>
+        </label>
+              <button class="tool-chip" id="set-initial-pose-btn" type="button">Set Initial Pose</button>
+              <button class="tool-chip" id="send-goal-btn" type="button">Send Goal</button>
+              <div class="tool-chip">Video <span id="video-state">idle</span></div>
+              <div class="tool-chip">Speed <span id="speed-chip">80%</span></div>
+            </div>
+          </div>
+
+          <div class="bottom-dock">
+            <button class="override-btn" id="override-btn">Override</button>
+            <div class="dock-readout">
+              <span id="mode-readout">Autonomy view</span>
+              <span class="key-help">Keys: z/s forward/back, q/d turn, arrows strafe, 1-9 speed, f full</span>
+            </div>
+            <div class="speed-set">Speed <b id="speed-readout">80%</b></div>
+            <button class="exit-override-btn" id="exit-override-btn">Exit View</button>
+            <button class="stop-btn" id="stop-btn">Stop</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="inspector">
+        <section class="surface section alerts">
+          <h3 class="section-title">
+            Alerts
+            <span id="alert-count">0</span>
+          </h3>
+          <div class="event-list" id="alert-list">
+            <div class="event">
+              <div class="event-title"><span>No alerts yet</span><span>now</span></div>
+              <div class="event-body">Connect ROS and Echo will report map, camera, node, and tag activity here.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="surface section nodes">
+          <h3 class="section-title">
+            Nodes Running
+            <button class="icon-btn" id="refresh-nodes" title="Refresh nodes" aria-label="Refresh nodes">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 6v5h-5" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M19 11a7 7 0 1 0-2.1 5" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </h3>
+          <div class="node-list" id="node-list">
+            <div class="node-row"><span class="health off"></span><span>Waiting for rosapi</span><small>idle</small></div>
+          </div>
+        </section>
+
+
+        <section class="surface section runtime">
+          <h3 class="section-title">
+            Runtime
+            <button class="icon-btn" id="runtime-refresh" title="Refresh runtime" aria-label="Refresh runtime">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 6v5h-5" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M19 11a7 7 0 1 0-2.1 5" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </h3>
+          <div class="runtime-api">
+            <span class="health off" id="runtime-api-health"></span>
+            <span id="runtime-api-state">Launch API waiting</span>
+          </div>
+          <div class="runtime-list" id="runtime-list">
+            <div class="runtime-row">
+              <div class="runtime-name"><b>Mapping</b><small>waiting</small></div>
+              <button class="runtime-btn" disabled>Start</button>
+              <button class="runtime-btn" disabled>Stop</button>
+              <button class="runtime-btn" disabled>Logs</button>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <section class="surface section debug dashboard-terminal">
+      <h3 class="section-title">
+        Debug Terminal
+        <span class="title-actions">
+          <button class="icon-btn" id="copy-debug" title="Copy debug stream">Copy</button>
+          <button class="icon-btn" id="clear-debug" title="Clear debug stream">Clear</button>
+        </span>
+      </h3>
+      <div class="debug-list" id="debug-list">
+        <div class="debug-row"><span class="health off"></span><span>/cmd_vel</span><small>ready</small></div>
+        <div class="debug-row"><span class="health off"></span><span>/map</span><small>waiting</small></div>
+        <div class="debug-row"><span class="health off"></span><span>/apriltag/instruction</span><small>waiting</small></div>
+      </div>
+      <div class="logbox" id="logbox"></div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "echoFleetDesk.v1";
+    const DEFAULT_CAMERA_TOPIC = "/apriltag/annotated_image/compressed";
+    const BASE_LINEAR = 0.58;
+    const BASE_STRAFE = 0.85;
+    const BASE_ANGULAR = 1.2;
+
+    const robots = [
+      {
+        id: "echo-01",
+        name: "Echo",
+        role: "Kitchen scout",
+        status: "live",
+        battery: "82%",
+        mode: "Ready",
+        signal: "local",
+        color: "#4f8f61",
+        pose: null,
+        fallbackPose: { x: 0, y: 0, yaw: 0 }
+      },
+      {
+        id: "echo-02",
+        name: "Milo",
+        role: "Future hallway rover",
+        status: "offline",
+        battery: "--",
+        mode: "planned",
+        signal: "offline",
+        color: "#c96f43",
+        pose: null,
+        fallbackPose: { x: 1.5, y: 0.5, yaw: -0.6 }
+      },
+      {
+        id: "echo-03",
+        name: "Nora",
+        role: "Future payload bot",
+        status: "offline",
+        battery: "--",
+        mode: "planned",
+        signal: "offline",
+        color: "#4c91b9",
+        pose: null,
+        fallbackPose: { x: -1.4, y: -0.6, yaw: 0.7 }
+      }
+    ];
+
+    const checkpoints = [];
+
+    let selectedRobotId = "echo-01";
+    let ros = null;
+    let rosConnected = false;
+    let rosConnectionId = 0;
+    let activeSubscriptions = [];
+    let cmdVelPub = null;
+    let modePub = null;
+    let chatPub = null;
+    let pc = null;
+    let cameraSub = null;
+    let videoActive = false;
+    let overrideActive = false;
+    let manualActive = false;
+    let speed = 0.8;
+    let heldKeys = new Set();
+    let mapTopicSub = null;
+    let currentMapTopic = "/map";
+    let manualTimer = null;
+    let mapInfo = null;
+    let mapInfoSource = "none";
+    let mapBitmapCanvas = null;
+    let mapView = { scale: 1, offsetX: 0, offsetY: 0 };
+    let lastPoseSource = "none";
+    let poseSnapshots = { amcl: null, ekf: null };
+    let topicCount = 0;
+    let alertCount = 0;
+    let recentAlerts = new Map();
+    let redrawRequested = false;
+
+    const canvas = document.getElementById("map-canvas");
+    const ctx = canvas.getContext("2d");
+    let mapClickMode = null;
+    let initialPosePub = null;
+    let goalPosePub = null;
+
+    function $(id) {
+      return document.getElementById(id);
+    }
+
+    function selectedRobot() {
+      return robots.find(robot => robot.id === selectedRobotId) || robots[0];
+    }
+
+    function isRobotLive(robot = selectedRobot()) {
+      return robot.status === "live";
+    }
+
+    function showRobotOffline(robot) {
+      $("video-state").textContent = "idle";
+      setVideoMessage(
+        `${robot.name} is offline`,
+        "No live camera stream is available for this robot. Select a live robot before using Override."
+      );
+    }
+
+    function showDefaultVideoPlaceholder(robot = selectedRobot()) {
+      setVideoMessage(
+        "Video feed is warming up",
+        `Override mode uses ${robot.name}'s AprilTag annotated compressed image stream. If the screen stays here, start the camera publisher and AprilTag detector on the Pi.`
+      );
+    }
+
+    function saveSettings() {
+      const payload = {
+        rosUrl: $("ros-url").value,
+        webrtcUrl: $("webrtc-url").value,
+        speed,
+        selectedRobotId
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    }
+
+    function loadSettings() {
+      try {
+        const payload = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        if (payload.rosUrl) $("ros-url").value = payload.rosUrl;
+        if (payload.webrtcUrl && String(payload.webrtcUrl).trim().startsWith("/")) {
+          $("webrtc-url").value = payload.webrtcUrl;
+        } else {
+          $("webrtc-url").value = DEFAULT_CAMERA_TOPIC;
+        }
+        if (payload.speed) speed = Number(payload.speed);
+        if (payload.selectedRobotId) selectedRobotId = payload.selectedRobotId;
+      } catch (error) {
+        log("Saved dashboard settings were ignored: " + error.message, "warn");
+      }
+    }
+
+    function log(message, type = "sys") {
+      const box = $("logbox");
+      const line = document.createElement("div");
+      line.className = "logline";
+      line.innerHTML = `<span class="logtime">${new Date().toLocaleTimeString("en-GB")}</span><span class="logmsg ${type}">${escapeHtml(message)}</span>`;
+      box.appendChild(line);
+      box.scrollTop = box.scrollHeight;
+      while (box.children.length > 180) box.removeChild(box.firstChild);
+    }
+
+    function addAlert(title, body, kind = "warn") {
+      const key = `${title}:${body}`;
+      const now = Date.now();
+      const lastSeen = recentAlerts.get(key) || 0;
+      if (now - lastSeen < 8000) return;
+      recentAlerts.set(key, now);
+
+      const list = $("alert-list");
+      if (alertCount === 0) list.innerHTML = "";
+      alertCount += 1;
+      $("alert-count").textContent = String(alertCount);
+
+      const event = document.createElement("div");
+      event.className = `event ${kind}`;
+      event.innerHTML = `
+        <div class="event-title"><span>${escapeHtml(title)}</span><span>${new Date().toLocaleTimeString("en-GB")}</span></div>
+        <div class="event-body">${escapeHtml(body)}</div>
+      `;
+      list.prepend(event);
+      while (list.children.length > 12) list.removeChild(list.lastChild);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function renderFleet() {
+      const list = $("fleet-list");
+      list.innerHTML = "";
+
+      robots.forEach(robot => {
+        const button = document.createElement("button");
+        const active = robot.id === selectedRobotId;
+        button.className = `fleet-card ${active ? "active" : ""} ${robot.status === "offline" ? "offline" : ""}`;
+        button.dataset.robotId = robot.id;
+        button.innerHTML = `
+          <div class="fleet-top">
+            <div>
+              <div class="fleet-name">${escapeHtml(robot.name)}</div>
+              <div class="fleet-role">${escapeHtml(robot.role)}</div>
+            </div>
+            <span class="tiny-pill ${robot.status === "offline" ? "off" : ""}">${escapeHtml(robot.status)}</span>
+          </div>
+          <div class="mini-stats">
+            <div class="mini-stat"><b>${escapeHtml(robot.battery)}</b><span>Battery</span></div>
+            <div class="mini-stat"><b>${escapeHtml(robot.mode)}</b><span>Mode</span></div>
+            <div class="mini-stat"><b>${escapeHtml(robot.signal)}</b><span>Link</span></div>
+          </div>
+        `;
+        button.addEventListener("click", () => selectRobot(robot.id));
+        list.appendChild(button);
+      });
+
+      const live = robots.filter(robot => robot.status === "live").length;
+      $("fleet-count").textContent = `${live} live`;
+      $("chat-robot").textContent = selectedRobot().name;
+    }
+
+    function selectRobot(robotId) {
+      selectedRobotId = robotId;
+      const robot = selectedRobot();
+
+      if (!isRobotLive(robot)) {
+        if (overrideActive || videoActive) {
+          leaveOverride();
+        } else {
+          stopVideo();
+        }
+        showRobotOffline(robot);
+        addAlert("Robot offline", `${robot.name} has no live stream or manual control session.`, "warn");
+      } else if (!overrideActive && !videoActive) {
+        showDefaultVideoPlaceholder(robot);
+      }
+
+      saveSettings();
+      renderFleet();
+      updateStageCopy();
+      requestMapDraw();
+      log(`Selected robot: ${robot.name}`, "info");
+    }
+
+    function updateStageCopy() {
+      const robot = selectedRobot();
+      if (!isRobotLive(robot)) {
+        $("stage-title").textContent = `${robot.name} is offline`;
+        $("stage-subtitle").textContent = "Offline robots stay visible in the fleet, but map tracking, video, and manual control are disabled.";
+        return;
+      }
+
+      $("stage-title").textContent = overrideActive ? `Driving ${robot.name}` : `Where is ${robot.name} going?`;
+      $("stage-subtitle").textContent = overrideActive
+        ? "Video is primary, the map is tucked into the corner, and keyboard control only works after Manual Control is active."
+        : "Map view is primary. Select a robot, watch checkpoints, then override only when you want hands-on control.";
+    }
+
+    function setConn(online) {
+      rosConnected = online;
+      $("conn-dot").classList.toggle("on", online);
+      $("conn-text").textContent = online ? "Online" : "Offline";
+      $("connect-btn").textContent = online ? "Disconnect" : "Connect";
+      $("connect-btn").classList.toggle("ghost", online);
+      $("connect-btn").classList.toggle("primary", !online);
+    }
+
+    function toggleRosConnection() {
+      if (rosConnected) {
+        disconnect();
+      } else {
+        connect();
+      }
+    }
+
+    function connect() {
+      if (typeof ROSLIB === "undefined") {
+        addAlert("ROSLIB missing", "The dashboard could not load roslib from the CDN.", "critical");
+        log("ROSLIB is not available", "err");
+        return;
+      }
+
+      if (ros) {
+        cleanupRosInterfaces();
+        try { ros.close(); } catch (error) {}
+        ros = null;
+      }
+
+      const url = $("ros-url").value.trim();
+      const connectionId = ++rosConnectionId;
+      saveSettings();
+      ros = new ROSLIB.Ros({ url });
+
+      ros.on("connection", () => {
+        if (connectionId !== rosConnectionId) return;
+        setConn(true);
+        log("ROS connected to " + url, "info");
+        setupRosInterfaces();
+        refreshNodes();
+      });
+
+      ros.on("error", error => {
+        if (connectionId !== rosConnectionId) return;
+        const detail = formatError(error);
+        log("ROS error: " + detail, "err");
+        addAlert("ROS bridge error", detail, "critical");
+      });
+
+      ros.on("close", () => {
+        if (connectionId !== rosConnectionId) return;
+        setConn(false);
+        cleanupRosInterfaces();
+        ros = null;
+        log("ROS disconnected", "warn");
+      });
+    }
+
+    function disconnect() {
+      rosConnectionId += 1;
+      stopVideo();
+      cleanupRosInterfaces();
+      const oldRos = ros;
+      ros = null;
+      setConn(false);
+      if (oldRos) {
+        try { oldRos.close(); } catch (error) {}
+      }
+      log("ROS disconnected", "warn");
+    }
+
+    function cleanupRosInterfaces() {
+      activeSubscriptions.forEach(topic => {
+        try { topic.unsubscribe(); } catch (error) {}
+      });
+      activeSubscriptions = [];
+
+      if (mapTopicSub) {
+        try { mapTopicSub.unsubscribe(); } catch (error) {}
+        mapTopicSub = null;
+      }
+
+      cmdVelPub = null;
+      modePub = null;
+      chatPub = null;
+      initialPosePub = null;
+      goalPosePub = null;
+      updateDebug();
+    }
+
+    function setupRosInterfaces() {
+      cmdVelPub = new ROSLIB.Topic({
+        ros,
+        name: "/cmd_vel",
+        messageType: "geometry_msgs/Twist"
+      });
+
+      initialPosePub = new ROSLIB.Topic({
+        ros,
+        name: "/initialpose",
+        messageType: "geometry_msgs/PoseWithCovarianceStamped"
+      });
+
+      goalPosePub = new ROSLIB.Topic({
+        ros,
+        name: "/goal_pose",
+        messageType: "geometry_msgs/PoseStamped"
+      });
+
+      modePub = new ROSLIB.Topic({
+        ros,
+        name: "/robot/mode",
+        messageType: "std_msgs/String"
+      });
+
+      chatPub = new ROSLIB.Topic({
+        ros,
+        name: "/openclaw/chat/request",
+        messageType: "std_msgs/String"
+      });
+
+      subscribeMapTopic(currentMapTopic);   
+      subscribeTopic("/amcl_pose", "geometry_msgs/PoseWithCovarianceStamped", msg => handlePose(msg.pose.pose, "amcl"));
+      subscribeTopic("/odometry/filtered", "nav_msgs/Odometry", msg => handlePose(msg.pose.pose, "ekf"));
+      subscribeTopic("/apriltag/instruction", "std_msgs/String", handleAprilTag);
+      subscribeTopic("/openclaw/chat/response", "std_msgs/String", handleChatResponse);
+      subscribeTopic("/rosout", "rcl_interfaces/Log", handleRosout, { throttle_rate: 500, queue_length: 20 });
+
+      loadTopics();
+      updateDebug();
+      log("ROS dashboard subscriptions are ready", "info");
+    }
+
+    function subscribeTopic(name, messageType, callback, options = {}) {
+      const topic = new ROSLIB.Topic({
+        ros,
+        name,
+        messageType,
+        ...options
+      });
+      topic.subscribe(callback);
+      activeSubscriptions.push(topic);
+      return topic;
+    }
+    function subscribeMapTopic(topicName) {
+      currentMapTopic = topicName || "/map";
+
+      if (!ros) {
+        return;
+      }
+
+      if (mapTopicSub) {
+        try { mapTopicSub.unsubscribe(); } catch (e) {}
+        mapTopicSub = null;
+      }
+
+      mapTopicSub = new ROSLIB.Topic({
+        ros,
+        name: currentMapTopic,
+        messageType: "nav_msgs/OccupancyGrid",
+        throttle_rate: 1000,
+        queue_length: 1
+      });
+
+      mapTopicSub.subscribe(handleMap);
+
+      const mapState = $("map-state");
+      if (mapState) mapState.textContent = `waiting ${currentMapTopic}`;
+      log(`Map source switched to ${currentMapTopic}`, "info");
+    }
+
+    function handleMap(msg) {
+      mapInfo = msg.info;
+      mapInfoSource = currentMapTopic;
+      mapBitmapCanvas = document.createElement("canvas");
+      mapBitmapCanvas.width = msg.info.width;
+      mapBitmapCanvas.height = msg.info.height;
+
+      const imageCtx = mapBitmapCanvas.getContext("2d");
+      const image = imageCtx.createImageData(msg.info.width, msg.info.height);
+
+      for (let y = 0; y < msg.info.height; y += 1) {
+        for (let x = 0; x < msg.info.width; x += 1) {
+          const src = x + y * msg.info.width;
+          const flippedY = msg.info.height - 1 - y;
+          const dst = (x + flippedY * msg.info.width) * 4;
+          const value = msg.data[src];
+          let color = 236;
+          let alpha = 255;
+
+          if (value < 0) {
+            color = 203;
+            alpha = 110;
+          } else if (value > 65) {
+            color = 38;
+          } else if (value > 20) {
+            color = 128;
+          } else {
+            color = 248;
+          }
+
+          image.data[dst] = color;
+          image.data[dst + 1] = value > 65 ? 49 : color;
+          image.data[dst + 2] = value > 65 ? 38 : color;
+          image.data[dst + 3] = alpha;
+        }
+      }
+
+      imageCtx.putImageData(image, 0, 0);
+      $("map-state").textContent = `${msg.info.width}x${msg.info.height}`;
+      updateDebug();
+      requestMapDraw();
+    }
+    function handlePose(pose, source) {
+      const robot = robots[0];
+      const snapshot = {
+        x: pose.position.x,
+        y: pose.position.y,
+        yaw: quaternionToYaw(pose.orientation)
+      };
+
+      robot.pose = snapshot;
+      poseSnapshots[source] = snapshot;
+      robot.status = "live";
+      robot.signal = source;
+      lastPoseSource = source;
+      updateDebug();
+      renderFleet();
+      requestMapDraw();
+    }
+
+    function quaternionToYaw(q) {
+      const siny = 2 * (q.w * q.z + q.x * q.y);
+      const cosy = 1 - 2 * (q.y * q.y + q.z * q.z);
+      return Math.atan2(siny, cosy);
+    }
+
+    function handleAprilTag(msg) {
+      try {
+        const data = JSON.parse(msg.data);
+        const robotPose = robots[0].pose || robots[0].fallbackPose;
+        const id = `tag-${data.tag_id}`;
+        let checkpoint = checkpoints.find(item => item.id === id);
+
+        if (!checkpoint) {
+          checkpoint = {
+            id,
+            label: `Tag ${data.tag_id}`,
+            instruction: data.instruction || "seen",
+            x: robotPose.x,
+            y: robotPose.y,
+            seen: true
+          };
+          checkpoints.push(checkpoint);
+        } else {
+          checkpoint.x = robotPose.x;
+          checkpoint.y = robotPose.y;
+          checkpoint.instruction = data.instruction || checkpoint.instruction;
+          checkpoint.seen = true;
+        }
+
+        log(`AprilTag ${data.tag_id}: ${checkpoint.instruction}`, "tag");
+        addAlert("AprilTag seen", `${checkpoint.label} marked near ${selectedRobot().name}.`, "warn");
+        updateDebug();
+        requestMapDraw();
+      } catch (error) {
+        log("Bad AprilTag payload: " + error.message, "warn");
+      }
+    }
+
+    function handleRosout(msg) {
+      const name = msg.name || "rosout";
+      const text = msg.msg || "";
+      if (msg.level >= 40) {
+        addAlert(name, text, "critical");
+        log(`${name}: ${text}`, "err");
+      } else if (msg.level >= 30) {
+        addAlert(name, text, "warn");
+        log(`${name}: ${text}`, "warn");
+      }
+    }
+
+    function loadTopics() {
+      if (!ros) return;
+      const svc = new ROSLIB.Service({
+        ros,
+        name: "/rosapi/topics",
+        serviceType: "rosapi_msgs/srv/Topics"
+      });
+
+      svc.callService(new ROSLIB.ServiceRequest(), response => {
+        topicCount = response.topics ? response.topics.length : 0;
+        updateDebug(response.topics || []);
+        log(`${topicCount} ROS topics visible`, "info");
+      }, error => {
+        log("Could not load topics: " + error, "warn");
+      });
+    }
+
+    function refreshNodes() {
+      if (!ros) return;
+      const list = $("node-list");
+      list.innerHTML = `<div class="node-row"><span class="health warn"></span><span>Refreshing nodes</span><small>...</small></div>`;
+
+      const svc = new ROSLIB.Service({
+        ros,
+        name: "/rosapi/nodes",
+        serviceType: "rosapi_msgs/srv/Nodes"
+      });
+
+      svc.callService(new ROSLIB.ServiceRequest(), response => {
+        const nodes = response.nodes || [];
+        list.innerHTML = "";
+
+        if (!nodes.length) {
+          list.innerHTML = `<div class="node-row"><span class="health warn"></span><span>No nodes returned</span><small>rosapi</small></div>`;
+          return;
+        }
+
+        nodes.forEach(name => {
+            const row = document.createElement("div");
+            row.className = "node-row";
+            row.innerHTML = `<span class="health"></span><span>${escapeHtml(name)}</span><small>live</small>`;
+            list.appendChild(row);
+          });
+      }, error => {
+        list.innerHTML = `<div class="node-row"><span class="health warn"></span><span>rosapi/nodes unavailable</span><small>check</small></div>`;
+        log("Could not load nodes: " + error, "warn");
+      });
+    }
+
+    function updateDebug(topics = null) {
+      const robot = robots[0];
+      const pose = robot.pose;
+      const debug = [
+        { name: "/cmd_vel", value: cmdVelPub ? "ready" : "waiting", health: cmdVelPub ? "" : "off" },
+        { name: "/map", value: mapInfo ? `${mapInfo.width}x${mapInfo.height}` : "waiting", health: mapInfo ? "" : "off" },
+        { name: "map source", value: mapInfoSource, health: mapInfoSource === "/map" ? "" : "warn" },
+        { name: "/pose", value: pose ? `${pose.x.toFixed(2)}, ${pose.y.toFixed(2)}` : "waiting", health: pose ? "" : "off" },
+        { name: "pose source", value: lastPoseSource, health: lastPoseSource === "none" ? "off" : "" },
+        { name: "AMCL pose", value: poseSnapshots.amcl ? `${poseSnapshots.amcl.x.toFixed(2)}, ${poseSnapshots.amcl.y.toFixed(2)}` : "waiting", health: poseSnapshots.amcl ? "" : "warn" },
+        { name: "topics", value: String(topicCount), health: topicCount ? "" : "off" },
+        { name: "checkpoints", value: String(checkpoints.length), health: "" }
+      ];
+
+      if (topics) {
+        ["/scan", "/apriltag/instruction", "/apriltag/annotated_image/compressed"].forEach(topicName => {
+          debug.push({
+            name: topicName,
+            value: topics.includes(topicName) ? "seen" : "missing",
+            health: topics.includes(topicName) ? "" : "warn"
+          });
+        });
+      }
+
+      $("debug-list").innerHTML = debug.map(item => `
+        <div class="debug-row">
+          <span class="health ${item.health}"></span>
+          <span>${escapeHtml(item.name)}</span>
+          <small>${escapeHtml(item.value)}</small>
+        </div>
+      `).join("");
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      requestMapDraw();
+    }
+
+    function requestMapDraw() {
+      if (redrawRequested) return;
+      redrawRequested = true;
+      requestAnimationFrame(() => {
+        redrawRequested = false;
+        drawMap();
+      });
+    }
+
+    function drawMap() {
+      const rect = canvas.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+      ctx.clearRect(0, 0, width, height);
+
+      drawPaperGrid(width, height);
+
+      if (mapBitmapCanvas && mapInfo) {
+        const padding = overrideActive ? 10 : 70;
+        const scale = Math.min(
+          (width - padding * 2) / mapBitmapCanvas.width,
+          (height - padding * 2) / mapBitmapCanvas.height
+        );
+        const drawWidth = mapBitmapCanvas.width * scale;
+        const drawHeight = mapBitmapCanvas.height * scale;
+        mapView = {
+          scale,
+          offsetX: (width - drawWidth) / 2,
+          offsetY: (height - drawHeight) / 2
+        };
+
+        ctx.save();
+        ctx.shadowColor = "rgba(77, 61, 35, 0.12)";
+        ctx.shadowBlur = 24;
+        ctx.drawImage(mapBitmapCanvas, mapView.offsetX, mapView.offsetY, drawWidth, drawHeight);
+        ctx.restore();
+      } else {
+        drawNoMap(width, height);
+      }
+
+      drawCheckpoints();
+      drawRobots();
+    }
+
+    function drawPaperGrid(width, height) {
+      ctx.fillStyle = "#f7edd5";
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.strokeStyle = "rgba(73, 91, 67, 0.08)";
+      ctx.lineWidth = 1;
+      const step = overrideActive ? 28 : 42;
+
+      for (let x = 0; x < width; x += step) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+
+      for (let y = 0; y < height; y += step) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+    }
+
+    function drawNoMap(width, height) {
+      ctx.save();
+      ctx.fillStyle = "rgba(255, 253, 247, 0.72)";
+      roundRect(ctx, width / 2 - 180, height / 2 - 72, 360, 144, 28);
+      ctx.fill();
+      ctx.fillStyle = "#263126";
+      ctx.font = "700 22px Space Grotesk";
+      ctx.textAlign = "center";
+      ctx.fillText("Waiting for /map", width / 2, height / 2 - 8);
+      ctx.fillStyle = "#6d766c";
+      ctx.font = "600 13px Space Grotesk";
+      ctx.fillText("SLAM or Nav2 map data will appear here.", width / 2, height / 2 + 22);
+      ctx.restore();
+    }
+
+    function drawCheckpoints() {
+      checkpoints.forEach((checkpoint, index) => {
+        const point = mapToCanvas(checkpoint.x, checkpoint.y, index);
+        ctx.save();
+        ctx.translate(point.x, point.y);
+        ctx.fillStyle = checkpoint.seen ? "#c96f43" : "#4c91b9";
+        ctx.strokeStyle = "#fffdf7";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(0, 0, overrideActive ? 7 : 10, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        if (!overrideActive) {
+          ctx.fillStyle = "#263126";
+          ctx.font = "800 12px Space Grotesk";
+          ctx.textAlign = "center";
+          ctx.fillText(checkpoint.label, 0, -18);
+        }
+        ctx.restore();
+      });
+    }
+
+    function drawRobots() {
+      liveRobotsForMap().forEach((robot, index) => {
+        const pose = robot.pose || robot.fallbackPose;
+        const point = mapToCanvas(pose.x, pose.y, index + 2);
+        const selected = robot.id === selectedRobotId;
+        const size = selected ? 17 : 13;
+
+        ctx.save();
+        ctx.translate(point.x, point.y);
+        ctx.rotate(-pose.yaw);
+
+        ctx.fillStyle = selected ? "rgba(79, 143, 97, 0.18)" : "rgba(38, 49, 38, 0.1)";
+        ctx.beginPath();
+        ctx.arc(0, 0, selected ? 34 : 25, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = robot.status === "offline" ? "#9a9588" : robot.color;
+        ctx.strokeStyle = "#fffdf7";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(size, 0);
+        ctx.lineTo(-size * 0.7, -size * 0.75);
+        ctx.lineTo(-size * 0.35, 0);
+        ctx.lineTo(-size * 0.7, size * 0.75);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        if (!overrideActive) {
+          ctx.save();
+          ctx.fillStyle = selected ? "#263126" : "#6d766c";
+          ctx.font = selected ? "900 14px Space Grotesk" : "800 12px Space Grotesk";
+          ctx.textAlign = "center";
+          ctx.fillText(robot.name, point.x, point.y + 42);
+          ctx.restore();
+        }
+      });
+    }
+
+    function liveRobotsForMap() {
+      return robots.filter(robot => robot.status === "live");
+    }
+
+    function mapToCanvas(x, y, fallbackIndex = 0) {
+      if (mapInfo && mapBitmapCanvas) {
+        const imageX = (x - mapInfo.origin.position.x) / mapInfo.resolution;
+        const imageY = mapInfo.height - ((y - mapInfo.origin.position.y) / mapInfo.resolution);
+        return {
+          x: mapView.offsetX + imageX * mapView.scale,
+          y: mapView.offsetY + imageY * mapView.scale
+        };
+      }
+
+      const rect = canvas.getBoundingClientRect();
+      const angle = fallbackIndex * 1.6;
+      const radius = overrideActive ? 36 : 110;
+      return {
+        x: rect.width / 2 + x * 60 + Math.cos(angle) * radius * 0.18,
+        y: rect.height / 2 - y * 60 + Math.sin(angle) * radius * 0.18
+      };
+    }
+
+    function canvasToMapDetails(clientX, clientY) {
+      if (!mapInfo || !mapBitmapCanvas || !mapView.scale) return null;
+
+      const rect = canvas.getBoundingClientRect();
+      const canvasX = clientX - rect.left;
+      const canvasY = clientY - rect.top;
+
+      const imageX = (canvasX - mapView.offsetX) / mapView.scale;
+      const imageY = (canvasY - mapView.offsetY) / mapView.scale;
+
+      if (imageX < 0 || imageY < 0 || imageX > mapInfo.width || imageY > mapInfo.height) {
+        return null;
+      }
+
+      const mapX = mapInfo.origin.position.x + imageX * mapInfo.resolution;
+      const mapY = mapInfo.origin.position.y + (mapInfo.height - imageY) * mapInfo.resolution;
+
+      return {
+        x: mapX,
+        y: mapY,
+        canvasX,
+        canvasY,
+        imageX,
+        imageY,
+        source: mapInfoSource,
+        resolution: mapInfo.resolution
+      };
+    }
+
+    function canvasToMap(clientX, clientY) {
+      const details = canvasToMapDetails(clientX, clientY);
+      return details ? { x: details.x, y: details.y } : null;
+    }
+
+    function yawToQuat(yaw) {
+      return {
+        x: 0,
+        y: 0,
+        z: Math.sin(yaw / 2),
+        w: Math.cos(yaw / 2)
+      };
+    }
+
+    function safePoseStamp() {
+      const backdateSeconds = 0.5;
+      const stampSeconds = Math.max(0, Date.now() / 1000 - backdateSeconds);
+      const sec = Math.floor(stampSeconds);
+      const nanosec = Math.floor((stampSeconds - sec) * 1e9);
+      return { sec, nanosec };
+    }
+
+    function formatPoseForLog(pose) {
+      if (!pose) return "none";
+      return `x=${pose.x.toFixed(3)} y=${pose.y.toFixed(3)} yaw=${pose.yaw.toFixed(3)}`;
+    }
+
+    function formatStampForLog(stamp) {
+      return `${stamp.sec}.${String(stamp.nanosec).padStart(9, "0")}`;
+    }
+
+    function forceMapSourceForClickMode() {
+      if (currentMapTopic === "/map" && mapInfoSource === "/map") {
+        return true;
+      }
+
+      const mapSourceSelect = $("map-source-select");
+      if (mapSourceSelect) mapSourceSelect.value = "/map";
+      subscribeMapTopic("/map");
+      log("Pose/goal clicks use /map only. Switched Map Source to /map; wait for /map to load, then click again.", "warn");
+      addAlert("Map source switched", "Initial pose and goal clicks are locked to /map, not costmaps.", "warn");
+      return false;
+    }
+
+    function currentRobotYaw() {
+      const robot = robots.find(item => item.id === selectedRobotId) || robots[0];
+      const pose = robot && (robot.pose || robot.fallbackPose);
+      return pose ? pose.yaw : 0;
+    }
+
+    function setMapClickMode(mode) {
+      mapClickMode = mapClickMode === mode ? null : mode;
+      if (mapClickMode && currentMapTopic !== "/map") {
+        const mapSourceSelect = $("map-source-select");
+        if (mapSourceSelect) mapSourceSelect.value = "/map";
+        subscribeMapTopic("/map");
+        log(`${mapClickMode === "initial" ? "Initial pose" : "Goal"} mode uses /map only; switched away from costmap source.`, "warn");
+      }
+
+      const initialBtn = $("set-initial-pose-btn");
+      const goalBtn = $("send-goal-btn");
+      if (initialBtn) initialBtn.textContent = mapClickMode === "initial" ? "Click Map..." : "Set Initial Pose";
+      if (goalBtn) goalBtn.textContent = mapClickMode === "goal" ? "Click Map..." : "Send Goal";
+      $("mode-readout").textContent = mapClickMode
+        ? `${mapClickMode === "initial" ? "Initial pose" : "Goal"} mode: /map only, click the map`
+        : "Autonomy view";
+    }
+
+    function logClickDetails(mode, details, stamp, yaw) {
+      log(
+        `${mode} click: canvas=(${details.canvasX.toFixed(1)}, ${details.canvasY.toFixed(1)}) image=(${details.imageX.toFixed(1)}, ${details.imageY.toFixed(1)}) map=(${details.x.toFixed(3)}, ${details.y.toFixed(3)}) source=${details.source}`,
+        "info"
+      );
+      log(
+        `${mode} publish: frame=map stamp=${formatStampForLog(stamp)} yaw=${yaw.toFixed(3)} amcl=${formatPoseForLog(poseSnapshots.amcl)} ekf=${formatPoseForLog(poseSnapshots.ekf)}`,
+        mode === "initial" ? "warn" : "info"
+      );
+    }
+
+    function publishInitialPose(point, details = null) {
+      if (!initialPosePub) {
+        log("Cannot publish /initialpose before ROS connects", "warn");
+        return;
+      }
+
+      const q = yawToQuat(currentRobotYaw());
+      const stamp = safePoseStamp();
+      initialPosePub.publish(new ROSLIB.Message({
+        header: { frame_id: "map", stamp },
+        pose: {
+          pose: {
+            position: { x: point.x, y: point.y, z: 0 },
+            orientation: q
+          },
+          covariance: [
+            0.25, 0, 0, 0, 0, 0,
+            0, 0.25, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0.0685
+          ]
+        }
+      }));
+
+      log(`Initial pose published: x=${point.x.toFixed(3)} y=${point.y.toFixed(3)}`, "warn");
+      if (details) logClickDetails("initial", details, stamp, currentRobotYaw());
+      addAlert("Initial pose sent", `x=${point.x.toFixed(2)}, y=${point.y.toFixed(2)}`, "warn");
+    }
+
+    function publishGoalPose(point, details = null) {
+      if (!goalPosePub) {
+        log("Cannot publish /goal_pose before ROS connects", "warn");
+        return;
+      }
+
+      const q = yawToQuat(currentRobotYaw());
+      const stamp = safePoseStamp();
+      goalPosePub.publish(new ROSLIB.Message({
+        header: { frame_id: "map", stamp },
+        pose: {
+          position: { x: point.x, y: point.y, z: 0 },
+          orientation: q
+        }
+      }));
+
+      log(`Goal pose published: x=${point.x.toFixed(3)} y=${point.y.toFixed(3)}`, "info");
+      if (details) logClickDetails("goal", details, stamp, currentRobotYaw());
+      addAlert("Goal sent", `x=${point.x.toFixed(2)}, y=${point.y.toFixed(2)}`, "warn");
+    }
+
+    function handleMapClick(event) {
+      if (!mapClickMode) {
+        const robot = canvasToRobot(event.clientX, event.clientY);
+        if (robot) selectRobot(robot.id);
+        return;
+      }
+
+      if (!forceMapSourceForClickMode()) {
+        return;
+      }
+
+      const details = canvasToMapDetails(event.clientX, event.clientY);
+      if (!details) {
+        log("Map click ignored: click inside the /map image.", "warn");
+        return;
+      }
+
+      if (mapClickMode === "initial") {
+        publishInitialPose(details, details);
+      } else if (mapClickMode === "goal") {
+        publishGoalPose(details, details);
+      }
+
+      setMapClickMode(null);
+    }
+
+    function canvasToRobot(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      let best = null;
+      let bestDist = Infinity;
+
+      liveRobotsForMap().forEach((robot, index) => {
+        const pose = robot.pose || robot.fallbackPose;
+        const point = mapToCanvas(pose.x, pose.y, index + 2);
+        const dist = Math.hypot(x - point.x, y - point.y);
+        if (dist < bestDist) {
+          best = robot;
+          bestDist = dist;
+        }
+      });
+
+      return bestDist < 42 ? best : null;
+    }
+
+    function roundRect(context, x, y, width, height, radius) {
+      context.beginPath();
+      context.moveTo(x + radius, y);
+      context.arcTo(x + width, y, x + width, y + height, radius);
+      context.arcTo(x + width, y + height, x, y + height, radius);
+      context.arcTo(x, y + height, x, y, radius);
+      context.arcTo(x, y, x + width, y, radius);
+      context.closePath();
+    }
+
+    function startVideo() {
+      if (!rosConnected || !ros) {
+        addAlert("Camera blocked", "Connect ROS bridge before starting the compressed camera feed.", "critical");
+        log("Camera blocked: ROS bridge is offline", "err");
+        return;
+      }
+
+      if (videoActive) return;
+
+      let topicName = $("webrtc-url").value.trim();
+      if (!topicName || !topicName.startsWith("/")) {
+        topicName = DEFAULT_CAMERA_TOPIC;
+        $("webrtc-url").value = topicName;
+        log("Old camera URL ignored; using " + topicName, "warn");
+      }
+      $("video-state").textContent = "connecting";
+      setVideoMessage(
+        "Connecting to Echo camera",
+        `Subscribing to ${topicName}. Start camera_publisher.py and apriltag_detector.py on the Pi if this stays blank.`
+      );
+      saveSettings();
+      log("Subscribing to compressed camera topic " + topicName, "info");
+
+      if (cameraSub) {
+        cameraSub.unsubscribe();
+        cameraSub = null;
+      }
+
+      cameraSub = new ROSLIB.Topic({
+        ros,
+        name: topicName,
+        messageType: "sensor_msgs/CompressedImage",
+        throttle_rate: 100,
+        queue_length: 1
+      });
+
+      cameraSub.subscribe(msg => {
+        const img = $("remote-video");
+        const format = String(msg.format || "jpeg").toLowerCase();
+        const mime = format.includes("png") ? "image/png" : "image/jpeg";
+        const data = Array.isArray(msg.data) ? bytesToBase64(msg.data) : msg.data;
+
+        img.src = `data:${mime};base64,${data}`;
+        $("video-empty").classList.add("hidden");
+        $("video-state").textContent = "live";
+        videoActive = true;
+      });
+    }
+
+    function bytesToBase64(bytes) {
+      let binary = "";
+      const chunkSize = 0x8000;
+
+      for (let i = 0; i < bytes.length; i += chunkSize) {
+        const chunk = bytes.slice(i, i + chunkSize);
+        binary += String.fromCharCode.apply(null, chunk);
+      }
+
+      return btoa(binary);
+    }
+    function setVideoMessage(title, body) {
+      $("video-empty").classList.remove("hidden");
+      $("video-empty-title").textContent = title;
+      $("video-empty-body").textContent = body;
+    }
+
+    function formatError(error) {
+      if (!error) return "Unknown error";
+      if (typeof error === "string") return error;
+      if (error.message) return error.message;
+      if (error.type) return `${error.type}: check that the service is running and reachable`;
+      try {
+        return JSON.stringify(error);
+      } catch (_) {
+        return String(error);
+      }
+    }
+
+    function stopVideo() {
+      if (cameraSub) {
+        cameraSub.unsubscribe();
+        cameraSub = null;
+      }
+
+      if (pc) {
+        pc.close();
+        pc = null;
+      }
+
+      videoActive = false;
+      const img = $("remote-video");
+      img.src = "";
+      $("video-empty").classList.remove("hidden");
+      $("video-state").textContent = "idle";
+      log("Camera stopped", "warn");
+    }
+
+    function enterOverride() {
+      const robot = selectedRobot();
+      if (!isRobotLive(robot)) {
+        showRobotOffline(robot);
+        addAlert("Override blocked", `${robot.name} is offline. Select a live robot first.`, "critical");
+        log(`Override blocked: ${robot.name} is offline`, "warn");
+        return;
+      }
+
+      overrideActive = true;
+      document.body.classList.add("override-mode");
+      $("override-btn").textContent = "Manual Control";
+      $("mode-readout").textContent = "Override view: video primary, mini-map active";
+      updateStageCopy();
+      resizeAfterLayoutChange();
+      startVideo();
+      publishMode("OVERRIDE");
+    }
+
+    function toggleManualControl() {
+      if (!rosConnected || !cmdVelPub) {
+        addAlert("Manual control blocked", "Connect ROS before arming keyboard control.", "critical");
+        log("Manual control blocked: ROS is offline", "err");
+        return;
+      }
+
+      manualActive = !manualActive;
+      document.body.classList.toggle("manual-mode", manualActive);
+      $("override-btn").textContent = manualActive ? "Keyboard Active" : "Manual Control";
+      $("mode-readout").textContent = manualActive
+        ? "Manual control armed. Keep one hand near Stop."
+        : "Override view: click Manual Control to drive";
+
+      if (manualActive) {
+        startManualLoop();
+        publishMode("MANUAL");
+        log("Manual keyboard control armed", "warn");
+      } else {
+        heldKeys.clear();
+        publishStop();
+        stopManualLoop();
+        publishMode("OVERRIDE");
+        log("Manual keyboard control paused", "info");
+      }
+    }
+
+    function leaveOverride() {
+      manualActive = false;
+      overrideActive = false;
+      heldKeys.clear();
+      stopManualLoop();
+      publishStop();
+      stopVideo();
+      document.body.classList.remove("override-mode", "manual-mode");
+      $("override-btn").textContent = "Override";
+      $("mode-readout").textContent = "Autonomy view";
+      updateStageCopy();
+      requestMapDraw();
+      publishMode("AUTO");
+      resizeAfterLayoutChange();
+    }
+
+    function resizeAfterLayoutChange() {
+      resizeCanvas();
+      setTimeout(resizeCanvas, 80);
+      setTimeout(resizeCanvas, 420);
+    }
+
+    function publishMode(mode) {
+      if (!modePub) return;
+      modePub.publish(new ROSLIB.Message({ data: mode }));
+    }
+
+    function startManualLoop() {
+      if (manualTimer) return;
+      manualTimer = setInterval(publishManualVelocity, 100);
+    }
+
+    function stopManualLoop() {
+      clearInterval(manualTimer);
+      manualTimer = null;
+    }
+
+    function publishManualVelocity() {
+      if (!manualActive || !cmdVelPub) return;
+
+      let linearX = 0;
+      let linearY = 0;
+      let angularZ = 0;
+
+      if (heldKeys.has("z")) linearX += BASE_LINEAR * speed;
+      if (heldKeys.has("s")) linearX -= BASE_LINEAR * speed;
+      if (heldKeys.has("arrowleft")) linearY += BASE_STRAFE * speed;
+      if (heldKeys.has("arrowright")) linearY -= BASE_STRAFE * speed;
+      if (heldKeys.has("q")) angularZ += BASE_ANGULAR * speed;
+      if (heldKeys.has("d")) angularZ -= BASE_ANGULAR * speed;
+
+      publishTwist(linearX, linearY, angularZ);
+    }
+
+    function publishTwist(linearX, linearY = 0, angularZ = 0) {
+      if (!rosConnected || !cmdVelPub) {
+        log("Cannot publish /cmd_vel before ROS connects", "warn");
+        return;
+      }
+
+      cmdVelPub.publish(new ROSLIB.Message({
+        linear: { x: linearX, y: linearY, z: 0.0 },
+        angular: { x: 0.0, y: 0.0, z: angularZ }
+      }));
+    }
+
+    function publishStop() {
+      publishTwist(0, 0);
+      setTimeout(() => publishTwist(0, 0), 80);
+      setTimeout(() => publishTwist(0, 0), 160);
+    }
+
+    function emergencyStop() {
+      publishStop();
+      heldKeys.clear();
+      manualActive = false;
+      document.body.classList.remove("manual-mode");
+      $("override-btn").textContent = overrideActive ? "Manual Control" : "Override";
+      $("mode-readout").textContent = "Stop sent. Manual control paused.";
+      publishMode("EMERGENCY_STOP");
+      addAlert("Stop command sent", "Published zero velocity to /cmd_vel.", "critical");
+      log("STOP: zero /cmd_vel published", "err");
+    }
+
+    function setSpeed(nextSpeed) {
+      speed = Math.min(1, Math.max(0.1, nextSpeed));
+      const label = `${Math.round(speed * 100)}%`;
+      $("speed-readout").textContent = label;
+      $("speed-chip").textContent = label;
+      saveSettings();
+    }
+
+    function handleKeyDown(event) {
+      if (isTyping(event.target)) return;
+
+      const key = event.key.toLowerCase();
+      if (/^[1-9]$/.test(key)) {
+        setSpeed(Number(key) / 10);
+        event.preventDefault();
+        return;
+      }
+
+      if (key === "f") {
+        setSpeed(1);
+        event.preventDefault();
+        return;
+      }
+
+      if (!manualActive) return;
+
+      if (["z", "s", "q", "d", "arrowleft", "arrowright"].includes(key)) {
+        heldKeys.add(key);
+        event.preventDefault();
+      }
+
+      if (key === " ") {
+        emergencyStop();
+        event.preventDefault();
+      }
+
+      if (key === "escape" && overrideActive) {
+        leaveOverride();
+        event.preventDefault();
+      }
+    }
+
+    function handleKeyUp(event) {
+      const key = event.key.toLowerCase();
+      if (heldKeys.delete(key) && manualActive) {
+        publishManualVelocity();
+        if (!heldKeys.size) publishStop();
+      }
+    }
+
+    function isTyping(target) {
+      const tag = target && target.tagName ? target.tagName.toLowerCase() : "";
+      return tag === "input" || tag === "textarea" || target?.isContentEditable;
+    }
+
+    function setupChat() {
+      $("chat-form").addEventListener("submit", event => {
+        event.preventDefault();
+        const input = $("chat-input");
+        const text = input.value.trim();
+        if (!text) return;
+
+        appendChat(text, "me");
+        input.value = "";
+
+        if (!rosConnected || !chatPub) {
+          appendChat("Connect ROS bridge first, then I can send this to OpenClaw.", "agent");
+          return;
+        }
+
+        const payload = {
+          text,
+          robot: selectedRobot().name,
+          robot_id: selectedRobot().id,
+          mode: overrideActive ? "override" : "autonomy",
+          timestamp: new Date().toISOString()
+        };
+
+        chatPub.publish(new ROSLIB.Message({ data: JSON.stringify(payload) }));
+        log("OpenClaw chat request published", "info");
+      });
+    }
+
+    function handleChatResponse(msg) {
+      const raw = String(msg.data || "").trim();
+      if (!raw) return;
+
+      try {
+        const parsed = JSON.parse(raw);
+        appendChat(parsed.text || parsed.response || raw, "agent");
+      } catch (error) {
+        appendChat(raw, "agent");
+      }
+    }
+
+    function appendChat(text, who) {
+      const feed = $("chat-feed");
+      const bubble = document.createElement("div");
+      bubble.className = `bubble ${who}`;
+      bubble.textContent = text;
+      feed.appendChild(bubble);
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+
+    function runtimeApiBase() {
+      const host = window.location.hostname || "127.0.0.1";
+      return `http://${host}:5050`;
+    }
+
+    async function runtimeFetch(path, options = {}) {
+      const response = await fetch(runtimeApiBase() + path, {
+        headers: { "Content-Type": "application/json" },
+        ...options
+      });
+      return await response.json();
+    }
+
+    function runtimeLog(message, type = "info") {
+      log("Runtime: " + message, type);
+    }
+
+    async function refreshRuntime() {
+      const state = $("runtime-api-state");
+      const health = $("runtime-api-health");
+      const list = $("runtime-list");
+
+      try {
+        const data = await runtimeFetch("/status");
+        health.className = "health";
+        state.textContent = `API online · running: ${(data.running || []).join(", ") || "none"}`;
+
+        const actions = data.actions || {};
+        const running = new Set(data.running || []);
+        const wanted = ["robot_body", "localization", "navigation", "mapping", "camera", "foxglove", "save_map", "stop_stack"];
+
+        list.innerHTML = "";
+
+        wanted.forEach(name => {
+          const spec = actions[name];
+          if (!spec) return;
+
+          const enabled = Boolean(spec.enabled);
+          const isRunning = running.has(name);
+          const label = spec.label || name;
+
+          const row = document.createElement("div");
+          row.className = "runtime-row";
+
+          const startDisabled = !enabled || isRunning || name === "stop_stack";
+          const stopDisabled = !isRunning || name === "stop_stack";
+          const runLabel = isRunning ? "running" : (enabled ? "idle" : "disabled");
+
+          row.innerHTML = `
+            <div class="runtime-name">
+              <b>${escapeHtml(label)}</b>
+              <small>${escapeHtml(runLabel)} · ${escapeHtml(spec.exclusive_group || "runtime")}</small>
+            </div>
+            <button class="runtime-btn start" data-runtime-start="${escapeHtml(name)}" ${startDisabled ? "disabled" : ""}>Start</button>
+            <button class="runtime-btn stop" data-runtime-stop="${escapeHtml(name)}" ${stopDisabled ? "disabled" : ""}>Stop</button>
+            <button class="runtime-btn" data-runtime-log="${escapeHtml(name)}">Logs</button>
+          `;
+
+          list.appendChild(row);
+        });
+
+        list.querySelectorAll("[data-runtime-start]").forEach(btn => {
+          btn.addEventListener("click", () => launchRuntime(btn.dataset.runtimeStart));
+        });
+
+        list.querySelectorAll("[data-runtime-stop]").forEach(btn => {
+          btn.addEventListener("click", () => stopRuntime(btn.dataset.runtimeStop));
+        });
+
+        list.querySelectorAll("[data-runtime-log]").forEach(btn => {
+          btn.addEventListener("click", () => loadRuntimeLogs(btn.dataset.runtimeLog));
+        });
+
+      } catch (error) {
+        health.className = "health off";
+        state.textContent = "Launch API offline";
+        runtimeLog("API error: " + error.message, "err");
+      }
+    }
+
+    async function launchRuntime(action) {
+      try {
+        const data = await runtimeFetch("/launch", {
+          method: "POST",
+          body: JSON.stringify({ action })
+        });
+
+        if (data.ok) {
+          runtimeLog(`launched ${action}`, "info");
+          addAlert("Runtime launched", action, "warn");
+        } else {
+          runtimeLog(`${action} launch failed: ${data.error || data.message || "unknown"}`, "err");
+          addAlert("Runtime launch failed", `${action}: ${data.error || data.message || "unknown"}`, "critical");
+        }
+
+        setTimeout(refreshRuntime, 900);
+      } catch (error) {
+        runtimeLog(`${action} launch error: ${error.message}`, "err");
+      }
+    }
+
+    async function stopRuntime(action) {
+      try {
+        const data = await runtimeFetch("/stop", {
+          method: "POST",
+          body: JSON.stringify({ action })
+        });
+
+        if (data.ok) {
+          runtimeLog(`stopped ${action}`, "warn");
+          addAlert("Runtime stopped", action, "warn");
+        } else {
+          runtimeLog(`${action} stop failed: ${data.error || data.message || "unknown"}`, "err");
+          addAlert("Runtime stop failed", `${action}: ${data.error || data.message || "unknown"}`, "critical");
+        }
+
+        setTimeout(refreshRuntime, 1200);
+      } catch (error) {
+        runtimeLog(`${action} stop error: ${error.message}`, "err");
+      }
+    }
+
+    async function loadRuntimeLogs(action) {
+      try {
+        const data = await runtimeFetch(`/logs?action=${encodeURIComponent(action)}&lines=20`);
+
+        if (data.lines) {
+          runtimeLog(`${action} logs loaded`, "info");
+          data.lines.slice(-20).forEach(line => {
+            if (line.trim()) log(`${action}: ${line}`, "sys");
+          });
+        } else {
+          runtimeLog(`${action}: ${data.message || "no logs"}`, "warn");
+        }
+      } catch (error) {
+        runtimeLog(`${action} logs error: ${error.message}`, "err");
+      }
+    }
+
+    async function copyDebugLog() {
+      const debugText = Array.from(document.querySelectorAll("#debug-list .debug-row"))
+        .map(row => row.innerText.trim().replace(/\n+/g, " "))
+        .join("\n");
+
+      const logText = $("logbox") ? $("logbox").innerText.trim() : "";
+      const text = [debugText, logText].filter(Boolean).join("\n\n");
+
+      try {
+        await copyTextToClipboard(text || "No debug stream available.");
+        log("Debug stream copied to clipboard", "info");
+        addAlert("Copied", "Debug stream copied to clipboard.", "warn");
+      } catch (error) {
+        log("Copy failed: " + error.message, "err");
+      }
+    }
+
+    async function copyTextToClipboard(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      textarea.style.top = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+
+      try {
+        if (!document.execCommand("copy")) {
+          throw new Error("browser copy command failed");
+        }
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    }
+
+    function clearDebugLog() {
+      $("debug-list").innerHTML = "";
+      if ($("logbox")) $("logbox").textContent = "";
+      log("Debug stream cleared", "warn");
+    }
+
+    function bindEvents() {
+      $("connect-btn").addEventListener("click", toggleRosConnection);
+      $("refresh-nodes").addEventListener("click", () => {
+        refreshNodes();
+        loadTopics();
+      });
+      const runtimeRefresh = $("runtime-refresh");
+      if (runtimeRefresh) runtimeRefresh.addEventListener("click", refreshRuntime);
+
+      const copyDebug = $("copy-debug");
+      if (copyDebug) copyDebug.addEventListener("click", copyDebugLog);
+      const mapSourceSelect = $("map-source-select");
+      if (mapSourceSelect) {
+       mapSourceSelect.value = currentMapTopic;
+       mapSourceSelect.addEventListener("change", () => {
+       subscribeMapTopic(mapSourceSelect.value);
+      });
+     }
+
+      const clearDebug = $("clear-debug");
+      if (clearDebug) clearDebug.addEventListener("click", clearDebugLog);
+      $("exit-override-btn").addEventListener("click", leaveOverride);
+
+      $("override-btn").addEventListener("click", () => {
+        if (!overrideActive) {
+          enterOverride();
+        } else {
+          toggleManualControl();
+        }
+      });
+
+      $("stop-btn").addEventListener("click", emergencyStop);
+      canvas.addEventListener("click", handleMapClick);
+
+      const initialPoseBtn = $("set-initial-pose-btn");
+      if (initialPoseBtn) initialPoseBtn.addEventListener("click", () => setMapClickMode("initial"));
+
+      const sendGoalBtn = $("send-goal-btn");
+      if (sendGoalBtn) sendGoalBtn.addEventListener("click", () => setMapClickMode("goal"));
+
+      window.addEventListener("keydown", handleKeyDown);
+      window.addEventListener("keyup", handleKeyUp);
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("beforeunload", publishStop);
+    }
+
+    function boot() {
+      loadSettings();
+      setSpeed(speed);
+      renderFleet();
+      updateStageCopy();
+      setupChat();
+      bindEvents();
+      resizeCanvas();
+      log("Echo Fleet Desk loaded", "info");
+      refreshRuntime();
+      setInterval(refreshRuntime, 5000);
+      connect();
+    }
+
+    boot();
+  </script>
+
+  <script>
+    (function () {
+      const ECHO_PLACES = {
+        door: {
+          label: "Door",
+          frame_id: "map",
+          x: -0.5224124052,
+          y: 2.5367374480,
+          yaw: -1.061
+        },
+        next_to_us: {
+          label: "Next to us",
+          frame_id: "map",
+          x: -0.3747944347,
+          y: 0.3987605843,
+          yaw: -0.995
+        },
+        middle: {
+          label: "Middle",
+          frame_id: "map",
+          x: 1.2644976771,
+          y: -0.8052688973,
+          yaw: -1.072
+        }
+      };
+
+      let echoPlaceMapInfo = null;
+      let echoPlaceLayer = null;
+      let echoPlaceActionClient = null;
+      let echoPlaceMapSub = null;
+
+      function yawToQuat(yaw) {
+        return {
+          x: 0,
+          y: 0,
+          z: Math.sin(yaw * 0.5),
+          w: Math.cos(yaw * 0.5)
+        };
+      }
+
+      function findRos() {
+        if (window.ros && window.ros.isConnected) return window.ros;
+        if (window.ROS && window.ROS.isConnected) return window.ROS;
+        for (const key of Object.keys(window)) {
+          const value = window[key];
+          if (value && value.constructor && value.constructor.name === "Ros" && value.isConnected) {
+            return value;
+          }
+        }
+        return null;
+      }
+
+      function logPlace(text) {
+        if (typeof window.addLog === "function") {
+          window.addLog(text, "info");
+        } else {
+          console.log("[places]", text);
+        }
+      }
+
+      function ensureLayer() {
+        const stage = document.querySelector(".stage");
+        if (!stage) return null;
+
+        if (!echoPlaceLayer) {
+          echoPlaceLayer = document.createElement("div");
+          echoPlaceLayer.className = "place-marker-layer";
+          stage.appendChild(echoPlaceLayer);
+        }
+
+        return echoPlaceLayer;
+      }
+
+      function ensureMarkers() {
+        const layer = ensureLayer();
+        if (!layer) return;
+
+        for (const [name, place] of Object.entries(ECHO_PLACES)) {
+          let marker = layer.querySelector(`[data-place="${name}"]`);
+          if (marker) continue;
+
+          marker = document.createElement("button");
+          marker.type = "button";
+          marker.className = "place-marker";
+          marker.dataset.place = name;
+          marker.innerHTML = `<span>${place.label}</span><span class="place-yaw">${place.yaw.toFixed(2)}</span>`;
+          marker.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (document.body.classList.contains("user-mode") || window.ECHO_DASHBOARD_MODE === "user") {
+              alert("Place navigation is disabled in user mode.");
+              return;
+            }
+
+            sendPlaceGoal(name);
+          });
+
+          layer.appendChild(marker);
+        }
+      }
+
+      function subscribeMapForPlaces() {
+        const ros = findRos();
+        if (!ros || echoPlaceMapSub || !window.ROSLIB) return;
+
+        echoPlaceMapSub = new ROSLIB.Topic({
+          ros,
+          name: "/map",
+          messageType: "nav_msgs/msg/OccupancyGrid"
+        });
+
+        echoPlaceMapSub.subscribe((msg) => {
+          echoPlaceMapInfo = msg.info;
+          updatePlaceMarkers();
+        });
+
+        logPlace("Place markers subscribed to /map.");
+      }
+
+      function getMapCanvas() {
+        return document.getElementById("map-canvas");
+      }
+
+      function mapToScreen(x, y) {
+        const canvas = getMapCanvas();
+        const info = echoPlaceMapInfo;
+        if (!canvas || !info) return null;
+
+        const rect = canvas.getBoundingClientRect();
+        const mapW = info.width * info.resolution;
+        const mapH = info.height * info.resolution;
+        const scale = Math.min(rect.width / mapW, rect.height / mapH);
+        const drawW = mapW * scale;
+        const drawH = mapH * scale;
+        const offsetX = (rect.width - drawW) * 0.5;
+        const offsetY = (rect.height - drawH) * 0.5;
+
+        const originX = info.origin.position.x;
+        const originY = info.origin.position.y;
+
+        const px = offsetX + (x - originX) * scale;
+        const py = offsetY + drawH - (y - originY) * scale;
+
+        return { x: px, y: py };
+      }
+
+      function updatePlaceMarkers() {
+        ensureMarkers();
+
+        if (!echoPlaceLayer) return;
+
+        for (const [name, place] of Object.entries(ECHO_PLACES)) {
+          const marker = echoPlaceLayer.querySelector(`[data-place="${name}"]`);
+          if (!marker) continue;
+
+          const screen = mapToScreen(place.x, place.y);
+          if (!screen) {
+            marker.style.display = "none";
+            continue;
+          }
+
+          marker.style.display = "inline-flex";
+          marker.style.left = `${screen.x}px`;
+          marker.style.top = `${screen.y}px`;
+        }
+      }
+
+      function getActionClient() {
+        const ros = findRos();
+        if (!ros || !window.ROSLIB) return null;
+
+        if (!echoPlaceActionClient) {
+          echoPlaceActionClient = new ROSLIB.ActionClient({
+            ros,
+            serverName: "/navigate_to_pose",
+            actionName: "nav2_msgs/action/NavigateToPose"
+          });
+        }
+
+        return echoPlaceActionClient;
+      }
+
+      function sendPlaceGoal(name) {
+        const place = ECHO_PLACES[name];
+        if (!place) return;
+
+        const client = getActionClient();
+        if (!client) {
+          alert("Connect ROS first before sending place goals.");
+          return;
+        }
+
+        const q = yawToQuat(place.yaw);
+        const goal = new ROSLIB.Goal({
+          actionClient: client,
+          goalMessage: {
+            pose: {
+              header: {
+                frame_id: place.frame_id || "map",
+                stamp: { sec: 0, nanosec: 0 }
+              },
+              pose: {
+                position: { x: place.x, y: place.y, z: 0 },
+                orientation: q
+              }
+            }
+          }
+        });
+
+        goal.on("result", () => logPlace(`Place goal result received: ${name}`));
+        goal.on("feedback", () => {});
+        goal.send();
+
+        logPlace(`Sent place goal: ${name} (${place.x.toFixed(2)}, ${place.y.toFixed(2)}, yaw ${place.yaw.toFixed(2)})`);
+      }
+
+      function bootPlaceMarkers() {
+        ensureMarkers();
+        subscribeMapForPlaces();
+        updatePlaceMarkers();
+      }
+
+      window.EchoPlaces = {
+        places: ECHO_PLACES,
+        refresh: updatePlaceMarkers,
+        send: sendPlaceGoal
+      };
+
+      window.addEventListener("load", bootPlaceMarkers);
+      window.addEventListener("resize", updatePlaceMarkers);
+      setInterval(bootPlaceMarkers, 1500);
+    })();
+  </script>
+
+</body>
+</html>
+
