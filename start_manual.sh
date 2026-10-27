@@ -1,7 +1,8 @@
 #!/bin/bash
 
 source /opt/ros/jazzy/setup.bash
-source ~/ros2_ws/install/setup.bash
+ECHO_WS="${ECHO_WS:-$HOME/echo_workspace}"
+source "$ECHO_WS/install/setup.bash"
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "       ECHO — MANUAL CONTROL 🎮"

@@ -3,3 +3,41 @@
 echo_workspace/build/
 echo_workspace/install/
 echo_workspace/log/
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+
+# Python and editor caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.venv/
+venv/
+
+# Local credentials and configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+echo_runtime/voice/voice.env
+echo_runtime/**/openclaw*.json
+
+# Runtime state and generated output
+echo_runtime/logs/
+echo_runtime/backups/
+echo_runtime/**/*.bak
+echo_runtime/**/*.bak.*
+echo_runtime/**/*.tmp
+*.log
+*.bak
+*.bak.*
+
+# Local exports and archives
+*.zip
+*.tar
+*.tar.gz

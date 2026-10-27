@@ -2,8 +2,12 @@
 <package format="3">
   <name>echo_navigation</name>
   <version>0.0.0</version>
-  <description>Echo echo_navigation package</description>
-  <maintainer email="ahmed@todo.todo">Ahmed</maintainer>
+  <description>Echo maps and navigation configuration for SLAM and Nav2</description>
+  <maintainer>Ahmed-Xavier</maintainer>
+
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>robot_localization</exec_depend>
+  <exec_depend>slam_toolbox</exec_depend>
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

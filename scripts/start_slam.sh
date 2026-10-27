@@ -1,5 +1,6 @@
 #!/bin/bash
-source ~/ros2_ws/install/setup.bash
+ECHO_WS="${ECHO_WS:-$HOME/echo_workspace}"
+source "$ECHO_WS/install/setup.bash"
 
 ros2 launch robot_controller slam_launch.py &
 

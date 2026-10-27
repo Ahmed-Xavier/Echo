@@ -5,10 +5,10 @@ import requests
 import subprocess
 import time
 
-ACCESS_KEY = "JLK7fhHBwG5Hmp8EQ5xSWjvkJ0AdBNxjcHsW5F5Gf124cvnCG3d6Nw=="
-KEYWORD_PATH = "/home/ahmed/.openclaw/workspace/echo_wake_word.ppn"
-ELEVENLABS_KEY = "sk_084daee8df779c57a2a5ee3ccac55a247413b2f5ff8a7dd9"
-VOICE_ID = "JBFqnCBsd6RMkjVDRZzb" # George
+ACCESS_KEY = os.getenv("PICOVOICE_ACCESS_KEY", "")
+KEYWORD_PATH = os.getenv("ECHO_KEYWORD_PATH", os.path.expanduser("~/.config/echo/echo_wake_word.ppn"))
+ELEVENLABS_KEY = os.getenv("ELEVENLABS_API_KEY", "")
+VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "JBFqnCBsd6RMkjVDRZzb")
 
 def say(text):
     print(f"Echo says: {text}")

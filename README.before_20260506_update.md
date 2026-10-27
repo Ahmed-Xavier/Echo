@@ -9,12 +9,12 @@ Echo is a sarcastic, witty, and self-directed autonomous indoor navigation robot
 Echo now has a much cleaner real-world mapping and early navigation workflow:
 
 *   **One-command mapping bringup added** with `echo_workspace/src/echo_bringup/scripts/start_echo_mapping.sh`.
-*   **YDLIDAR driver vendored into the Echo workspace** so the tuned LiDAR setup is saved with the project instead of only living in `~/ros2_ws`.
+*   **YDLIDAR driver vendored into the Echo workspace** so the tuned LiDAR setup is saved with the project instead of only living in `$ECHO_WS`.
 *   **LiDAR transform corrected** for Echo's physical mount; the saved tuning uses `base_link -> laser_frame` translation `x=0.0275`, `z=0.160`, with a 180 degree roll.
 *   **SLAM laser range matched to the LiDAR** at `10.0 m`, removing the old `12.0 m` mismatch warning.
 *   **Clean SLAM map saved and committed** as `echo_workspace/src/echo_navigation/maps/echo_nav_map.yaml`.
-*   **Second room map saved locally** as `/home/ahmed/maps/Local_Club.yaml` and `/home/ahmed/maps/Local_Club.pgm`.
-*   **Foxglove workflow verified** over `ws://100.95.231.114:8765` for mapping, `/initialpose`, map/costmap viewing, and Nav2 goal testing.
+*   **Second room map saved locally** as `$HOME/maps/Local_Club.yaml` and `$HOME/maps/Local_Club.pgm`.
+*   **Foxglove workflow verified** over `ws://<robot-host>:8765` for mapping, `/initialpose`, map/costmap viewing, and Nav2 goal testing.
 *   **Nav2 successfully loaded the Local_Club map**, AMCL localized after publishing `/initialpose`, and a small Foxglove `/goal_pose` navigation test worked.
 *   **Global static costmap verified**: `/global_costmap/static_layer` gives a clean, accurate view of the saved map used by Nav2.
 
@@ -143,13 +143,13 @@ Key decisions from testing:
 
 ### Nav2 Files
 
-*   **Echo workspace**: `~/.openclaw/workspace/github_echo/echo_workspace`
+*   **Echo workspace**: `$ECHO_WS`
 *   **Mapping launcher**: `echo_workspace/src/echo_bringup/scripts/start_echo_mapping.sh`
 *   **Navigation launcher scripts**: `echo_workspace/src/echo_bringup/scripts/start_echo_navigation.sh` and `start_echo_nav2.sh`
 *   **Nav2 params**: `echo_workspace/src/echo_navigation/config/nav2_params.yaml`
 *   **Committed default map**: `echo_workspace/src/echo_navigation/maps/echo_nav_map.yaml`
-*   **Local test map**: `/home/ahmed/maps/Local_Club.yaml`
-*   **Foxglove bridge**: `ws://100.95.231.114:8765`
+*   **Local test map**: `$HOME/maps/Local_Club.yaml`
+*   **Foxglove bridge**: `ws://<robot-host>:8765`
 
 ---
 
@@ -190,9 +190,9 @@ On Windows PowerShell:
 Then SSH into the Pi from PowerShell, not VS Code SSH, and run:
 
 ```bash
-export DISPLAY=100.106.212.8:0.0
+export DISPLAY=<laptop-display-host>:0.0
 source /opt/ros/jazzy/setup.bash
-source ~/ros2_ws/install/setup.bash
+source $ECHO_WS/install/setup.bash
 rviz2 -d /opt/ros/jazzy/share/nav2_bringup/rviz/nav2_default_view.rviz
 ```
 
@@ -206,7 +206,7 @@ Foxglove is the preferred lightweight UI for mapping, quick Nav2 testing, and RO
 For direct Foxglove testing, connect from the browser to:
 
 ```text
-ws://100.95.231.114:8765
+ws://<robot-host>:8765
 ## 🚀 What's Next?
 
 1.  **Repair or replace the broken motor** before judging Nav2 path tracking quality.
@@ -219,4 +219,4 @@ ws://100.95.231.114:8765
 
 ---
 
-*“I’m not an assistant; I’m an explorer. I just happen to live in Ahmed's house.” — Echo*
+*“I’m not an assistant; I’m an explorer. I just happen to live in the builder's house.” — Echo*

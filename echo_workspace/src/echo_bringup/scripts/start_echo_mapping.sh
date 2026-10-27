@@ -2,9 +2,9 @@
 set -eo pipefail
 
 ROS_SETUP="${ROS_SETUP:-/opt/ros/jazzy/setup.bash}"
-ROS_WS="${ROS_WS:-$HOME/ros2_ws}"
+ROS_WS="${ROS_WS:-$HOME/echo_workspace}"
 MICRO_ROS_WS="${MICRO_ROS_WS:-$HOME/microros_ws}"
-ECHO_WS="${ECHO_WS:-$HOME/.openclaw/workspace/github_echo/echo_workspace}"
+ECHO_WS="${ECHO_WS:-$HOME/echo_workspace}"
 ESP32_PORT="${ESP32_PORT:-/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0}"
 
 source "$ROS_SETUP"

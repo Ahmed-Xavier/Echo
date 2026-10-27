@@ -13,12 +13,17 @@ setup(
             'launch/ekf_launch.py',
             'launch/slam_launch.py',
         ]),
+        ('share/' + package_name + '/config', [
+            'ekf.yaml',
+            'nav2_params.yaml',
+            'slam_config.yaml',
+        ]),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='ahmed',
-    maintainer_email='ahmed@todo.todo',
-    description='Robot motor controller',
+    maintainer='Ahmed-Xavier',
+    maintainer_email='',
+    description='Echo motor, encoder, IMU, and odometry ROS 2 nodes',
     license='MIT',
     entry_points={
         'console_scripts': [

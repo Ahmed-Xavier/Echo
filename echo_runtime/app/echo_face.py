@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 from pathlib import Path
+import os
 import tkinter as tk
 from PIL import Image, ImageTk
 
 STATE_FILE = Path("/tmp/echo_face_state")
-FACE_ROOT = Path("/home/ahmed/echo_runtime/bmo_face_source/faces")
+FACE_ROOT = Path(
+    os.getenv(
+        "ECHO_FACE_ROOT",
+        Path.home() / "echo_workspace/echo_runtime/bmo_face_source/faces",
+    )
+)
 
 WIDTH = 800
 HEIGHT = 480

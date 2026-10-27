@@ -2,8 +2,10 @@ import sys
 import os
 import time
 
-# Add the Freenove code path to sys.path
-sys.path.append('/home/ahmed/Freenove_Computer_Case_Kit_for_Raspberry_Pi/Code')
+# Add the optional Freenove code path to sys.path.
+freenove_code = os.getenv("FREENOVE_CODE_PATH")
+if freenove_code:
+    sys.path.append(freenove_code)
 
 from expansion import Expansion
 

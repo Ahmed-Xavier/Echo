@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-export ECHO_WS="/home/ahmed/.openclaw/workspace/github_echo/echo_workspace"
+export ECHO_WS="${ECHO_WS:-$HOME/echo_workspace}"
+export ECHO_RUNTIME_DIR="${ECHO_RUNTIME_DIR:-$ECHO_WS/echo_runtime}"
 
 # ROS setup files may reference unset variables, so temporarily disable nounset.
 case "$-" in

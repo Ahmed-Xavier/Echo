@@ -2,7 +2,7 @@ import sys
 import os
 import time
 
-sys.path.append('/home/ahmed/Freenove_Computer_Case_Kit_for_Raspberry_Pi/Code')
+sys.path.append(os.getenv("FREENOVE_CODE_DIR", os.path.expanduser("~/Freenove_Computer_Case_Kit_for_Raspberry_Pi/Code")))
 from expansion import Expansion
 
 def pulse_blue():

@@ -66,10 +66,10 @@ LATEST UPDATE — 2026-04-27
 ✅ Default saved navigation map committed:
    echo_workspace/src/echo_navigation/maps/echo_nav_map.yaml
 ✅ Local_Club map saved locally:
-   /home/ahmed/maps/Local_Club.yaml
-   /home/ahmed/maps/Local_Club.pgm
+   $HOME/maps/Local_Club.yaml
+   $HOME/maps/Local_Club.pgm
 ✅ Foxglove bridge workflow verified at:
-   ws://100.95.231.114:8765
+   ws://<robot-host>:8765
 ✅ Foxglove /initialpose workflow learned:
    right-click the Publish icon, choose 2D pose estimate, then click-drag on the map.
 ✅ Nav2 loaded Local_Club through map_server and AMCL localized after initial pose.
@@ -210,12 +210,12 @@ KEY FILES
 ~/test_mpu.py — legacy raw MPU6050 test script
 ~/test_motor.py — raw motor test script
 ~/.openclaw/ — OpenClaw config + workspace
-~/.openclaw/workspace/SOUL.md — robot personality
-~/.openclaw/workspace/locations.json — named nav locations
+$OPENCLAW_WORKSPACE/SOUL.md — robot personality
+$OPENCLAW_WORKSPACE/locations.json — named nav locations
 ~/microros_ws/ — micro-ROS agent workspace
-~/ros2_ws/src/robot_controller/ekf.yaml — EKF config
-~/ros2_ws/src/robot_controller/launch/ekf_launch.py — EKF launch
-~/ros2_ws/src/robot_controller/robot_controller/
+$ECHO_WS/src/robot_controller/ekf.yaml — EKF config
+$ECHO_WS/src/robot_controller/launch/ekf_launch.py — EKF launch
+$ECHO_WS/src/robot_controller/robot_controller/
  motor_controller.py — subscribes /cmd_vel, drives L298N
  encoder_odometry.py — publishes /wheel_odom
  imu_node.py — legacy Pi-side MPU6050 IMU publisher
@@ -270,7 +270,7 @@ TESTED & CONFIRMED WORKING
 ✅ Motor auto-stops after 0.5s with no command
 ✅ Freenove case fan control (Auto Pi Temp + Manual)
 ✅ OpenClaw 2026.3.8 installed + gateway running
-✅ Telegram bot (@unit01_robot_bot) responding
+✅ Telegram bot (<telegram-bot>) responding
 ✅ SOUL.md written — Echo explorer personality active
 ✅ Echo can read files and explore filesystem via Telegram
 ✅ Audio-Visual interaction (4K mic + stereo speakers) tested
@@ -359,7 +359,7 @@ BUILD PHASES — STATUS
  * CLI NavigateToPose goal completed successfully
  * Regulated Pure Pursuit selected over MPPI
  * Motor deadband tuning added
- * Clean launcher: /home/ahmed/start_echo_navigation.sh
+ * Clean launcher: $HOME/start_echo_navigation.sh
 ✅ Phase 13 — AMCL localization
  * Saved map loaded through Nav2 map_server
  * AMCL active
@@ -370,8 +370,8 @@ BUILD PHASES — STATUS
  * Implemented dynamic `locations.json` mapping
  * Integrated AprilTag triggers directly to Nav2 Actions (Tag 1 -> go_to_goal_A)
  * 3D RViz markers implemented for tags
-✅ Phase 15 — Administrative Dashboard 
- * Integrated Foxglove visualization 
+✅ Phase 15 — Administrative Dashboard
+ * Integrated Foxglove visualization
  * Refactored runtimes into layered actions (`robot_body`, `localization`, `nav2`)
  * Web interface to trigger runtime orchestration layers
  * Added User/Admin role separation with `login.html` and `auth.js` session security
@@ -415,11 +415,11 @@ ROS2 (Nav2 + camera + LiDAR)
 UNIT_01 Hardware
 
 Current config:
- Bot: @unit01_robot_bot
+ Bot: <telegram-bot>
  Gateway: http://127.0.0.1:18789/
  Service: openclaw-gateway (systemd user service)
- SOUL.md: ~/.openclaw/workspace/SOUL.md
- Workspace: ~/.openclaw/workspace/
+ SOUL.md: $OPENCLAW_WORKSPACE/SOUL.md
+ Workspace: $OPENCLAW_WORKSPACE/
 
 Skills to build:
  navigate_to(name) — go to named location
@@ -494,7 +494,7 @@ Camera (OV5647): BROKEN — libcamera package mismatch
 ## 2026-04-23 - Nav2, RViz, and First Autonomous Drive
 
 Major progress:
-- Built and saved a small SLAM map locally at `/home/ahmed/maps/echo_test_map.yaml`.
+- Built and saved a small SLAM map locally at `$HOME/maps/echo_test_map.yaml`.
 - Installed Nav2 on ROS 2 Jazzy and fixed the Fast-CDR/FastDDS mismatch.
 - Verified AMCL localization with `map -> base_link`.
 - Switched Nav2 from MPPI to Regulated Pure Pursuit because MPPI caused low-speed motor beeping.
@@ -502,7 +502,7 @@ Major progress:
 - Sent a Nav2 CLI goal and Echo drove successfully with `Goal finished with status: SUCCEEDED`.
 - Opened RViz2 with Nav2 tools on the Windows laptop using VcXsrv/X11 forwarding.
 - Confirmed RViz Nav2 goals reach Echo.
-- Added `/home/ahmed/start_echo_navigation.sh` as the clean Nav2 launcher.
+- Added `$HOME/start_echo_navigation.sh` as the clean Nav2 launcher.
 
 Known limitations:
 - The current map is small and remains local to the robot.
@@ -519,14 +519,14 @@ Next steps:
 RViz laptop visualization note:
 - RViz2 was displayed successfully on the Windows laptop using VcXsrv over Tailscale.
 - Windows command: `& "C:\Program Files\VcXsrv\vcxsrv.exe" :0 -multiwindow -clipboard -nowgl -ac`
-- Pi command: `export DISPLAY=100.106.212.8:0.0`
+- Pi command: `export DISPLAY=<laptop-display-host>:0.0`
 - RViz command: `rviz2 -d /opt/ros/jazzy/share/nav2_bringup/rviz/nav2_default_view.rviz`
 
 ## 2026-04-27 - Clean SLAM, Local_Club Map, and First Foxglove Nav2 Test
 
 Major progress:
 - Restored clean SLAM behavior by fixing the LiDAR orientation and removing noisy visualization/panel load.
-- Saved `Local_Club` locally at `/home/ahmed/maps/Local_Club.yaml`.
+- Saved `Local_Club` locally at `$HOME/maps/Local_Club.yaml`.
 - Verified Foxglove as the operator UI for `/map`, `/scan`, costmaps, `/initialpose`, and `/goal_pose`.
 - Learned the Foxglove publish-tool workflow: right-click the Publish icon to choose `2D pose estimate` for `/initialpose`.
 - Loaded `Local_Club` into Nav2 and confirmed `/global_costmap/static_layer` matches the saved map accurately.

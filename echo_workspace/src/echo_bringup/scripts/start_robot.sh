@@ -1,7 +1,9 @@
 #!/bin/bash
 
 source /opt/ros/jazzy/setup.bash
-source ~/ros2_ws/install/setup.bash
+ECHO_WS="${ECHO_WS:-$HOME/echo_workspace}"
+ECHO_REPO_ROOT="${ECHO_REPO_ROOT:-$(cd "$ECHO_WS/.." && pwd)}"
+source "$ECHO_WS/install/setup.bash"
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "       ECHO — STARTING UP 🤖"
@@ -40,7 +42,7 @@ ros2 launch robot_controller ekf_launch.py &
 sleep 3
 
 echo "[5/9] Starting SLAM..."
-bash ~/start_slam.sh &
+bash "$ECHO_WS/src/echo_bringup/scripts/start_slam.sh" &
 sleep 18
 
 echo "[6/9] Starting rosbridge..."
@@ -48,8 +50,8 @@ ros2 launch rosbridge_server rosbridge_websocket_launch.xml &
 sleep 2
 
 echo "[7/9] Starting AprilTag + WebRTC..."
-python3 ~/apriltag_detector.py &
-python3 ~/webrtc_server.py &
+python3 "$ECHO_WS/src/echo_perception/scripts/apriltag_detector.py" &
+python3 "$ECHO_REPO_ROOT/scripts/webrtc_server.py" &
 sleep 2
 
 echo "[8/9] Starting rosboard..."
