@@ -14,9 +14,9 @@ or machine-specific filesystem paths. Keep deployment-specific values outside Gi
 Copy the relevant example environment file to a local, ignored environment file and
 provide values on the robot:
 
-- `echo_runtime/voice/.env.example`
-- `echo_runtime/bin/echo_env.sh`
+- `runtime/voice/.env.example`
+- `runtime/bin/echo_env.sh`
 
-The canonical ROS 2 source workspace is `echo_workspace`. Paths to the workspace,
-device ports, and runtime directories should be supplied through environment variables
+The canonical ROS 2 source tree is `src/`, built from the repository root. Paths
+to the workspace, device ports, and runtime directories should be supplied through environment variables
 or launch arguments rather than committed machine-specific values.

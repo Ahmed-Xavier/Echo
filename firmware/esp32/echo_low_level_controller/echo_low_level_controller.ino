@@ -59,7 +59,7 @@ const float GYRO_Z_OFFSET = -125.16f;
 // Safety
 #define CMD_TIMEOUT_MS 500
 
-// Per-wheel trim to compensate for small hardware asymmetries.
+// Per-wheel trim
 const float FL_TRIM = 1.00f;
 const float FR_TRIM = 1.00f;
 const float RL_TRIM = 1.00f;
@@ -87,6 +87,9 @@ rclc_support_t support;
 rcl_allocator_t allocator;
 rcl_node_t node;
 
+// Agent state
+bool agent_connected = false;
+
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if ((temp_rc != RCL_RET_OK)) { stopAll(); while (1) { delay(100); } } }
 #define RCSOFTCHECK(fn) { rcl_ret_t temp_rc = fn; if ((temp_rc != RCL_RET_OK)) {} }
 
@@ -98,8 +101,6 @@ volatile int32_t count_FR = 0;
 volatile int32_t count_RL = 0;
 volatile int32_t count_RR = 0;
 
-// Direction is estimated from commanded motor direction.
-// This is good for one-channel encoders, but true quadrature would be better later.
 volatile int8_t dir_FL = 0;
 volatile int8_t dir_FR = 0;
 volatile int8_t dir_RL = 0;
@@ -186,14 +187,10 @@ bool readRegisters(uint8_t startReg, uint8_t count, uint8_t *buffer) {
   Wire.beginTransmission(IMU_ADDR);
   Wire.write(startReg);
 
-  if (Wire.endTransmission(false) != 0) {
-    return false;
-  }
+  if (Wire.endTransmission(false) != 0) return false;
 
   size_t n = Wire.requestFrom((uint8_t)IMU_ADDR, count);
-  if (n != count) {
-    return false;
-  }
+  if (n != count) return false;
 
   for (uint8_t i = 0; i < count; i++) {
     buffer[i] = Wire.read();
@@ -210,7 +207,6 @@ void cmd_vel_callback(const void *msgin) {
   float vy = msg->linear.y;
   float wz = msg->angular.z;
 
-  // Tune this later after chassis measurement.
   float L = 0.45f;
 
   float fl = vx - vy - wz * L;
@@ -219,19 +215,13 @@ void cmd_vel_callback(const void *msgin) {
   float rr = vx - vy + wz * L;
 
   float max_val = fmaxf(fmaxf(fabsf(fl), fabsf(fr)), fmaxf(fabsf(rl), fabsf(rr)));
-  if (max_val < 1.0f) {
-    max_val = 1.0f;
-  }
+  if (max_val < 1.0f) max_val = 1.0f;
 
-  fl /= max_val;
-  fr /= max_val;
-  rl /= max_val;
-  rr /= max_val;
+  fl /= max_val; fr /= max_val;
+  rl /= max_val; rr /= max_val;
 
-  fl *= FL_TRIM;
-  fr *= FR_TRIM;
-  rl *= RL_TRIM;
-  rr *= RR_TRIM;
+  fl *= FL_TRIM; fr *= FR_TRIM;
+  rl *= RL_TRIM; rr *= RR_TRIM;
 
   fl = constrain(fl, -1.0f, 1.0f);
   fr = constrain(fr, -1.0f, 1.0f);
@@ -239,10 +229,8 @@ void cmd_vel_callback(const void *msgin) {
   rr = constrain(rr, -1.0f, 1.0f);
 
   bool command_active =
-    fabsf(fl) > 0.01f ||
-    fabsf(fr) > 0.01f ||
-    fabsf(rl) > 0.01f ||
-    fabsf(rr) > 0.01f;
+    fabsf(fl) > 0.01f || fabsf(fr) > 0.01f ||
+    fabsf(rl) > 0.01f || fabsf(rr) > 0.01f;
 
   if (!command_active) {
     stopAll();
@@ -258,10 +246,7 @@ void cmd_vel_callback(const void *msgin) {
 }
 
 void publishEncoders() {
-  int32_t fl;
-  int32_t fr;
-  int32_t rl;
-  int32_t rr;
+  int32_t fl, fr, rl, rr;
 
   portENTER_CRITICAL(&encoder_mux);
   fl = count_FL;
@@ -282,20 +267,16 @@ void publishEncoders() {
 }
 
 void publishImu() {
-  if (!imu_ok) {
-    return;
-  }
+  if (!imu_ok) return;
 
   uint8_t data[14];
-  if (!readRegisters(0x3B, 14, data)) {
-    return;
-  }
+  if (!readRegisters(0x3B, 14, data)) return;
 
   float ax = (float)((int16_t)((data[0] << 8) | data[1])) - ACCEL_X_OFFSET;
   float ay = (float)((int16_t)((data[2] << 8) | data[3])) - ACCEL_Y_OFFSET;
   float az = (float)((int16_t)((data[4] << 8) | data[5])) - ACCEL_Z_OFFSET;
 
-  float gx = (float)((int16_t)((data[8] << 8) | data[9])) - GYRO_X_OFFSET;
+  float gx = (float)((int16_t)((data[8] << 8) | data[9]))  - GYRO_X_OFFSET;
   float gy = (float)((int16_t)((data[10] << 8) | data[11])) - GYRO_Y_OFFSET;
   float gz = (float)((int16_t)((data[12] << 8) | data[13])) - GYRO_Z_OFFSET;
 
@@ -308,17 +289,73 @@ void publishImu() {
   imu_msg.angular_velocity.z = (gz / 131.0f) * DEG_TO_RAD;
 
   int64_t ns = rmw_uros_epoch_nanos();
-  imu_msg.header.stamp.sec = (int32_t)(ns / 1000000000LL);
+  imu_msg.header.stamp.sec     = (int32_t)(ns / 1000000000LL);
   imu_msg.header.stamp.nanosec = (uint32_t)(ns % 1000000000LL);
 
   RCSOFTCHECK(rcl_publish(&pub_imu, &imu_msg, NULL));
 }
 
-void setup() {
-  Serial.begin(MICRO_ROS_BAUD);
-  set_microros_transports();
-  delay(2000);
+bool initMicroROS() {
+  allocator = rcl_get_default_allocator();
 
+  if (rclc_support_init(&support, 0, NULL, &allocator) != RCL_RET_OK) return false;
+  if (rclc_node_init_default(&node, "esp32_echo_node", "", &support) != RCL_RET_OK) return false;
+
+  if (rclc_publisher_init_best_effort(
+    &pub_imu, &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, Imu),
+    "/imu/data_raw") != RCL_RET_OK) return false;
+
+  if (rclc_publisher_init_best_effort(
+    &pub_enc_FL, &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
+    "/encoders/FL") != RCL_RET_OK) return false;
+
+  if (rclc_publisher_init_best_effort(
+    &pub_enc_FR, &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
+    "/encoders/FR") != RCL_RET_OK) return false;
+
+  if (rclc_publisher_init_best_effort(
+    &pub_enc_RL, &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
+    "/encoders/RL") != RCL_RET_OK) return false;
+
+  if (rclc_publisher_init_best_effort(
+    &pub_enc_RR, &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
+    "/encoders/RR") != RCL_RET_OK) return false;
+
+  if (rclc_subscription_init_default(
+    &sub_cmdvel, &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist),
+    "/cmd_vel") != RCL_RET_OK) return false;
+
+  if (rclc_executor_init(&executor, &support.context, 1, &allocator) != RCL_RET_OK) return false;
+  if (rclc_executor_add_subscription(
+    &executor, &sub_cmdvel, &twist_msg,
+    &cmd_vel_callback, ON_NEW_DATA) != RCL_RET_OK) return false;
+
+  // Sync time with agent
+  rmw_uros_sync_session(1000);
+
+  return true;
+}
+
+void destroyMicroROS() {
+  rcl_publisher_fini(&pub_imu,    &node);
+  rcl_publisher_fini(&pub_enc_FL, &node);
+  rcl_publisher_fini(&pub_enc_FR, &node);
+  rcl_publisher_fini(&pub_enc_RL, &node);
+  rcl_publisher_fini(&pub_enc_RR, &node);
+  rcl_subscription_fini(&sub_cmdvel, &node);
+  rclc_executor_fini(&executor);
+  rcl_node_fini(&node);
+  rclc_support_fini(&support);
+}
+
+void setup() {
+  // ----- Hardware init first -----
   pinMode(ENCODER_FL, INPUT_PULLUP);
   pinMode(ENCODER_FR, INPUT_PULLUP);
   pinMode(ENCODER_RL, INPUT_PULLUP);
@@ -329,14 +366,10 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(ENCODER_RL), isr_RL, RISING);
   attachInterrupt(digitalPinToInterrupt(ENCODER_RR), isr_RR, RISING);
 
-  pinMode(FL_IN1, OUTPUT);
-  pinMode(FL_IN2, OUTPUT);
-  pinMode(RR_IN3, OUTPUT);
-  pinMode(RR_IN4, OUTPUT);
-  pinMode(FR_IN1, OUTPUT);
-  pinMode(FR_IN2, OUTPUT);
-  pinMode(RL_IN3, OUTPUT);
-  pinMode(RL_IN4, OUTPUT);
+  pinMode(FL_IN1, OUTPUT); pinMode(FL_IN2, OUTPUT);
+  pinMode(RR_IN3, OUTPUT); pinMode(RR_IN4, OUTPUT);
+  pinMode(FR_IN1, OUTPUT); pinMode(FR_IN2, OUTPUT);
+  pinMode(RL_IN3, OUTPUT); pinMode(RL_IN4, OUTPUT);
 
   ledcAttach(FL_ENA, PWM_FREQ, PWM_RES);
   ledcAttach(RR_ENB, PWM_FREQ, PWM_RES);
@@ -350,71 +383,15 @@ void setup() {
   delay(100);
 
   imu_ok = true;
-  imu_ok &= writeRegister(0x6B, 0x01);
-  delay(100);
+  imu_ok &= writeRegister(0x6B, 0x01); delay(100);
   imu_ok &= writeRegister(0x1A, 0x03);
   imu_ok &= writeRegister(0x19, 0x04);
   imu_ok &= writeRegister(0x1B, 0x00);
   imu_ok &= writeRegister(0x1C, 0x00);
 
-  allocator = rcl_get_default_allocator();
-
-  RCCHECK(rclc_support_init(&support, 0, NULL, &allocator));
-  RCCHECK(rclc_node_init_default(&node, "esp32_echo_node", "", &support));
-
-  RCCHECK(rclc_publisher_init_best_effort(
-    &pub_imu,
-    &node,
-    ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, Imu),
-    "/imu/data_raw"
-  ));
-
-  RCCHECK(rclc_publisher_init_best_effort(
-    &pub_enc_FL,
-    &node,
-    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-    "/encoders/FL"
-  ));
-
-  RCCHECK(rclc_publisher_init_best_effort(
-    &pub_enc_FR,
-    &node,
-    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-    "/encoders/FR"
-  ));
-
-  RCCHECK(rclc_publisher_init_best_effort(
-    &pub_enc_RL,
-    &node,
-    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-    "/encoders/RL"
-  ));
-
-  RCCHECK(rclc_publisher_init_best_effort(
-    &pub_enc_RR,
-    &node,
-    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-    "/encoders/RR"
-  ));
-
-  RCCHECK(rclc_subscription_init_default(
-    &sub_cmdvel,
-    &node,
-    ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist),
-    "/cmd_vel"
-  ));
-
-  RCCHECK(rclc_executor_init(&executor, &support.context, 1, &allocator));
-  RCCHECK(rclc_executor_add_subscription(
-    &executor,
-    &sub_cmdvel,
-    &twist_msg,
-    &cmd_vel_callback,
-    ON_NEW_DATA
-  ));
-
-  imu_msg.header.frame_id.data = (char *)"imu_link";
-  imu_msg.header.frame_id.size = strlen("imu_link");
+  // IMU message static fields
+  imu_msg.header.frame_id.data     = (char *)"imu_link";
+  imu_msg.header.frame_id.size     = strlen("imu_link");
   imu_msg.header.frame_id.capacity = imu_msg.header.frame_id.size + 1;
 
   imu_msg.orientation.x = 0.0;
@@ -422,27 +399,50 @@ void setup() {
   imu_msg.orientation.z = 0.0;
   imu_msg.orientation.w = 1.0;
 
-  imu_msg.orientation_covariance[0] = -1.0;
-
-  imu_msg.angular_velocity_covariance[0] = 0.0003;
-  imu_msg.angular_velocity_covariance[4] = 0.0003;
-  imu_msg.angular_velocity_covariance[8] = 0.0003;
-
+  imu_msg.orientation_covariance[0]       = -1.0;
+  imu_msg.angular_velocity_covariance[0]  = 0.0003;
+  imu_msg.angular_velocity_covariance[4]  = 0.0003;
+  imu_msg.angular_velocity_covariance[8]  = 0.0003;
   imu_msg.linear_acceleration_covariance[0] = 0.02;
   imu_msg.linear_acceleration_covariance[4] = 0.02;
   imu_msg.linear_acceleration_covariance[8] = 0.02;
 
-  delay(200);
-  RCSOFTCHECK(rmw_uros_sync_session(1000));
+  // ----- micro-ROS transport (no blocking wait) -----
+  Serial.begin(MICRO_ROS_BAUD);
+  delay(500);  // just enough for USB serial to stabilize
+  set_microros_transports();
 
-  last_cmd_ms = millis();
+  last_cmd_ms        = millis();
   last_encoder_pub_ms = millis();
-  last_imu_pub_ms = millis();
+  last_imu_pub_ms    = millis();
 }
 
 void loop() {
   unsigned long now = millis();
 
+  // ---- Agent connection management ----
+  if (!agent_connected) {
+    // Ping agent, 100ms timeout, 1 attempt
+    if (rmw_uros_ping_agent(100, 1) == RMW_RET_OK) {
+      if (initMicroROS()) {
+        agent_connected = true;
+        last_cmd_ms = millis();
+      }
+    } else {
+      delay(500); // wait before retrying
+    }
+    return;
+  }
+
+  // ---- Agent lost? tear down and reconnect ----
+  if (rmw_uros_ping_agent(100, 1) != RMW_RET_OK) {
+    stopAll();
+    destroyMicroROS();
+    agent_connected = false;
+    return;
+  }
+
+  // ---- Normal operation ----
   if (motors_active && (now - last_cmd_ms > CMD_TIMEOUT_MS)) {
     stopAll();
   }

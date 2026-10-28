@@ -17,19 +17,16 @@ Do not install credentials into the repository. Use ignored local environment fi
 ## Build the canonical workspace
 
 ```bash
-cd echo_workspace
+cd Echo
 source /opt/ros/jazzy/setup.bash
 rosdep install --from-paths src --ignore-src -r -y
 colcon build --symlink-install
 source install/setup.bash
 ```
 
-The repository also contains `ros2_ws`, a legacy mirror. Do not build or modify both
-workspaces as interchangeable sources during the same test.
-
 ## Useful launch surfaces
 
-From a sourced `echo_workspace`:
+From a sourced root workspace:
 
 ```bash
 ros2 launch echo_bringup mapping_launch.py
@@ -47,7 +44,7 @@ locally instead of editing committed scripts.
 ## Runtime dashboard
 
 The dashboard and launch server documentation is in
-`echo_workspace/echo_runtime/README.md`. Install systemd user services only on the
+`runtime/README.md`. Install systemd user services only on the
 robot, and keep local service overrides outside Git.
 
 ## Validation status
@@ -61,8 +58,8 @@ Run the checks that are available in the installed environment:
 
 ```bash
 python3 -m compileall -q .
-colcon list --base-paths echo_workspace/src
-colcon test --base-paths echo_workspace
+colcon list --base-paths src
+colcon test --base-paths .
 git diff --check
 ```
 

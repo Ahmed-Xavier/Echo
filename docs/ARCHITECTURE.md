@@ -2,19 +2,10 @@
 
 ## Source of truth
 
-`echo_workspace` is the canonical ROS 2 Jazzy source workspace. It contains the
-Echo packages, the vendored YDLIDAR driver and micro-ROS agent, robot description,
-navigation configuration, maps, and the canonical dashboard runtime files under
-`echo_workspace/echo_runtime/`.
-
-`ros2_ws` is a legacy mirror retained in this branch because deployment scripts and
-the physical robot may still reference it. It must not be changed or deleted until
-the robot is migrated and a live bringup confirms that `echo_workspace` is the only
-runtime source.
-
-The root `echo_runtime/` directory is retained as a legacy compatibility surface for
-older service and operator deployments. New deployment work should use
-`echo_workspace/echo_runtime/`.
+`src/` is the canonical ROS 2 Jazzy package tree. It contains the Echo packages,
+the vendored YDLIDAR driver and micro-ROS agent, robot description, navigation
+configuration, and maps. Runtime support files are grouped separately under
+`runtime/`.
 
 ## Package responsibilities
 
@@ -47,8 +38,9 @@ older service and operator deployments. New deployment work should use
 ## Deployment layers
 
 - Firmware is built and flashed independently under `firmware/`.
-- ROS packages are built with `colcon` from `echo_workspace`.
-- `echo_workspace/echo_runtime/systemd/` contains service templates; local service installation
+- ROS packages are built with `colcon` from the repository root, using `src/` as
+  the package source tree.
+- `runtime/systemd/` contains service templates; local service installation
   and environment values stay on the robot.
 - Logs, backups, credentials, and generated runtime state are not repository assets.
 

@@ -1,11 +1,8 @@
 
 # ROS 2 build artifacts
-echo_workspace/build/
-echo_workspace/install/
-echo_workspace/log/
-ros2_ws/build/
-ros2_ws/install/
-ros2_ws/log/
+build/
+install/
+log/
 
 # Python and editor caches
 __pycache__/
@@ -24,15 +21,15 @@ venv/
 *.pem
 *.key
 *.p12
-echo_runtime/voice/voice.env
-echo_runtime/**/openclaw*.json
+runtime/voice/voice.env
+runtime/**/openclaw*.json
 
 # Runtime state and generated output
-echo_runtime/logs/
-echo_runtime/backups/
-echo_runtime/**/*.bak
-echo_runtime/**/*.bak.*
-echo_runtime/**/*.tmp
+runtime/logs/
+runtime/backups/
+runtime/**/*.bak
+runtime/**/*.bak.*
+runtime/**/*.tmp
 *.log
 *.bak
 *.bak.*

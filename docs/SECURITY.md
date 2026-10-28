@@ -11,7 +11,7 @@ examples contain names only:
 - `ECHO_KEYWORD_PATH`
 - `TELEGRAM_ID`
 
-Copy `echo_runtime/voice/.env.example` to a local ignored file or export the values
+Copy `runtime/voice/.env.example` to a local ignored file or export the values
 through the robot's service manager. Never commit `.env`, voice environment files,
 tokens, private keys, or local service configuration.
 
