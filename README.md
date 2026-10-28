@@ -86,21 +86,21 @@ workspace-style package tree rather than multiple competing workspaces.
 
 ```mermaid
 flowchart LR
-    Camera[USB camera] --> CameraNode[echo_perception camera_publisher]
-    CameraNode --> Raw[/echo/camera/image_raw]
-    Raw --> Tags[AprilTag detector]
-    Tags --> TagTopics[/apriltag/instruction<br/>/apriltag/markers<br/>/apriltag/annotated_image/compressed]
+    Camera["USB camera"] --> CameraNode["echo_perception camera_publisher"]
+    CameraNode --> Raw["/echo/camera/image_raw"]
+    Raw --> Tags["AprilTag detector"]
+    Tags --> TagTopics["/apriltag/instruction<br/>/apriltag/markers<br/>/apriltag/annotated_image/compressed"]
 
-    Lidar[YDLIDAR] --> Scan[/scan]
-    Scan --> SLAM[SLAM Toolbox or Nav2 localization]
-    Enc[ESP32 encoders] --> Odom[robot_controller odometry]
-    IMU[ESP32 raw IMU] --> EKF[robot_localization / EKF]
+    Lidar["YDLIDAR"] --> Scan["/scan"]
+    Scan --> SLAM["SLAM Toolbox or Nav2 localization"]
+    Enc["ESP32 encoders"] --> Odom["robot_controller odometry"]
+    IMU["ESP32 raw IMU"] --> EKF["robot_localization / EKF"]
     Odom --> EKF
     SLAM --> Nav[Nav2]
     EKF --> Nav
-    Nav --> Cmd[/cmd_vel]
-    Cmd --> ESP[ESP32 micro-ROS controller]
-    ESP --> Motors[Mecanum motors]
+    Nav --> Cmd["/cmd_vel"]
+    Cmd --> ESP["ESP32 micro-ROS controller"]
+    ESP --> Motors["Mecanum motors"]
 
     Voice[echo_voice_ai and runtime voice tools] --> Human[Human-robot interaction]
     Dashboard[Browser dashboard via rosbridge] --> Operator[Remote operator]
@@ -181,16 +181,16 @@ The control path is intended to follow this sequence:
 
 ```mermaid
 flowchart TD
-    Encoders[ESP32 encoder topics] --> WheelOdom[robot_controller<br/>wheel odometry]
-    RawIMU[ESP32 /imu/data_raw] --> Filter[robot_localization EKF]
+    Encoders["ESP32 encoder topics"] --> WheelOdom["robot_controller<br/>wheel odometry"]
+    RawIMU["ESP32 /imu/data_raw"] --> Filter["robot_localization EKF"]
     WheelOdom --> Filter
-    Lidar[/scan] --> Mapping[SLAM Toolbox or AMCL]
+    Lidar["/scan"] --> Mapping["SLAM Toolbox or AMCL"]
     Filter --> Mapping
-    Mapping --> Nav2[Nav2 planner and controller]
-    Goal[Navigation goal or named place] --> Nav2
-    Nav2 --> CmdVel[/cmd_vel]
-    CmdVel --> Firmware[ESP32 motor mixing and watchdog]
-    Firmware --> Actuators[Physical mecanum motors]
+    Mapping --> Nav2["Nav2 planner and controller"]
+    Goal["Navigation goal or named place"] --> Nav2
+    Nav2 --> CmdVel["/cmd_vel"]
+    CmdVel --> Firmware["ESP32 motor mixing and watchdog"]
+    Firmware --> Actuators["Physical mecanum motors"]
 ```
 
 The ESP32 firmware applies mecanum wheel mixing, maintains a command timeout,
