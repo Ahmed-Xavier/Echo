@@ -3,6 +3,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
 import json
+import os
 import subprocess
 import time
 
@@ -32,11 +33,13 @@ class FunTagListener(Node):
                 
                 # Trigger capture and send
                 # Note: uses /dev/video8 based on our recent successful check
-                cmd = f'python3 -c "import cv2; cap = cv2.VideoCapture(8); [cap.read() for _ in range(10)]; ret, frame = cap.read(); cv2.imwrite(\"/home/ahmed/.openclaw/workspace/postcard.jpg\", frame); cap.release()" && openclaw message send --target telegram:1139225059 --message "{obs}" --media /home/ahmed/.openclaw/workspace/postcard.jpg'
+                postcard_path = os.path.expanduser(os.getenv("ECHO_POSTCARD_PATH", "~/echo_runtime/postcard.jpg"))
+                telegram_id = os.getenv("TELEGRAM_ID", "")
+                cmd = f'python3 -c "import cv2; cap = cv2.VideoCapture(8); [cap.read() for _ in range(10)]; ret, frame = cap.read(); cv2.imwrite(\\"{postcard_path}\\", frame); cap.release()" && openclaw message send --target telegram:{telegram_id} --message "{obs}" --media {postcard_path}'
                 subprocess.run(cmd, shell=True)
                 
                 # Speak it too!
-                voice_cmd = f"python3 -c \"import requests, subprocess; vid='JBFqnCBsd6RMkjVDRZzb'; headers={{'xi-api-key': 'sk_084daee8df779c57a2a5ee3ccac55a247413b2f5ff8a7dd9', 'Content-Type': 'application/json'}}; resp=requests.post(f'https://api.elevenlabs.io/v1/text-to-speech/{{vid}}', json={{'text': 'Cheese! Sending your postcard now.', 'model_id': 'eleven_multilingual_v2'}}, headers=headers); open('/tmp/postcard_reply.mp3', 'wb').write(resp.content); subprocess.run(['ffplay', '-nodisp', '-autoexit', '/tmp/postcard_reply.mp3'])\""
+                voice_cmd = "python3 -c \"import os, requests, subprocess; vid=os.getenv('ELEVENLABS_VOICE_ID', 'JBFqnCBsd6RMkjVDRZzb'); key=os.getenv('ELEVENLABS_API_KEY', ''); headers={'xi-api-key': key, 'Content-Type': 'application/json'}; resp=requests.post(f'https://api.elevenlabs.io/v1/text-to-speech/{vid}', json={'text': 'Cheese! Sending your postcard now.', 'model_id': 'eleven_multilingual_v2'}, headers=headers); open('/tmp/postcard_reply.mp3', 'wb').write(resp.content); subprocess.run(['ffplay', '-nodisp', '-autoexit', '/tmp/postcard_reply.mp3'])\""
                 subprocess.run(voice_cmd, shell=True)
 
         except Exception as e:

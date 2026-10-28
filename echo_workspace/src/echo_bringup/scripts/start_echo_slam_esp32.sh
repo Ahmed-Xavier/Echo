@@ -3,9 +3,9 @@ set -o pipefail
 
 ROS_DISTRO_NAME="${ROS_DISTRO_NAME:-jazzy}"
 ROS_SETUP="/opt/ros/${ROS_DISTRO_NAME}/setup.bash"
-ROS_WS="${ROS_WS:-/home/ahmed/ros2_ws}"
-ECHO_WS="${ECHO_WS:-$HOME/.openclaw/workspace/github_echo/echo_workspace}"
-MICRO_ROS_WS="${MICRO_ROS_WS:-/home/ahmed/microros_ws}"
+ROS_WS="${ROS_WS:-$HOME/echo_workspace}"
+ECHO_WS="${ECHO_WS:-$HOME/echo_workspace}"
+MICRO_ROS_WS="${MICRO_ROS_WS:-$HOME/microros_ws}"
 
 ESP32_PORT="${ESP32_PORT:-/dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0}"
 LIDAR_PORT="${LIDAR_PORT:-/dev/serial/by-path/platform-xhci-hcd.0-usb-0:1:1.0-port0}"

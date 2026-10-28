@@ -2,8 +2,14 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 from pathlib import Path
+import os
 
-img_path = Path("/home/ahmed/echo_runtime/bmo_face_source/faces/idle/idle 01.png")
+img_path = Path(
+    os.getenv(
+        "ECHO_FACE_ROOT",
+        Path.home() / "echo_workspace/echo_runtime/bmo_face_source/faces",
+    )
+) / "idle/idle 01.png"
 
 root = tk.Tk()
 root.geometry("800x480+0+0")

@@ -1,10 +1,22 @@
-### GitHub Integration
-- **Repo**: `https://github.com/Ahmed-Xavier/Echo.git`
-- **User**: `Ahmed-Xavier`
-- **Auth**: Personal Access Token (ghp_***) configured in git remote.
-- **Last Sync**: 2026-04-15 21:40 GMT+1
+# Local operator notes
 
-### SSH Details
-- **Tailscale IP**: `100.95.231.114`
-- **Local IP**: `192.168.11.217`
-- **Username**: `ahmed`
+This file intentionally contains no credentials, private network addresses, usernames,
+or machine-specific filesystem paths. Keep deployment-specific values outside Git.
+
+## GitHub
+
+- Repository: <https://github.com/Ahmed-Xavier/Echo>
+- Use the GitHub CLI or an SSH credential configured on the operator workstation.
+- Never store access tokens in Git remotes, documentation, scripts, or `.env.example` files.
+
+## Runtime configuration
+
+Copy the relevant example environment file to a local, ignored environment file and
+provide values on the robot:
+
+- `echo_runtime/voice/.env.example`
+- `echo_runtime/bin/echo_env.sh`
+
+The canonical ROS 2 source workspace is `echo_workspace`. Paths to the workspace,
+device ports, and runtime directories should be supplied through environment variables
+or launch arguments rather than committed machine-specific values.

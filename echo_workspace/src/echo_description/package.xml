@@ -4,7 +4,7 @@
   <name>echo_description</name>
   <version>0.0.0</version>
   <description>3D URDF Description for Echo</description>
-  <maintainer email="ahmed@todo.todo">Ahmed</maintainer>
+  <maintainer>Ahmed-Xavier</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

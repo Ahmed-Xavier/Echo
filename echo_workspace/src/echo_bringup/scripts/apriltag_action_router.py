@@ -30,14 +30,16 @@ class AprilTagActionRouter(Node):
 
         self.declare_parameter(
             "places_file",
-            os.path.expanduser(
-                "~/.openclaw/workspace/github_echo/echo_workspace/src/echo_navigation/config/places.yaml"
+            os.path.join(
+                os.getenv("ECHO_WS", os.path.expanduser("~/echo_workspace")),
+                "src/echo_navigation/config/places.yaml",
             ),
         )
         self.declare_parameter(
             "actions_file",
-            os.path.expanduser(
-                "~/.openclaw/workspace/github_echo/echo_workspace/src/echo_navigation/config/apriltag_actions.yaml"
+            os.path.join(
+                os.getenv("ECHO_WS", os.path.expanduser("~/echo_workspace")),
+                "src/echo_navigation/config/apriltag_actions.yaml",
             ),
         )
         self.declare_parameter("cooldown_sec", 6.0)

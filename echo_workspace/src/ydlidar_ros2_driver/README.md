@@ -59,7 +59,7 @@ ydlidar_ros2_driver depends on YDLidar-SDK library. If you have never installed 
     printenv | grep -i ROS
     ```
     You should see something similar to:
-        `OLDPWD=/home/tony/ydlidar_ros2_ws/install`
+        `OLDPWD=$YDLIDAR_WS/install`
 
 5. Create serial port Alias [optional] 
     ```

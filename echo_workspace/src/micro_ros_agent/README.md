@@ -28,4 +28,5 @@ Communication between the Micro-ROS Agent and the Micro-ROS nodes supports two t
 - SerialPort.
 
 All available configurations are supported directly by the Micro XRCE-DDS agent.
-For further information on how to configure the agent click [here](TODO).
+For configuration details, see the
+[Micro XRCE-DDS Agent documentation](https://micro.ros.org/docs/notes/middleware/).

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import math
+import os
 import sys
 from pathlib import Path
 
@@ -12,8 +13,13 @@ from rclpy.node import Node
 
 
 DEFAULT_PLACES_FILE = (
-    Path.home()
-    / ".openclaw/workspace/github_echo/echo_workspace/src/echo_navigation/config/places.yaml"
+    Path(
+        os.getenv(
+            "ECHO_WS",
+            Path.home() / "echo_workspace",
+        )
+    )
+    / "src/echo_navigation/config/places.yaml"
 )
 
 

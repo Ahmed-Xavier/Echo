@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROS_SETUP="${ROS_SETUP:-/opt/ros/jazzy/setup.bash}"
-ROS_WS="${ROS_WS:-$HOME/ros2_ws}"
+ROS_WS="${ROS_WS:-$HOME/echo_workspace}"
 MAP_FILE="${MAP_FILE:-$HOME/maps/echo_test_map.yaml}"
 PARAMS_FILE="${PARAMS_FILE:-$ROS_WS/src/robot_controller/nav2_params.yaml}"
 

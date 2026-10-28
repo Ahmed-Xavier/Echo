@@ -3,15 +3,18 @@
 <package format="3">
   <name>robot_controller</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="ahmed@todo.todo">ahmed</maintainer>
-  <license>TODO: License declaration</license>
+  <description>Echo motor, encoder, IMU, and odometry ROS 2 nodes</description>
+  <maintainer email="">Ahmed-Xavier</maintainer>
+  <license>MIT</license>
 
   <depend>rclpy</depend>
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>std_msgs</depend>
+  <depend>launch</depend>
+  <depend>launch_ros</depend>
+  <depend>ament_index_python</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

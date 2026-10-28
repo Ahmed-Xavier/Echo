@@ -11,7 +11,7 @@ def show_config():
     root.configure(bg='black')
 
     try:
-        with open('/home/ahmed/.openclaw/openclaw.json', 'r') as f:
+        with open(os.getenv("OPENCLAW_CONFIG", os.path.expanduser("~/.openclaw/openclaw.json")), 'r') as f:
             config = json.load(f)
             
         primary = config.get("agents", {}).get("defaults", {}).get("model", {}).get("primary", "N/A")

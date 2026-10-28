@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import cv2, rclpy, json, sys
+import cv2, rclpy, json, os, sys
 from rclpy.node import Node
 from std_msgs.msg import String
 from pupil_apriltags import Detector
@@ -47,7 +47,9 @@ class AprilTagNode(Node):
 
 def main():
     # Import shared camera from webrtc_server
-    sys.path.insert(0, '/home/ahmed')
+    repo_root = os.getenv("ECHO_REPO_ROOT")
+    if repo_root:
+        sys.path.insert(0, repo_root)
     from webrtc_server import shared_cam
     rclpy.init()
     node = AprilTagNode(shared_cam)

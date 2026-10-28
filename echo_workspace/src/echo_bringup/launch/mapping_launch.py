@@ -8,16 +8,16 @@ def full_mapping_command():
     return r"""
 set -e
 
-source ~/echo_runtime/bin/echo_env.sh
+source "${ECHO_RUNTIME_DIR:-$HOME/echo_workspace/echo_runtime}/bin/echo_env.sh"
 
-LOG_DIR=~/echo_runtime/logs
+LOG_DIR="${ECHO_LOG_DIR:-${ECHO_RUNTIME_DIR:-$HOME/echo_workspace/echo_runtime}/logs}"
 mkdir -p "$LOG_DIR"
 
 ESP32_PORT="/dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0"
 ESP32_BAUD="115200"
 
-YDLIDAR_SRC="$HOME/.openclaw/workspace/github_echo/echo_workspace/src/ydlidar_ros2_driver"
-YDLIDAR_PARAMS="$YDLIDAR_SRC/params/ydlidar.yaml"
+YDLIDAR_SRC="${ECHO_WS}/src/ydlidar_ros2_driver"
+YDLIDAR_PARAMS="${YDLIDAR_SRC}/params/ydlidar.yaml"
 
 cleanup() {
   echo "[mapping] stopping full mapping stack..."
@@ -118,7 +118,7 @@ wait
 
 def start_foxglove_command():
     return r"""
-source ~/echo_runtime/bin/echo_env.sh
+source "${ECHO_RUNTIME_DIR:-$HOME/echo_workspace/echo_runtime}/bin/echo_env.sh"
 exec ros2 launch foxglove_bridge foxglove_bridge_launch.xml port:=8765
 """
 

@@ -13,7 +13,12 @@ import speech_recognition as sr
 from pvrecorder import PvRecorder
 
 
-ENV_PATH = Path("/home/ahmed/echo_runtime/voice/voice.env")
+ENV_PATH = Path(
+    os.getenv(
+        "ECHO_VOICE_ENV_FILE",
+        str(Path.home() / "echo_workspace/echo_runtime/voice/voice.env"),
+    )
+)
 QUERY_WAV = Path("/tmp/echo_voice_query.wav")
 REPLY_MP3 = Path("/tmp/echo_voice_reply.mp3")
 ACK_SOUND = Path("/usr/share/sounds/alsa/Front_Center.wav")
@@ -34,7 +39,10 @@ def load_env_file(path):
 load_env_file(ENV_PATH)
 
 PICOVOICE_ACCESS_KEY = os.getenv("PICOVOICE_ACCESS_KEY", "")
-KEYWORD_PATH = os.getenv("ECHO_KEYWORD_PATH", "/home/ahmed/.openclaw/workspace/echo_wake_word.ppn")
+KEYWORD_PATH = os.getenv(
+    "ECHO_KEYWORD_PATH",
+    str(Path.home() / "echo_wake_word.ppn"),
+)
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "")
 ELEVENLABS_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "JBFqnCBsd6RMkjVDRZzb")
 OPENCLAW_AGENT = os.getenv("OPENCLAW_AGENT", "main")
@@ -247,8 +255,7 @@ def ask_openclaw(query):
             continue
         lines.append(stripped)
 
-    spoken = "
-".join(lines).strip() or response
+    spoken = "\n".join(lines).strip() or response
     return spoken
 
 

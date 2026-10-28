@@ -35,9 +35,17 @@ def generate_launch_description():
     start_apriltag_router = LaunchConfiguration("start_apriltag_router")
     start_robot_description = LaunchConfiguration("start_robot_description")
 
-    map_file = os.path.expanduser("~/echo_runtime/maps/Salle_Hall.yaml")
+    runtime_dir = os.getenv(
+        "ECHO_RUNTIME_DIR",
+        os.path.join(os.path.expanduser("~"), "echo_workspace", "echo_runtime"),
+    )
+    map_file = os.path.join(runtime_dir, "maps", "Salle_Hall.yaml")
     params_file = os.path.expanduser(
-        "~/.openclaw/workspace/github_echo/echo_workspace/src/echo_navigation/config/nav2_params.yaml"
+        os.path.join(
+            get_package_share_directory("echo_navigation"),
+            "config",
+            "nav2_params.yaml",
+        )
     )
 
     micro_ros_agent = Node(
@@ -93,8 +101,10 @@ def generate_launch_description():
         condition=IfCondition(start_hardware),
     )
 
-    ydlidar_params = os.path.expanduser(
-        "~/.openclaw/workspace/github_echo/echo_workspace/src/ydlidar_ros2_driver/params/ydlidar.yaml"
+    ydlidar_params = os.path.join(
+        ydlidar_share,
+        "params",
+        "ydlidar.yaml",
     )
 
     ydlidar = IncludeLaunchDescription(

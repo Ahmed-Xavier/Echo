@@ -2,8 +2,8 @@
 <package format="3">
   <name>echo_hardware</name>
   <version>0.0.0</version>
-  <description>Echo echo_hardware package</description>
-  <maintainer email="ahmed@todo.todo">Ahmed</maintainer>
+  <description>Echo hardware integration package and install surface</description>
+  <maintainer>Ahmed-Xavier</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

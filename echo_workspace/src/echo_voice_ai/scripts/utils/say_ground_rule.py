@@ -2,8 +2,8 @@ import requests
 import subprocess
 import os
 
-ELEVENLABS_KEY = "sk_084daee8df779c57a2a5ee3ccac55a247413b2f5ff8a7dd9"
-VOICE_ID = "JBFqnCBsd6RMkjVDRZzb" # George
+ELEVENLABS_KEY = os.getenv("ELEVENLABS_API_KEY", "")
+VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "JBFqnCBsd6RMkjVDRZzb")
 
 def say(text):
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"

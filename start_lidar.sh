@@ -1,6 +1,7 @@
 #!/bin/bash
 source /opt/ros/jazzy/setup.bash
-source ~/ros2_ws/install/setup.bash
+ECHO_WS="${ECHO_WS:-$HOME/echo_workspace}"
+source "$ECHO_WS/install/setup.bash"
 
 # Launch LiDAR driver in background
 ros2 launch ydlidar_ros2_driver ydlidar_launch.py &

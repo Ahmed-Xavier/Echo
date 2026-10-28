@@ -2,7 +2,8 @@
 trap "echo 'Shutting down micro-ROS agent...'; kill $(jobs -p) 2>/dev/null" EXIT
 
 source /opt/ros/jazzy/setup.bash
-source /home/ahmed/microros_ws/install/setup.bash
+MICROROS_WS="${MICROROS_WS:-$HOME/microros_ws}"
+source "$MICROROS_WS/install/setup.bash"
 
 echo "========================================="
 echo "       ECHO: ESP32 micro-ROS Link        "

@@ -13,14 +13,15 @@ import speech_recognition as sr
 from pvrecorder import PvRecorder
 
 
-ENV_PATH = Path("/home/ahmed/echo_runtime/voice/voice.env")
+ENV_PATH = Path(os.getenv("ECHO_VOICE_ENV_FILE", Path.home() / "echo_workspace/echo_runtime/voice/voice.env"))
 FACE_STATE_FILE = Path("/tmp/echo_face_state")
 QUERY_WAV = Path("/tmp/echo_voice_query.wav")
 REPLY_MP3 = Path("/tmp/echo_voice_reply.mp3")
 REPLY_WAV = Path("/tmp/echo_voice_reply.wav")
-PIPER_BIN = Path("/home/ahmed/echo_runtime/bmo_face_source/piper/piper")
-BMO_MODEL = Path("/home/ahmed/echo_runtime/bmo_face_source/voices/bmo.onnx")
-BMO_CONFIG = Path("/home/ahmed/echo_runtime/bmo_face_source/voices/bmo.onnx.json")
+RUNTIME_DIR = Path(os.getenv("ECHO_RUNTIME_DIR", Path.home() / "echo_workspace/echo_runtime"))
+PIPER_BIN = Path(os.getenv("ECHO_PIPER_BIN", RUNTIME_DIR / "bmo_face_source/piper/piper"))
+BMO_MODEL = Path(os.getenv("ECHO_BMO_MODEL", RUNTIME_DIR / "bmo_face_source/voices/bmo.onnx"))
+BMO_CONFIG = Path(os.getenv("ECHO_BMO_CONFIG", RUNTIME_DIR / "bmo_face_source/voices/bmo.onnx.json"))
 ACK_SOUND = Path("/usr/share/sounds/alsa/Front_Center.wav")
 ANSI_RE = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 
@@ -39,7 +40,10 @@ def load_env_file(path):
 load_env_file(ENV_PATH)
 
 PICOVOICE_ACCESS_KEY = os.getenv("PICOVOICE_ACCESS_KEY", "")
-KEYWORD_PATH = os.getenv("ECHO_KEYWORD_PATH", "/home/ahmed/.openclaw/workspace/echo_wake_word.ppn")
+KEYWORD_PATH = os.getenv(
+    "ECHO_KEYWORD_PATH",
+    str(Path.home() / ".config/echo/echo_wake_word.ppn"),
+)
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "")
 ELEVENLABS_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "JBFqnCBsd6RMkjVDRZzb")
 OPENCLAW_AGENT = os.getenv("OPENCLAW_AGENT", "main")

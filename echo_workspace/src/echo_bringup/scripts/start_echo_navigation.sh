@@ -2,7 +2,7 @@
 set -eo pipefail
 
 ROS_SETUP="${ROS_SETUP:-/opt/ros/jazzy/setup.bash}"
-WORKSPACE_DIR="${WORKSPACE_DIR:-$HOME/.openclaw/workspace/github_echo/echo_workspace}"
+WORKSPACE_DIR="${WORKSPACE_DIR:-$HOME/echo_workspace}"
 MAP_FILE="${MAP_FILE:-$WORKSPACE_DIR/src/echo_navigation/maps/echo_nav_map.yaml}"
 NAV2_PARAMS="${NAV2_PARAMS:-$WORKSPACE_DIR/src/echo_navigation/config/nav2_params.yaml}"
 
@@ -29,4 +29,3 @@ ros2 launch nav2_bringup bringup_launch.py \
   params_file:="$NAV2_PARAMS" \
   use_sim_time:=False \
   autostart:=True
-
